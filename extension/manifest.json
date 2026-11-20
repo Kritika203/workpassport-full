@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "WorkShield \u2014 WorkPassport",
+  "version": "2.0.0",
+  "description": "Check selected job posts and messages. Pair with WorkPassport only if you choose.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "contextMenus",
+    "storage"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "WorkShield"
+  },
+  "optional_host_permissions": [
+    "https://*/*",
+    "http://localhost/*",
+    "http://127.0.0.1/*"
+  ]
+}
