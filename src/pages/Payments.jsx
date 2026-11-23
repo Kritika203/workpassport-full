@@ -64,7 +64,7 @@ export function PaymentsPage({ lang, workrooms = {}, allJobs = [] }) {
   const disputed = list.filter(r => r.status === 'disputed');
 
   const Row = ({ r }) => (
-    <div className="rounded-[12px] border border-[#e5e7dd] bg-[#FAFAF9] px-4 py-3 space-y-1">
+    <div className="rounded-[12px] border border-[#E3E6E1] bg-[#FAFAF9] px-4 py-3 space-y-1">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <span className="font-semibold">{r.job_title}</span>
         <span className="text-sm text-[#6B6561]">{r.milestone_title}</span>
@@ -89,13 +89,13 @@ export function PaymentsPage({ lang, workrooms = {}, allJobs = [] }) {
 
   return (
     <div className="space-y-5">
-      <section className="rounded-[20px] border border-[#e5e7dd] bg-white p-5 space-y-2">
-        <h2 className="text-xl font-semibold flex items-center gap-2"><Wallet size={22} className="text-[#59684a]" /> {s.title}</h2>
-        <p className="text-base text-[#4A4744]">{s.intro}</p>
+      <section className="rounded-[20px] border border-[#E3E6E1] bg-white p-5 space-y-2">
+        <h2 className="text-xl font-semibold flex items-center gap-2"><Wallet size={22} className="text-[#003D14]" /> {s.title}</h2>
+        <p className="text-base text-[#475249]">{s.intro}</p>
         {demoMode && <p className="text-sm text-[#6B6561]">{s.demoNote}</p>}
       </section>
       {!list.length && (
-        <section className="rounded-[20px] border border-[#e5e7dd] bg-white p-5">
+        <section className="rounded-[20px] border border-[#E3E6E1] bg-white p-5">
           <p className="text-base text-[#6B6561]">{s.empty}</p>
         </section>
       )}

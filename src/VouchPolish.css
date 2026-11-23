@@ -1,0 +1,118 @@
+/* Vouch 2026-11-23 polish. Reference palette: ivy #003D14, #0E5C2A,
+   off-white #F7F7F4, borders #E3E6E1, sage #E7F0E9.
+   Preserve red as a semantic warning/dispute colour. */
+:root { --v-deep:#003D14; --v-olive:#0E5C2A; --v-sage:#E7F0E9;
+  --v-cream:#FFFFFF; --v-ink:#141614; --v-muted:#596359; --v-line:#E3E6E1;
+  --v-page-cream:#FFFFFF; --v-page-sage:#E7F0E9; --v-page-deep:#003D14;
+  --v-page-line:#E3E6E1; --v-page-ink:#141614; --v-page-muted:#596359; }
+html,body { background:#FFFFFF; color:#141614; }
+.vouch-public, .vouch-auth {
+  background: radial-gradient(ellipse 70% 36% at 93% 6%,rgba(193,229,205,.52),transparent 73%),
+              radial-gradient(ellipse 44% 39% at 4% 85%,rgba(226,239,223,.42),transparent 77%),#FFFFFF;
+}
+.wp-app {
+  background:radial-gradient(ellipse 72% 37% at 94% 0%,rgba(193,229,205,.48),transparent 75%),
+    radial-gradient(ellipse 47% 42% at 3% 85%,rgba(219,237,224,.30),transparent 77%),#FFFFFF!important;
+  color:#141614!important;
+}
+/* No dividing lines or banners behind navigation. The page's own gradient
+   shows through. Sticky navigation has a subtle translucent fill for readability. */
+.vouch-public .vouch-header,.vouch-auth .vouch-auth-header,.wp-app>nav.vouch-shell {
+  background:rgba(249,252,250,.70)!important;
+  border:0!important; border-bottom:0!important;
+  box-shadow:none!important;
+  backdrop-filter:blur(10px);
+}
+.vouch-public .vouch-header-inner { max-width:1280px; }
+.wp-app .vouch-shell-logo { font-family:'DM Sans',ui-sans-serif,system-ui,sans-serif;
+  font-size:clamp(24px,2.4vw,30px); font-weight:750; letter-spacing:-.07em;
+  color:#003D14; padding-inline:0; }
+.wp-app .vouch-shell-logo>span { color:#003D14; }
+.wp-app .vouch-shell-dot { color:#678E75; }
+.wp-app .vouch-shell-links button { border:0!important; border-radius:999px;
+  padding:10px 14px; min-height:39px; color:#475249; }
+.wp-app .vouch-shell-links button:hover,.wp-app .vouch-shell-links button.is-current {
+  background:rgba(231,240,233,.82); color:#003D14; }
+.wp-app .vouch-shell-user-button,.wp-app .vouch-shell-language,
+.wp-app .vouch-shell-avatar { background:#F2F8F3; color:#003D14; border-color:transparent; }
+.wp-app .vouch-shell-popover { background:#FFFFFF; border:1px solid #E3E6E1;
+  border-radius:18px;box-shadow:0 16px 34px rgba(0,61,20,.09); }
+.wp-app .vouch-shell-popover button:hover,
+.wp-app .vouch-shell-popover button:focus-visible { background:#E7F0E9;color:#003D14; }
+.wp-app .vouch-shell-menu-heading { border-bottom:0; color:#596359; }
+.wp-app .vouch-shell-mobile { background:#FFFFFF; border:0!important; box-shadow:0 12px 22px #003d1410; }
+.wp-app .vouch-shell-mobile button { border-bottom:0; border-radius:10px; }
+.wp-app .vouch-shell-mobile button:hover { background:#F2F8F3; }
+/* Native select popups are OS-controlled on some browsers. This gives them a
+   consistent closed appearance and themed options when the browser permits. */
+.wp-app :is(input,select,textarea),.vouch-auth :is(input,select,textarea) { color:#141614; }
+.wp-app select,.vouch-auth select { color-scheme:light; background-color:#FFFFFF;
+  border-color:#E3E6E1; accent-color:#003D14; }
+.wp-app select option,.wp-app select optgroup,.vouch-auth select option,
+.vouch-auth select optgroup { color:#141614; background-color:#F7F7F4; }
+.wp-app :is(select,input,textarea):focus,
+.vouch-auth :is(select,input,textarea):focus { border-color:#91B59A; box-shadow:0 0 0 2px #dceadf; }
+/* Avoid the large green rectangle on pointer click, retain a visible keyboard focus. */
+.wp-app :is(button,a,input,textarea,select):focus:not(:focus-visible),
+.vouch-public :is(button,a,input,textarea,select):focus:not(:focus-visible),
+.vouch-auth :is(button,a,input,textarea,select):focus:not(:focus-visible) { outline:none!important;outline-offset:0!important; }
+.wp-app :is(button,a,input,textarea,select):focus-visible,
+.vouch-public :is(button,a,input,textarea,select):focus-visible,
+.vouch-auth :is(button,a,input,textarea,select):focus-visible { outline:2px solid #0E5C2A!important; outline-offset:2px!important; }
+.wp-app .fw-vouch-toolbar { background:rgba(255,255,255,.84); border:1px solid #E3E6E1; }
+.wp-app .fw-vouch-select,.wp-app .fw-vouch-search { border-color:#E3E6E1; }
+.wp-app .fw-vouch-filter-button,.wp-app .fw-vouch-chips>button { background:#F2F8F3;color:#003D14;border-color:#D7E5DA; }
+.wp-app .fw-vouch-tabs { border:0!important; }
+.wp-app .fw-vouch-tabs button[aria-current='page'] { border:0!important;background:#E7F0E9;border-radius:999px;color:#003D14; }
+.wp-app .fw-vouch-tabs button { border:0!important;border-radius:999px; }
+.wp-app .vouch-moderation-note { border:0!important;background:transparent;color:#596359; }
+.wp-app .vouch-page-jump { border:0!important; }
+.wp-app .vouch-page-jump a:hover { background:#E7F0E9;color:#003D14; }
+.wp-app .vouch-page-intro h1 { color:#003D14!important; }
+/* Quiet but legible profile and proof cards, inspired by the reference. */
+.wp-app .vouch-passport-overview { background:linear-gradient(145deg,#F2F8F3 0%,#FFFFFF 78%);
+  border:1px solid #E3E6E1;border-radius:28px;box-shadow:0 12px 35px #003d1409; }
+.wp-app .vouch-passport-overview .vouch-passport-stat {
+  background:rgba(255,255,255,.88); border:1px solid #DFE9E1; border-radius:18px; }
+.wp-app .vouch-passport-overview button:first-of-type { background:#003D14; }
+.wp-app .vouch-passport-overview button:first-of-type:hover { background:#0E5C2A; }
+.wp-app .vouch-passport-skill-grid { display:grid;gap:14px; }
+.wp-app .vouch-passport-skill-card {background:rgba(255,255,255,.94);
+  border:1px solid #E3E6E1;border-radius:22px;box-shadow:0 5px 16px #003d1408; }
+.wp-app .vouch-passport-skill-card:hover { border-color:#CADCCD; }
+.wp-app .vouch-passport-overview .h-2 .h-full { background:#0E5C2A; }
+/* Help remains available everywhere but unobtrusive. */
+.vouch-help-trigger { background:#003D14!important;box-shadow:0 8px 20px #003d1422!important;
+  font-family:ui-sans-serif,system-ui,sans-serif;line-height:1; }
+.vouch-help-trigger:hover { background:#0E5C2A!important; }
+@media(max-width:640px){
+ .wp-app .vouch-shell-logo { font-size:25px; }
+ .wp-app .vouch-shell-links button { padding:8px 10px; }
+ .wp-app .vouch-passport-overview { padding:20px!important; }
+ .wp-app .vouch-passport-stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .wp-app .vouch-passport-stats>div:last-child { grid-column:1/-1; }
+}
+@media(prefers-reduced-motion:reduce){.vouch-public .vouch-header,.wp-app>nav.vouch-shell { backdrop-filter:none; }}
+/* Modern Chromium/Edge + Safari use fully themeable native semantics; on older
+   browsers, the original select remains functional and keeps its OS picker. */
+@supports (appearance: base-select) {
+  .wp-app select:not([multiple]),.vouch-auth select:not([multiple]),
+  .vouch-public select:not([multiple]) { appearance:base-select; cursor:pointer; }
+  .wp-app select:not([multiple])::picker(select),
+  .vouch-auth select:not([multiple])::picker(select),
+  .vouch-public select:not([multiple])::picker(select) {
+    appearance:base-select; background:#FFFFFF; color:#141614;
+    border:1px solid #D8E3DB; border-radius:14px;box-shadow:0 14px 34px #003d141c;
+    padding:6px; margin-block:6px; max-height:min(360px,55vh);
+  }
+  .wp-app select option,.vouch-auth select option,.vouch-public select option {
+    border-radius:9px; padding:10px 12px; min-height:39px;
+    background:#FFFFFF; color:#141614;
+  }
+  .wp-app select option:hover,.wp-app select option:focus-visible,
+  .wp-app select option:checked,.vouch-auth select option:checked,
+  .vouch-public select option:checked {
+    background:#E7F0E9; color:#003D14;
+  }
+  .wp-app .fw-vouch-select select::picker-icon { display:none; }
+}

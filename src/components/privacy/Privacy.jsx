@@ -6,7 +6,7 @@ import { PassportShieldIcon } from '../layout/Header.jsx';
 
 
 
-const PIN_INPUT_CLASS = "w-full min-h-[48px] border border-[#e5e7dd] bg-white rounded-[14px] px-4 text-base tracking-[0.3em] outline-none focus:border-[#59684a] focus:ring-2 focus:ring-[#59684a]/30";
+const PIN_INPUT_CLASS = "w-full min-h-[48px] border border-[#E3E6E1] bg-white rounded-[14px] px-4 text-base tracking-[0.3em] outline-none focus:border-[#003D14] focus:ring-2 focus:ring-[#003D14]/30";
 
 const onlyDigits = (v) => String(v).replace(/\D/g, '').slice(0, 4);
 
@@ -20,7 +20,7 @@ export function LockScreen({ t, pin, onUnlock }) {
     if (value === pin) { onUnlock(); } else { setWrong(true); setValue(""); if (inputRef.current) inputRef.current.focus(); }
   };
   return (
-    <div className="min-h-screen bg-[#fcfbf8] font-sans text-[#1C1B1A] flex items-center justify-center px-5 py-12">
+    <div className="min-h-screen bg-[#FFFFFF] font-sans text-[#141614] flex items-center justify-center px-5 py-12">
       <form onSubmit={submit} className="w-full max-w-[360px] flex flex-col items-center text-center">
         <div className="flex items-center gap-2 mb-10">
           <PassportShieldIcon color="#C73E33" size={28} />
@@ -29,7 +29,7 @@ export function LockScreen({ t, pin, onUnlock }) {
         <label htmlFor="wp-lock-pin" className="text-lg font-semibold mb-3">{t('pv_lock_title')}</label>
         <input id="wp-lock-pin" ref={inputRef} type="password" inputMode="numeric" autoComplete="off" maxLength={4} value={value} onChange={e => { setValue(onlyDigits(e.target.value)); setWrong(false); }} className={`${PIN_INPUT_CLASS} text-center text-2xl mb-3`} aria-invalid={wrong} aria-describedby={wrong ? 'wp-lock-err' : undefined} />
         {wrong && <p id="wp-lock-err" role="alert" className="w-full text-[#AE332A] text-base mb-3 bg-[#FAF0EE] rounded-[12px] px-4 py-3">{t('pv_lock_wrong')}</p>}
-        <button type="submit" className="w-full bg-[#59684a] text-white rounded-full font-semibold text-lg hover:bg-[#415947] min-h-[52px] px-6 mt-2">{t('pv_lock_open')}</button>
+        <button type="submit" className="w-full bg-[#003D14] text-white rounded-full font-semibold text-lg hover:bg-[#0E5C2A] min-h-[52px] px-6 mt-2">{t('pv_lock_open')}</button>
       </form>
     </div>
   );
@@ -37,20 +37,20 @@ export function LockScreen({ t, pin, onUnlock }) {
 
 export function QuickHideScreen({ t, onReturn }) {
   return (
-    <div className="min-h-screen bg-[#fcfbf8] font-sans text-[#1C1B1A] flex flex-col items-center justify-center px-5 py-12">
-      <div className="w-full max-w-[340px] bg-white border border-[#e5e7dd] rounded-[20px] p-8 text-center">
-        <Sun size={48} strokeWidth={1.5} className="mx-auto mb-4 text-[#8A8580]" />
+    <div className="min-h-screen bg-[#FFFFFF] font-sans text-[#141614] flex flex-col items-center justify-center px-5 py-12">
+      <div className="w-full max-w-[340px] bg-white border border-[#E3E6E1] rounded-[20px] p-8 text-center">
+        <Sun size={48} strokeWidth={1.5} className="mx-auto mb-4 text-[#70776F]" />
         <h1 className="text-xl font-semibold mb-2">{t('pv_weather_title')}</h1>
-        <p className="text-2xl font-semibold text-[#4A4744]">{t('pv_weather_now')}</p>
+        <p className="text-2xl font-semibold text-[#475249]">{t('pv_weather_now')}</p>
       </div>
-      <button onClick={onReturn} className="mt-6 min-h-[44px] px-4 text-base text-[#8A8580] underline underline-offset-4 hover:text-[#4A4744]">{t('pv_weather_return')}</button>
+      <button onClick={onReturn} className="mt-6 min-h-[44px] px-4 text-base text-[#70776F] underline underline-offset-4 hover:text-[#475249]">{t('pv_weather_return')}</button>
     </div>
   );
 }
 
 export function ToggleKnob({ on }) {
   return (
-    <div className={`shrink-0 w-12 h-7 rounded-full flex items-center p-1 transition-colors ${on ? 'bg-[#59684a]' : 'bg-[#E3E0D9]'}`}>
+    <div className={`shrink-0 w-12 h-7 rounded-full flex items-center p-1 transition-colors ${on ? 'bg-[#003D14]' : 'bg-[#E3E6E1]'}`}>
       <div className={`w-5 h-5 bg-white rounded-full transition-transform ${on ? 'translate-x-5' : 'translate-x-0'}`}></div>
     </div>
   );
@@ -84,22 +84,22 @@ export function PrivacySection({ t, settings, setSettings, onSharedEnabled = () 
     reset();
   };
   const errBox = err ? <p role="alert" className="text-[#AE332A] text-base bg-[#FAF0EE] rounded-[12px] px-4 py-3">{err}</p> : null;
-  const secondaryBtn = "flex-1 border border-[#E3E0D9] bg-white text-[#1C1B1A] rounded-full font-semibold text-base hover:border-[#DDD8CE] min-h-[48px] px-5";
-  const primaryBtn = "flex-1 bg-[#59684a] text-white rounded-full font-semibold text-base hover:bg-[#415947] min-h-[48px] px-5";
+  const secondaryBtn = "flex-1 border border-[#E3E6E1] bg-white text-[#141614] rounded-full font-semibold text-base hover:border-[#DDD8CE] min-h-[48px] px-5";
+  const primaryBtn = "flex-1 bg-[#003D14] text-white rounded-full font-semibold text-base hover:bg-[#0E5C2A] min-h-[48px] px-5";
 
   return (
-    <div className="bg-white border border-[#e5e7dd] rounded-[20px] p-6 sm:p-6">
+    <div className="bg-white border border-[#E3E6E1] rounded-[20px] p-6 sm:p-6">
       <h2 className="font-semibold text-[22px] mb-5">{t('pv_title')}</h2>
       <div className="space-y-3">
         {/* Shared Device Mode */}
-        <div className="border border-[#e5e7dd] rounded-[14px] bg-white">
+        <div className="border border-[#E3E6E1] rounded-[14px] bg-white">
           <button type="button" onClick={toggleShared} role="switch" aria-checked={settings.shared} aria-describedby="pv-shared-desc" className="w-full flex items-center justify-between p-5 pb-3 min-h-[48px] text-left rounded-[14px]">
             <span className="text-base font-medium pr-4">{t('pv_shared_label')}</span>
             <ToggleKnob on={settings.shared} />
           </button>
-          <p id="pv-shared-desc" className="px-5 pb-5 text-base text-[#4A4744]">{t('pv_shared_desc')}</p>
+          <p id="pv-shared-desc" className="px-5 pb-5 text-base text-[#475249]">{t('pv_shared_desc')}</p>
           {mode === 'setup' && (
-            <form onSubmit={savePin} className="px-5 pb-5 space-y-4 border-t border-[#e5e7dd] pt-5">
+            <form onSubmit={savePin} className="px-5 pb-5 space-y-4 border-t border-[#E3E6E1] pt-5">
               <div>
                 <label htmlFor="pv-pin-1" className="block text-base font-semibold mb-2">{t('pv_pin_create')}</label>
                 <input id="pv-pin-1" type="password" inputMode="numeric" autoComplete="off" maxLength={4} value={p1} onChange={e => { setP1(onlyDigits(e.target.value)); setErr(""); }} className={PIN_INPUT_CLASS} />
@@ -116,7 +116,7 @@ export function PrivacySection({ t, settings, setSettings, onSharedEnabled = () 
             </form>
           )}
           {mode === 'off' && (
-            <form onSubmit={turnOff} className="px-5 pb-5 space-y-4 border-t border-[#e5e7dd] pt-5">
+            <form onSubmit={turnOff} className="px-5 pb-5 space-y-4 border-t border-[#E3E6E1] pt-5">
               <div>
                 <label htmlFor="pv-pin-off" className="block text-base font-semibold mb-2">{t('pv_lock_title')}</label>
                 <input id="pv-pin-off" type="password" inputMode="numeric" autoComplete="off" maxLength={4} value={offPin} onChange={e => { setOffPin(onlyDigits(e.target.value)); setErr(""); }} className={PIN_INPUT_CLASS} />
@@ -131,21 +131,21 @@ export function PrivacySection({ t, settings, setSettings, onSharedEnabled = () 
         </div>
 
         {/* Low-Data / Simple Mode */}
-        <div className="border border-[#e5e7dd] rounded-[14px] bg-white">
+        <div className="border border-[#E3E6E1] rounded-[14px] bg-white">
           <button type="button" onClick={() => setSettings({ ...settings, simple: !settings.simple })} role="switch" aria-checked={settings.simple} aria-describedby="pv-simple-desc" className="w-full flex items-center justify-between p-5 pb-3 min-h-[48px] text-left rounded-[14px]">
             <span className="text-base font-medium pr-4">{t('pv_simple_label')}</span>
             <ToggleKnob on={settings.simple} />
           </button>
-          <p id="pv-simple-desc" className="px-5 pb-5 text-base text-[#4A4744]">{t('pv_simple_desc')}</p>
+          <p id="pv-simple-desc" className="px-5 pb-5 text-base text-[#475249]">{t('pv_simple_desc')}</p>
         </div>
 
         {/* Low-Data Mode (real behaviour: compact text-first job cards) */}
-        <div className="border border-[#e5e7dd] rounded-[14px] bg-white">
+        <div className="border border-[#E3E6E1] rounded-[14px] bg-white">
           <button type="button" onClick={() => setSettings({ ...settings, lowdata: !settings.lowdata })} role="switch" aria-checked={!!settings.lowdata} aria-describedby="pv-lowdata-desc" className="w-full flex items-center justify-between p-5 pb-3 min-h-[48px] text-left rounded-[14px]">
             <span className="text-base font-medium pr-4">{t('ld_label')}</span>
             <ToggleKnob on={!!settings.lowdata} />
           </button>
-          <p id="pv-lowdata-desc" className="px-5 pb-5 text-base text-[#4A4744]">{t('ld_desc')}</p>
+          <p id="pv-lowdata-desc" className="px-5 pb-5 text-base text-[#475249]">{t('ld_desc')}</p>
         </div>
       </div>
     </div>

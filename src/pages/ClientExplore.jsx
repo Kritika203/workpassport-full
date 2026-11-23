@@ -101,16 +101,16 @@ export function ClientExplore({ t, lang, navTo, showToast, connected = false, cl
     finally { setBusy(false); }
   };
 
-  const chip = (on) => `min-h-[38px] px-3 rounded-full border text-[13px] font-semibold ${on ? 'bg-[#FAF0EE] border-[#59684a] text-[#AE332A]' : 'bg-white border-[#e5e7dd] text-[#4A4744]'}`;
+  const chip = (on) => `min-h-[38px] px-3 rounded-full border text-[13px] font-semibold ${on ? 'bg-[#FAF0EE] border-[#003D14] text-[#AE332A]' : 'bg-white border-[#E3E6E1] text-[#475249]'}`;
 
   return (
     <div className="max-w-3xl mx-auto space-y-5">
       <div>
         <h1 className="text-[28px] sm:text-[30px] font-semibold mb-1">{ne ? 'फ्रीलान्सरहरू खोज्नुहोस्' : 'Explore Freelancers'}</h1>
-        <p className="text-base text-[#4A4744]">{ne
+        <p className="text-base text-[#475249]">{ne
           ? 'हरेक कार्ड उनको Vouch को सार्वजनिक सारांश हो। मन परेकालाई छनोट सूचीमा राख्नुहोस् वा तपाईंको लाइभ काममा आवेदन दिन निम्तो दिनुहोस्।'
           : 'Every card is the public summary from her Vouch. Save the ones you like to your shortlist, or invite them to apply for a live job.'}</p>
-        {!connected && <p className="text-sm text-[#6E6963] mt-1">{ne ? 'डेमो सूची: नमुना फ्रीलान्सरहरू मात्र।' : 'Demo directory: sample freelancers only.'}</p>}
+        {!connected && <p className="text-sm text-[#687169] mt-1">{ne ? 'डेमो सूची: नमुना फ्रीलान्सरहरू मात्र।' : 'Demo directory: sample freelancers only.'}</p>}
       </div>
 
       <div className={`${CL_CARD} space-y-3`}>
@@ -132,14 +132,14 @@ export function ClientExplore({ t, lang, navTo, showToast, connected = false, cl
           </div>
         </div>
         <label className="flex items-center gap-2 text-base cursor-pointer">
-          <input type="checkbox" className="w-4 h-4 accent-[#59684a]" checked={trainingOnly} onChange={e => setTrainingOnly(e.target.checked)} />
+          <input type="checkbox" className="w-4 h-4 accent-[#003D14]" checked={trainingOnly} onChange={e => setTrainingOnly(e.target.checked)} />
           {ne ? 'तालिम लिएका मात्र' : 'With training only'}
         </label>
-        {shortlisted.length > 0 && <p className="text-sm text-[#6E6963]">{ne ? 'तपाईंको छनोट सूचीमा' : 'In your shortlist'}: <strong className="text-[#1C1B1A]">{digits(shortlisted.length)}</strong></p>}
+        {shortlisted.length > 0 && <p className="text-sm text-[#687169]">{ne ? 'तपाईंको छनोट सूचीमा' : 'In your shortlist'}: <strong className="text-[#141614]">{digits(shortlisted.length)}</strong></p>}
       </div>
 
       {error && <p role="alert" className="bg-[#FAF0EE] border border-[#F3E1DD] rounded-[14px] p-4 text-base text-[#AE332A]">{error}</p>}
-      {rows.length === 0 && !error && <p className="text-base text-[#4A4744] bg-white border border-[#e5e7dd] rounded-[16px] p-5">{ne ? 'यी फिल्टरसँग मिल्ने फ्रीलान्सर भेटिएनन्।' : 'No freelancers match these filters.'}</p>}
+      {rows.length === 0 && !error && <p className="text-base text-[#475249] bg-white border border-[#E3E6E1] rounded-[16px] p-5">{ne ? 'यी फिल्टरसँग मिल्ने फ्रीलान्सर भेटिएनन्।' : 'No freelancers match these filters.'}</p>}
 
       {rows.map(row => {
         const saved = shortlisted.includes(row.user_id);
@@ -149,11 +149,11 @@ export function ClientExplore({ t, lang, navTo, showToast, connected = false, cl
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <div className="font-semibold text-xl break-words">{row.name}</div>
-                {row.headline && <div className="text-base text-[#4A4744]">{row.headline}</div>}
-                <div className="text-base text-[#4A4744] flex items-center gap-1.5"><MapPin size={17} className="text-[#8A8580]" /> {row.district || (ne ? 'स्थान दिएको छैन' : 'Location not given')}</div>
+                {row.headline && <div className="text-base text-[#475249]">{row.headline}</div>}
+                <div className="text-base text-[#475249] flex items-center gap-1.5"><MapPin size={17} className="text-[#70776F]" /> {row.district || (ne ? 'स्थान दिएको छैन' : 'Location not given')}</div>
               </div>
               <button onClick={() => toggleShortlist(row)} disabled={busy} aria-pressed={saved}
-                className={`shrink-0 min-h-[44px] px-4 rounded-full border font-semibold text-sm disabled:opacity-50 ${saved ? 'bg-[#FAF0EE] border-[#59684a] text-[#AE332A]' : 'bg-white border-[#E3E0D9] hover:border-[#DDD8CE]'}`}>
+                className={`shrink-0 min-h-[44px] px-4 rounded-full border font-semibold text-sm disabled:opacity-50 ${saved ? 'bg-[#FAF0EE] border-[#003D14] text-[#AE332A]' : 'bg-white border-[#E3E6E1] hover:border-[#DDD8CE]'}`}>
                 {saved ? (ne ? 'छनोट सूचीमा छ' : 'Shortlisted') : (ne ? 'छनोट सूचीमा राख्नुहोस्' : 'Shortlist')}
               </button>
             </div>
@@ -161,34 +161,34 @@ export function ClientExplore({ t, lang, navTo, showToast, connected = false, cl
               {row.skills.map(sk => (
                 <li key={sk.name} className="flex items-center justify-between gap-2 text-base">
                   <span><strong>{sk.name}</strong></span>
-                  <span className="bg-[#F0EEE9] border border-[#e5e7dd] rounded-full px-3 py-0.5 text-[13px] font-semibold">{PROOF_LABEL[sk.proof][ne ? 1 : 0]}</span>
+                  <span className="bg-[#E7F0E9] border border-[#E3E6E1] rounded-full px-3 py-0.5 text-[13px] font-semibold">{PROOF_LABEL[sk.proof][ne ? 1 : 0]}</span>
                 </li>
               ))}
             </ul>
-            <p className="text-sm text-[#6E6963] mb-4">
+            <p className="text-sm text-[#687169] mb-4">
               {ne ? 'प्रमाणित प्रमाण' : 'Verified proofs'}: {digits(row.proofs)} · {ne ? 'पूरा गरेका काम' : 'Completed jobs'}: {digits(row.completed_jobs)}
               {row.availability ? ` · ${row.availability}` : ''}
             </p>
             {openId === row.user_id && (
-              <div className="rounded-[14px] border border-[#e5e7dd] bg-[#fcfbf8] p-4 mb-4 space-y-2">
-                <p className="font-semibold text-base flex items-center gap-2"><BadgeCheck size={18} className="text-[#59684a]" /> Vouch — {row.name}</p>
+              <div className="rounded-[14px] border border-[#E3E6E1] bg-[#FFFFFF] p-4 mb-4 space-y-2">
+                <p className="font-semibold text-base flex items-center gap-2"><BadgeCheck size={18} className="text-[#003D14]" /> Vouch — {row.name}</p>
                 {row.training.length > 0
-                  ? <p className="text-sm text-[#4A4744]">{ne ? 'तालिम' : 'Training'}: {row.training.map(e => `${e.title}${e.institution ? ` (${e.institution})` : ''}`).join(', ')}</p>
-                  : <p className="text-sm text-[#6E6963]">{ne ? 'तालिमको विवरण राखिएको छैन।' : 'No training listed yet.'}</p>}
-                <p className="text-sm text-[#6E6963]">{ne ? 'यो सारांश उनको Vouch बाट आएको हो। सम्पर्क विवरण कुराकानी सुरु भएपछि मात्र देखिन्छ।' : 'This summary comes from her Vouch. Contact details appear only after you start a conversation.'}</p>
+                  ? <p className="text-sm text-[#475249]">{ne ? 'तालिम' : 'Training'}: {row.training.map(e => `${e.title}${e.institution ? ` (${e.institution})` : ''}`).join(', ')}</p>
+                  : <p className="text-sm text-[#687169]">{ne ? 'तालिमको विवरण राखिएको छैन।' : 'No training listed yet.'}</p>}
+                <p className="text-sm text-[#687169]">{ne ? 'यो सारांश उनको Vouch बाट आएको हो। सम्पर्क विवरण कुराकानी सुरु भएपछि मात्र देखिन्छ।' : 'This summary comes from her Vouch. Contact details appear only after you start a conversation.'}</p>
               </div>
             )}
             <div className="flex flex-col sm:flex-row gap-2">
-              <button onClick={() => setOpenId(openId === row.user_id ? null : row.user_id)} className="flex-1 border border-[#E3E0D9] bg-white rounded-full px-4 font-semibold text-base hover:border-[#DDD8CE] min-h-[48px]">
+              <button onClick={() => setOpenId(openId === row.user_id ? null : row.user_id)} className="flex-1 border border-[#E3E6E1] bg-white rounded-full px-4 font-semibold text-base hover:border-[#DDD8CE] min-h-[48px]">
                 {ne ? 'Vouch हेर्नुहोस्' : 'View Vouch'}
               </button>
               <select aria-label={ne ? 'निम्तो दिने काम' : 'Job to invite to'} value={jobVal}
                 onChange={e => setInviteJob(prev => ({ ...prev, [row.user_id]: connected ? Number(e.target.value) : e.target.value }))}
-                className="flex-1 rounded-full border border-[#E3E0D9] bg-white px-4 min-h-[48px] text-base" disabled={!liveJobs.length}>
+                className="flex-1 rounded-full border border-[#E3E6E1] bg-white px-4 min-h-[48px] text-base" disabled={!liveJobs.length}>
                 {liveJobs.length === 0 && <option value="">{ne ? 'लाइभ काम छैन' : 'No live job'}</option>}
                 {liveJobs.map(j => <option key={j.id} value={connected ? j.apiId : j.id}>{j.title}</option>)}
               </select>
-              <button onClick={() => invite(row)} disabled={busy || !liveJobs.length} className="flex-1 bg-[#59684a] text-white rounded-full px-4 font-semibold text-base hover:bg-[#415947] min-h-[48px] disabled:opacity-50">
+              <button onClick={() => invite(row)} disabled={busy || !liveJobs.length} className="flex-1 bg-[#003D14] text-white rounded-full px-4 font-semibold text-base hover:bg-[#0E5C2A] min-h-[48px] disabled:opacity-50">
                 {ne ? 'आवेदन दिन निम्तो दिनुहोस्' : 'Invite to Apply'}
               </button>
             </div>

@@ -38,9 +38,9 @@ const COPY = {
 
 const LOCAL_KEY = 'wp_payment_methods';
 const EMPTY = { kind: 'esewa', holder_name: '', mobile: '', bank_name: '', account_number: '', branch: '', is_preferred: false };
-const field = 'w-full mt-1 px-4 border border-[#e5e7dd] rounded-[12px] text-base min-h-[44px] bg-white focus:outline-none focus:border-[#59684a]';
-const redBtn = 'px-5 rounded-full bg-[#59684a] text-white font-semibold min-h-[44px] hover:bg-[#415947] disabled:opacity-50';
-const ghostBtn = 'px-4 rounded-full border border-[#e5e7dd] bg-white font-semibold min-h-[40px] hover:border-[#DDD8CE] inline-flex items-center gap-1.5';
+const field = 'w-full mt-1 px-4 border border-[#E3E6E1] rounded-[12px] text-base min-h-[44px] bg-white focus:outline-none focus:border-[#003D14]';
+const redBtn = 'px-5 rounded-full bg-[#003D14] text-white font-semibold min-h-[44px] hover:bg-[#0E5C2A] disabled:opacity-50';
+const ghostBtn = 'px-4 rounded-full border border-[#E3E6E1] bg-white font-semibold min-h-[40px] hover:border-[#DDD8CE] inline-flex items-center gap-1.5';
 
 export function readLocalMethods() {
   try { return JSON.parse(localStorage.getItem(LOCAL_KEY) || '[]'); } catch { return []; }
@@ -108,16 +108,16 @@ export function PaymentSettings({ lang, showToast }) {
     : `${s.kinds[row.kind]} · ${row.mobile}`;
 
   return (
-    <section className="rounded-[20px] border border-[#e5e7dd] bg-white p-5 space-y-4">
-      <h3 className="font-semibold text-lg flex items-center gap-2"><CreditCard size={22} className="text-[#59684a]" /> {s.title}</h3>
-      <p className="text-base text-[#4A4744]">{s.intro}</p>
+    <section className="rounded-[20px] border border-[#E3E6E1] bg-white p-5 space-y-4">
+      <h3 className="font-semibold text-lg flex items-center gap-2"><CreditCard size={22} className="text-[#003D14]" /> {s.title}</h3>
+      <p className="text-base text-[#475249]">{s.intro}</p>
       <p className="text-sm font-semibold text-[#AE332A]">{s.never}</p>
       {mode === 'local' && <p className="text-sm text-[#6B6561]">{s.demoNote}</p>}
       {error && <p className="text-sm font-semibold text-[#AE332A]">{error}</p>}
       {!methods.length && !form && <p className="text-base text-[#6B6561]">{s.none}</p>}
       <div className="space-y-2">
         {methods.map(row => (
-          <div key={row.id} className="flex flex-wrap items-center gap-2 rounded-[12px] bg-[#FAFAF9] border border-[#e5e7dd] px-4 py-3">
+          <div key={row.id} className="flex flex-wrap items-center gap-2 rounded-[12px] bg-[#FAFAF9] border border-[#E3E6E1] px-4 py-3">
             <div className="flex-1 min-w-[200px]">
               <div className="font-semibold">{row.holder_name} <span className="text-[#6B6561] font-normal">· {summary(row)}</span></div>
             </div>
@@ -129,7 +129,7 @@ export function PaymentSettings({ lang, showToast }) {
       </div>
       {!form && <button type="button" className={redBtn} onClick={() => setForm({ ...EMPTY })}>{s.add}</button>}
       {form && (
-        <form onSubmit={submit} className="space-y-3 rounded-[12px] border border-[#e5e7dd] p-4">
+        <form onSubmit={submit} className="space-y-3 rounded-[12px] border border-[#E3E6E1] p-4">
           <label className="block text-base font-semibold">{s.kind}
             <select value={form.kind} onChange={e => setForm({ ...form, kind: e.target.value })} className={field}>
               <option value="esewa">eSewa</option>
@@ -156,7 +156,7 @@ export function PaymentSettings({ lang, showToast }) {
             </label>
           </>)}
           <label className="flex items-center gap-2 text-base">
-            <input type="checkbox" checked={!!form.is_preferred} onChange={e => setForm({ ...form, is_preferred: e.target.checked })} className="w-5 h-5 accent-[#59684a]" />
+            <input type="checkbox" checked={!!form.is_preferred} onChange={e => setForm({ ...form, is_preferred: e.target.checked })} className="w-5 h-5 accent-[#003D14]" />
             {s.preferred}
           </label>
           <div className="flex gap-2">

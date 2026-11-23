@@ -88,21 +88,21 @@ export function ChatCheckModal({ t, lang, user, navTo, showToast, setEvidence, i
   const ShieldVerdictIcon = res && res.verdict === 'danger' ? ShieldAlert : AlertTriangle;
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#1C1B1A]/40 flex items-end sm:items-center justify-center sm:p-4" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-      <div role="dialog" aria-modal="true" aria-labelledby="chat-check-title" className="bg-white w-full sm:max-w-[480px] max-h-[92vh] sm:max-h-[88vh] overflow-y-auto overflow-x-hidden rounded-t-[20px] sm:rounded-[20px] border border-[#e5e7dd]">
-        <div className="sticky top-0 bg-white z-10 flex items-center justify-between gap-3 px-5 sm:px-6 pt-4 pb-3 border-b border-[#e5e7dd]">
-          <h2 id="chat-check-title" className="text-xl font-semibold flex items-center gap-2 min-w-0"><Shield size={22} className="shrink-0 text-[#59684a]" /> <span>{t('chat_modal_title')}</span></h2>
-          <button ref={closeRef} onClick={onClose} aria-label={t('chat_close')} className="shrink-0 w-12 h-12 -mr-2 rounded-full flex items-center justify-center text-[#4A4744] hover:bg-[#F0EEE9]"><X size={22} /></button>
+    <div className="fixed inset-0 z-50 bg-[#141614]/40 flex items-end sm:items-center justify-center sm:p-4" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+      <div role="dialog" aria-modal="true" aria-labelledby="chat-check-title" className="bg-white w-full sm:max-w-[480px] max-h-[92vh] sm:max-h-[88vh] overflow-y-auto overflow-x-hidden rounded-t-[20px] sm:rounded-[20px] border border-[#E3E6E1]">
+        <div className="sticky top-0 bg-white z-10 flex items-center justify-between gap-3 px-5 sm:px-6 pt-4 pb-3 border-b border-[#E3E6E1]">
+          <h2 id="chat-check-title" className="text-xl font-semibold flex items-center gap-2 min-w-0"><Shield size={22} className="shrink-0 text-[#003D14]" /> <span>{t('chat_modal_title')}</span></h2>
+          <button ref={closeRef} onClick={onClose} aria-label={t('chat_close')} className="shrink-0 w-12 h-12 -mr-2 rounded-full flex items-center justify-center text-[#475249] hover:bg-[#E7F0E9]"><X size={22} /></button>
         </div>
 
         <div className="p-5 sm:p-6 space-y-5">
           <div>
-            <textarea ref={textRef} value={text} onChange={e => { setText(e.target.value); setEmptyErr(false); }} aria-label={t('chat_modal_title')} placeholder={t('sf_placeholder')} className="w-full min-h-[104px] border border-[#e5e7dd] bg-white rounded-[14px] px-4 py-3 text-base outline-none focus:border-[#59684a] focus:ring-2 focus:ring-[#59684a]/30 mb-3" />
+            <textarea ref={textRef} value={text} onChange={e => { setText(e.target.value); setEmptyErr(false); }} aria-label={t('chat_modal_title')} placeholder={t('sf_placeholder')} className="w-full min-h-[104px] border border-[#E3E6E1] bg-white rounded-[14px] px-4 py-3 text-base outline-none focus:border-[#003D14] focus:ring-2 focus:ring-[#003D14]/30 mb-3" />
             {emptyErr && <p role="alert" className="text-[#AE332A] text-sm mb-3 flex items-start gap-2 bg-[#FAF0EE] p-3 rounded-[12px]"><ShieldAlert size={18} className="shrink-0 mt-0.5" /> <span>{t('err_paste_first')}</span></p>}
-            <button onClick={run} className="w-full bg-[#59684a] text-white rounded-full font-semibold text-base hover:bg-[#415947] min-h-[52px] px-6">{t('chat_check_now')}</button>
+            <button onClick={run} className="w-full bg-[#003D14] text-white rounded-full font-semibold text-base hover:bg-[#0E5C2A] min-h-[52px] px-6">{t('chat_check_now')}</button>
             <div className="flex flex-wrap gap-2 mt-3">
               {chips.map(c => (
-                <button key={c.label} onClick={() => fill(c.text)} className="border border-[#E3E0D9] bg-white text-[#1C1B1A] rounded-full px-4 font-semibold text-sm hover:border-[#DDD8CE] min-h-[44px]">{t(c.label)}</button>
+                <button key={c.label} onClick={() => fill(c.text)} className="border border-[#E3E6E1] bg-white text-[#141614] rounded-full px-4 font-semibold text-sm hover:border-[#DDD8CE] min-h-[44px]">{t(c.label)}</button>
               ))}
             </div>
           </div>
@@ -111,11 +111,11 @@ export function ChatCheckModal({ t, lang, user, navTo, showToast, setEvidence, i
             <div ref={resultRef} className="space-y-5 scroll-mt-[76px]">
               {hasSafety && (
                 <div className="space-y-4">
-                  <div className="bg-[#FAF0EE] border border-[#59684a] rounded-[20px] p-4 flex items-start gap-3">
-                    <ShieldAlert size={32} className="shrink-0 text-[#59684a]" />
+                  <div className="bg-[#FAF0EE] border border-[#003D14] rounded-[20px] p-4 flex items-start gap-3">
+                    <ShieldAlert size={32} className="shrink-0 text-[#003D14]" />
                     <div>
                       <h3 className="text-lg leading-snug font-semibold mb-1">{t('sf_cross_title')}</h3>
-                      <p className="text-base text-[#4A4744]">{t('sf_cross_line')}</p>
+                      <p className="text-base text-[#475249]">{t('sf_cross_line')}</p>
                     </div>
                   </div>
                   <div className="space-y-3">
@@ -123,12 +123,12 @@ export function ChatCheckModal({ t, lang, user, navTo, showToast, setEvidence, i
                       const ruleKey = SAFETY_RULE_OF[id];
                       const off = ruleKey && !rules[ruleKey];
                       return (
-                        <div key={id} className="bg-white border border-[#e5e7dd] rounded-[14px] p-4">
+                        <div key={id} className="bg-white border border-[#E3E6E1] rounded-[14px] p-4">
                           <div className="font-semibold text-base mb-1 flex items-start gap-2"><AlertTriangle size={18} className="shrink-0 mt-1" /> <span>{SAFETY_DATA[id].name[lang]}</span></div>
-                          <p className="text-base text-[#4A4744] mb-2">{SAFETY_DATA[id].expl[lang]}</p>
-                          <p className="text-sm font-semibold text-[#1C1B1A]">
+                          <p className="text-base text-[#475249] mb-2">{SAFETY_DATA[id].expl[lang]}</p>
+                          <p className="text-sm font-semibold text-[#141614]">
                             {ruleKey ? fmt(t('sf_breaks'), { rule: t('rule_' + ruleKey) }) : t('sf_no_one')}
-                            {off && <span className="font-normal text-[#8A8580]">{t('sf_off_note')}</span>}
+                            {off && <span className="font-normal text-[#70776F]">{t('sf_off_note')}</span>}
                           </p>
                         </div>
                       );
@@ -138,40 +138,40 @@ export function ChatCheckModal({ t, lang, user, navTo, showToast, setEvidence, i
                     <h3 className="font-semibold text-lg mb-3">{t('sf_reply_title')}</h3>
                     <div className="space-y-3">
                       {[...res.cats.map(id => ({ id, label: SAFETY_DATA[id].name[lang], reply: SAFETY_DATA[id].reply })), { id: 'exit', label: t('sf_exit_label'), reply: SAFETY_EXIT }].map(r => (
-                        <div key={r.id} className="bg-white border border-[#e5e7dd] rounded-[14px] p-4">
-                          <div className="text-sm font-semibold text-[#8A8580] mb-2">{r.label}</div>
-                          <p className="text-base text-[#1C1B1A] mb-2">{r.reply[lang]}</p>
-                          <p className="text-sm text-[#8A8580] mb-3">{r.reply[other]}</p>
-                          <button onClick={() => copy(r.reply[lang])} className="border border-[#E3E0D9] bg-white rounded-full px-6 font-semibold text-base hover:border-[#DDD8CE] min-h-[48px]">{t('sh_copy')}</button>
+                        <div key={r.id} className="bg-white border border-[#E3E6E1] rounded-[14px] p-4">
+                          <div className="text-sm font-semibold text-[#70776F] mb-2">{r.label}</div>
+                          <p className="text-base text-[#141614] mb-2">{r.reply[lang]}</p>
+                          <p className="text-sm text-[#70776F] mb-3">{r.reply[other]}</p>
+                          <button onClick={() => copy(r.reply[lang])} className="border border-[#E3E6E1] bg-white rounded-full px-6 font-semibold text-base hover:border-[#DDD8CE] min-h-[48px]">{t('sh_copy')}</button>
                         </div>
                       ))}
                     </div>
                   </div>
-                  <button onClick={saveProof} disabled={saved} className={`w-full rounded-full font-semibold text-base min-h-[52px] px-6 ${saved ? 'bg-[#F0EEE9] text-[#4A4744]' : 'bg-[#59684a] text-white hover:bg-[#415947]'}`}>{saved ? t('sf_saved_toast') : t('sf_save_proof')}</button>
+                  <button onClick={saveProof} disabled={saved} className={`w-full rounded-full font-semibold text-base min-h-[52px] px-6 ${saved ? 'bg-[#E7F0E9] text-[#475249]' : 'bg-[#003D14] text-white hover:bg-[#0E5C2A]'}`}>{saved ? t('sf_saved_toast') : t('sf_save_proof')}</button>
                 </div>
               )}
 
               {hasShield && (
                 <div className="space-y-4">
-                  <div className={`rounded-[20px] border p-4 flex items-start gap-3 ${res.verdict === 'danger' ? 'bg-[#FAF0EE] border-[#59684a]' : 'bg-white border-[#e5e7dd]'}`}>
-                    <ShieldVerdictIcon size={32} className={`shrink-0 ${res.verdict === 'danger' ? 'text-[#59684a]' : 'text-[#1C1B1A]'}`} />
+                  <div className={`rounded-[20px] border p-4 flex items-start gap-3 ${res.verdict === 'danger' ? 'bg-[#FAF0EE] border-[#003D14]' : 'bg-white border-[#E3E6E1]'}`}>
+                    <ShieldVerdictIcon size={32} className={`shrink-0 ${res.verdict === 'danger' ? 'text-[#003D14]' : 'text-[#141614]'}`} />
                     <div>
                       <h3 className="text-lg leading-snug font-semibold">{t('sh_v_' + res.verdict)}</h3>
                       {res.verdict === 'danger' && <p className="text-base font-semibold text-[#AE332A] mt-2">{t('chat_danger_line')}</p>}
                     </div>
                   </div>
-                  <div className="bg-white border border-[#e5e7dd] rounded-[14px] p-4 space-y-3">
-                    {res.red.map(id => <div key={id} className="flex items-start gap-3 text-base"><ShieldAlert size={20} className="shrink-0 mt-0.5 text-[#59684a]" /> <span>{t('sh_f_' + id)}</span></div>)}
-                    {res.yellow.map(id => <div key={id} className="flex items-start gap-3 text-base"><AlertTriangle size={20} className="shrink-0 mt-0.5 text-[#1C1B1A]" /> <span>{t('sh_f_' + id)}</span></div>)}
+                  <div className="bg-white border border-[#E3E6E1] rounded-[14px] p-4 space-y-3">
+                    {res.red.map(id => <div key={id} className="flex items-start gap-3 text-base"><ShieldAlert size={20} className="shrink-0 mt-0.5 text-[#003D14]" /> <span>{t('sh_f_' + id)}</span></div>)}
+                    {res.yellow.map(id => <div key={id} className="flex items-start gap-3 text-base"><AlertTriangle size={20} className="shrink-0 mt-0.5 text-[#141614]" /> <span>{t('sh_f_' + id)}</span></div>)}
                   </div>
                   {questions.length > 0 && (
                     <div>
                       <h3 className="font-semibold text-lg mb-3">{t('sh_q_title')}</h3>
                       <div className="space-y-3">
                         {questions.map(id => (
-                          <div key={id} className="bg-white border border-[#e5e7dd] rounded-[14px] p-4">
+                          <div key={id} className="bg-white border border-[#E3E6E1] rounded-[14px] p-4">
                             <p className="text-base mb-3">{t('sh_q_' + id)}</p>
-                            <button onClick={() => copy(t('sh_q_' + id))} className="border border-[#E3E0D9] bg-white rounded-full px-6 font-semibold text-base hover:border-[#DDD8CE] min-h-[48px]">{t('sh_copy')}</button>
+                            <button onClick={() => copy(t('sh_q_' + id))} className="border border-[#E3E6E1] bg-white rounded-full px-6 font-semibold text-base hover:border-[#DDD8CE] min-h-[48px]">{t('sh_copy')}</button>
                           </div>
                         ))}
                       </div>
@@ -181,60 +181,60 @@ export function ChatCheckModal({ t, lang, user, navTo, showToast, setEvidence, i
               )}
 
               {calm && (
-                <div className="bg-white border border-[#e5e7dd] rounded-[20px] p-4 flex items-start gap-3">
-                  <ShieldCheck size={32} className="shrink-0 text-[#1C1B1A]" />
+                <div className="bg-white border border-[#E3E6E1] rounded-[20px] p-4 flex items-start gap-3">
+                  <ShieldCheck size={32} className="shrink-0 text-[#141614]" />
                   <div>
                     <h3 className="text-lg leading-snug font-semibold mb-1">{t('chat_calm_title')}</h3>
-                    <p className="text-base text-[#4A4744]">{t('chat_calm_line')}</p>
+                    <p className="text-base text-[#475249]">{t('chat_calm_line')}</p>
                   </div>
                 </div>
               )}
 
               {job && scope && (
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold flex items-center gap-2"><ClipboardList size={22} className="shrink-0 text-[#59684a]" /> <span>{t('sc_title')}</span></h3>
+                  <h3 className="text-lg font-semibold flex items-center gap-2"><ClipboardList size={22} className="shrink-0 text-[#003D14]" /> <span>{t('sc_title')}</span></h3>
                   {scope.flagged ? (
-                    <div className="bg-[#FAF0EE] border border-[#59684a] rounded-[20px] p-4 space-y-2">
-                      <p className="text-base font-semibold text-[#1C1B1A]">{t('sc_flag')}</p>
-                      <p className="text-base text-[#4A4744]">{t('sc_reason')} {scope.matched.map((p, i) => <span key={p}>{i > 0 ? ', ' : ''}<span className="font-semibold text-[#1C1B1A]">“{p}”</span></span>)}</p>
+                    <div className="bg-[#FAF0EE] border border-[#003D14] rounded-[20px] p-4 space-y-2">
+                      <p className="text-base font-semibold text-[#141614]">{t('sc_flag')}</p>
+                      <p className="text-base text-[#475249]">{t('sc_reason')} {scope.matched.map((p, i) => <span key={p}>{i > 0 ? ', ' : ''}<span className="font-semibold text-[#141614]">“{p}”</span></span>)}</p>
                     </div>
                   ) : (
-                    <div className="bg-white border border-[#e5e7dd] rounded-[20px] p-4">
-                      <p className="text-base text-[#4A4744]">{t('sc_ok')}</p>
+                    <div className="bg-white border border-[#E3E6E1] rounded-[20px] p-4">
+                      <p className="text-base text-[#475249]">{t('sc_ok')}</p>
                     </div>
                   )}
-                  <div className="bg-white border border-[#e5e7dd] rounded-[14px] p-4">
-                    <div className="text-sm font-semibold text-[#6E6963] mb-2">{t('sc_agreed')}</div>
+                  <div className="bg-white border border-[#E3E6E1] rounded-[14px] p-4">
+                    <div className="text-sm font-semibold text-[#687169] mb-2">{t('sc_agreed')}</div>
                     <ul className="space-y-1.5">
-                      {agreed.map((x, i) => <li key={i} className="flex items-start gap-2 text-base text-[#4A4744]"><span className="mt-[9px] w-1.5 h-1.5 rounded-full bg-[#8A8580] shrink-0" /><span>{x}</span></li>)}
+                      {agreed.map((x, i) => <li key={i} className="flex items-start gap-2 text-base text-[#475249]"><span className="mt-[9px] w-1.5 h-1.5 rounded-full bg-[#70776F] shrink-0" /><span>{x}</span></li>)}
                     </ul>
                   </div>
                   {scope.flagged && (
                     <div className="space-y-3">
                       {[{ id: 'accept', h: t('sc_accept_h'), b: t('sc_accept_b') }, { id: 'ask', h: t('sc_ask_h'), b: t('sc_ask_b') }].map(r => (
-                        <div key={r.id} className="bg-white border border-[#e5e7dd] rounded-[14px] p-4">
-                          <div className="text-sm font-semibold text-[#8A8580] mb-2">{r.h}</div>
-                          <p className="text-base text-[#1C1B1A] mb-3">{r.b}</p>
-                          <button onClick={() => copy(r.b)} className="border border-[#E3E0D9] bg-white rounded-full px-6 font-semibold text-base hover:border-[#DDD8CE] min-h-[48px]">{t('sh_copy')}</button>
+                        <div key={r.id} className="bg-white border border-[#E3E6E1] rounded-[14px] p-4">
+                          <div className="text-sm font-semibold text-[#70776F] mb-2">{r.h}</div>
+                          <p className="text-base text-[#141614] mb-3">{r.b}</p>
+                          <button onClick={() => copy(r.b)} className="border border-[#E3E6E1] bg-white rounded-full px-6 font-semibold text-base hover:border-[#DDD8CE] min-h-[48px]">{t('sh_copy')}</button>
                         </div>
                       ))}
                       {scopeDone ? (
-                        <p role="status" className="flex items-start gap-2 text-base text-[#1C1B1A] bg-[#F0EEE9] rounded-[14px] p-4"><Check size={20} className="shrink-0 mt-0.5 text-[#59684a]" /> <span>{t('sc_done')}</span></p>
+                        <p role="status" className="flex items-start gap-2 text-base text-[#141614] bg-[#E7F0E9] rounded-[14px] p-4"><Check size={20} className="shrink-0 mt-0.5 text-[#003D14]" /> <span>{t('sc_done')}</span></p>
                       ) : scopeForm ? (
-                        <div className="bg-white border border-[#e5e7dd] rounded-[14px] p-4 space-y-3">
+                        <div className="bg-white border border-[#E3E6E1] rounded-[14px] p-4 space-y-3">
                           <div>
-                            <label htmlFor="sc-name" className="block text-sm font-semibold text-[#6E6963] mb-1">{t('sc_name')}</label>
-                            <input id="sc-name" type="text" value={scopeName} onChange={e => { setScopeName(e.target.value); setScopeErr(false); }} className="w-full border border-[#e5e7dd] bg-white rounded-[14px] px-4 text-base min-h-[48px] outline-none focus:border-[#59684a] focus:ring-2 focus:ring-[#59684a]/30" />
+                            <label htmlFor="sc-name" className="block text-sm font-semibold text-[#687169] mb-1">{t('sc_name')}</label>
+                            <input id="sc-name" type="text" value={scopeName} onChange={e => { setScopeName(e.target.value); setScopeErr(false); }} className="w-full border border-[#E3E6E1] bg-white rounded-[14px] px-4 text-base min-h-[48px] outline-none focus:border-[#003D14] focus:ring-2 focus:ring-[#003D14]/30" />
                           </div>
                           <div>
-                            <label htmlFor="sc-price" className="block text-sm font-semibold text-[#6E6963] mb-1">{t('sc_price')}</label>
-                            <input id="sc-price" type="number" inputMode="decimal" min="0" step="any" value={scopePrice} onChange={e => { setScopePrice(e.target.value); setScopeErr(false); }} className="w-full border border-[#e5e7dd] bg-white rounded-[14px] px-4 text-base min-h-[48px] outline-none focus:border-[#59684a] focus:ring-2 focus:ring-[#59684a]/30" />
+                            <label htmlFor="sc-price" className="block text-sm font-semibold text-[#687169] mb-1">{t('sc_price')}</label>
+                            <input id="sc-price" type="number" inputMode="decimal" min="0" step="any" value={scopePrice} onChange={e => { setScopePrice(e.target.value); setScopeErr(false); }} className="w-full border border-[#E3E6E1] bg-white rounded-[14px] px-4 text-base min-h-[48px] outline-none focus:border-[#003D14] focus:ring-2 focus:ring-[#003D14]/30" />
                           </div>
                           {scopeErr && <p role="alert" className="text-[#AE332A] text-sm flex items-start gap-2 bg-[#FAF0EE] p-3 rounded-[12px]"><ShieldAlert size={18} className="shrink-0 mt-0.5" /> <span>{t('sc_err')}</span></p>}
-                          <button onClick={saveMilestone} className="w-full bg-[#59684a] text-white rounded-full font-semibold text-base hover:bg-[#415947] min-h-[52px] px-6">{t('sc_save')}</button>
+                          <button onClick={saveMilestone} className="w-full bg-[#003D14] text-white rounded-full font-semibold text-base hover:bg-[#0E5C2A] min-h-[52px] px-6">{t('sc_save')}</button>
                         </div>
                       ) : (
-                        <button onClick={openScopeForm} className="w-full border border-[#E3E0D9] bg-white text-[#1C1B1A] rounded-full px-6 font-semibold text-base hover:border-[#DDD8CE] min-h-[52px] flex items-center justify-center gap-2"><ClipboardList size={18} /> {t('sc_create')}</button>
+                        <button onClick={openScopeForm} className="w-full border border-[#E3E6E1] bg-white text-[#141614] rounded-full px-6 font-semibold text-base hover:border-[#DDD8CE] min-h-[52px] flex items-center justify-center gap-2"><ClipboardList size={18} /> {t('sc_create')}</button>
                       )}
                     </div>
                   )}
@@ -243,14 +243,14 @@ export function ChatCheckModal({ t, lang, user, navTo, showToast, setEvidence, i
               )}
 
               <div className="flex flex-wrap gap-x-5 gap-y-1">
-                {(hasShield || calm) && <button onClick={() => navTo('shield')} className="text-base font-semibold text-[#4A4744] underline underline-offset-4 min-h-[44px]">{t('chat_open_shield')}</button>}
-                {(hasSafety || calm) && <button onClick={() => navTo('safety')} className="text-base font-semibold text-[#4A4744] underline underline-offset-4 min-h-[44px]">{t('chat_open_safety')}</button>}
+                {(hasShield || calm) && <button onClick={() => navTo('shield')} className="text-base font-semibold text-[#475249] underline underline-offset-4 min-h-[44px]">{t('chat_open_shield')}</button>}
+                {(hasSafety || calm) && <button onClick={() => navTo('safety')} className="text-base font-semibold text-[#475249] underline underline-offset-4 min-h-[44px]">{t('chat_open_safety')}</button>}
               </div>
               {clientApi && (
                 <div className="flex flex-wrap gap-2">
-                  <button onClick={clientApi.toggleMute} className="flex-1 min-w-[140px] border border-[#E3E0D9] bg-white text-[#1C1B1A] rounded-full px-4 font-semibold text-sm hover:border-[#DDD8CE] min-h-[44px]">{clientApi.muted ? t('ca_unmute') : t('ca_mute')}</button>
-                  <button onClick={clientApi.toggleBlock} className="flex-1 min-w-[140px] border border-[#E3E0D9] bg-white text-[#1C1B1A] rounded-full px-4 font-semibold text-sm hover:border-[#DDD8CE] min-h-[44px]">{clientApi.blocked ? t('ca_unblock') : t('ca_block')}</button>
-                  <button onClick={clientApi.openReport} className="flex-1 min-w-[140px] border border-[#E3E0D9] bg-white text-[#1C1B1A] rounded-full px-4 font-semibold text-sm hover:border-[#DDD8CE] min-h-[44px]">{t('ca_report')}{clientApi.hasReport ? ' ✓' : ''}</button>
+                  <button onClick={clientApi.toggleMute} className="flex-1 min-w-[140px] border border-[#E3E6E1] bg-white text-[#141614] rounded-full px-4 font-semibold text-sm hover:border-[#DDD8CE] min-h-[44px]">{clientApi.muted ? t('ca_unmute') : t('ca_mute')}</button>
+                  <button onClick={clientApi.toggleBlock} className="flex-1 min-w-[140px] border border-[#E3E6E1] bg-white text-[#141614] rounded-full px-4 font-semibold text-sm hover:border-[#DDD8CE] min-h-[44px]">{clientApi.blocked ? t('ca_unblock') : t('ca_block')}</button>
+                  <button onClick={clientApi.openReport} className="flex-1 min-w-[140px] border border-[#E3E6E1] bg-white text-[#141614] rounded-full px-4 font-semibold text-sm hover:border-[#DDD8CE] min-h-[44px]">{t('ca_report')}{clientApi.hasReport ? ' ✓' : ''}</button>
                 </div>
               )}
               <Disclaimer t={t} k="disc_chat" />

@@ -11,7 +11,7 @@
 .vouch-marquee-track h3{font-family:'Cormorant Garamond',Georgia,serif;font-size:24px;line-height:1.1;font-weight:600;margin:12px 0 7px}
 .vouch-marquee-track p{font-size:13px;color:#586358;line-height:1.55}
 @keyframes vouch-cards-drift{to{transform:translateX(-50%)}}
-.vouch-cont-section{padding:83px 0;border-bottom:1px solid #e5e7dd;background:#fcfbf8}
+.vouch-cont-section{padding:83px 0;border-bottom:1px solid #E3E6E1;background:#FFFFFF}
 .vouch-cont-section h2,.vouch-cont-ending h2{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;letter-spacing:-.03em;font-size:clamp(36px,4.3vw,55px);line-height:1.03;margin:14px 0 17px;max-width:700px}
 .vouch-cont-lead{max-width:600px;color:#586158;font-size:15px;line-height:1.72}
 .vouch-cont-proofs{margin-top:35px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}

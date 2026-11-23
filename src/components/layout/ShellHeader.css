@@ -1,7 +1,7 @@
 /* A quiet, compact header. The longer utility controls live in More/account menus. */
 .vouch-shell{position:sticky;top:0;z-index:45;background:#dce4d5;border-bottom:1px solid #cdd8c7;font-family:'DM Sans',system-ui,sans-serif}
 .vouch-shell-inner{max-width:1290px;margin:0 auto;min-height:70px;padding:0 24px;display:flex;align-items:center;gap:26px}
-.vouch-shell-logo{flex:none;border:0;background:none;padding:4px 0;color:#263b2b;font-size:27px;font-weight:750;letter-spacing:-.07em;line-height:1;cursor:pointer}.vouch-shell-logo span{color:#73896d}
+.vouch-shell-logo{flex:none;border:0;background:none;padding:4px 0;color:#003D14;font-size:27px;font-weight:750;letter-spacing:-.07em;line-height:1;cursor:pointer}.vouch-shell-logo span{color:#73896d}
 .vouch-shell-links{display:flex;align-items:center;gap:24px;flex:1;min-width:0}.vouch-shell-links button{white-space:nowrap;border:0;background:transparent;color:#3d4b3e;font-size:14px;font-weight:550;min-height:54px;padding:17px 0 13px;border-bottom:2px solid transparent;cursor:pointer}
 .vouch-shell-links button:hover,.vouch-shell-links button.is-current{color:#233b2c;border-bottom-color:#596b51}
 .vouch-shell-actions{display:flex;align-items:center;gap:8px;margin-left:auto;flex:none}
@@ -11,7 +11,7 @@
 .vouch-shell-language{min-width:41px;background:#f6f7f1}
 .vouch-shell-user-button{gap:9px;padding:4px 10px 4px 5px;background:#f8f8f4;max-width:160px}.vouch-shell-avatar{display:grid;place-items:center;width:31px;height:31px;border-radius:50%;background:#e6e9e0;color:#3b5441;font-size:12px;font-weight:700}.vouch-shell-user-name{overflow:hidden;text-overflow:ellipsis;max-width:82px;white-space:nowrap}
 .vouch-shell-popover{position:absolute;right:0;top:calc(100% + 8px);min-width:215px;padding:6px;background:#fff;border:1px solid #dce2d6;border-radius:17px;box-shadow:0 16px 40px #2036251f;z-index:60;display:grid;gap:2px}
-.vouch-shell-popover button{display:block;text-align:left;border:0;background:none;border-radius:10px;color:#263b2b;font-size:14px;font-weight:500;padding:12px 14px;min-height:40px;cursor:pointer;white-space:nowrap}.vouch-shell-popover button:hover{background:#eef3eb}
+.vouch-shell-popover button{display:block;text-align:left;border:0;background:none;border-radius:10px;color:#003D14;font-size:14px;font-weight:500;padding:12px 14px;min-height:40px;cursor:pointer;white-space:nowrap}.vouch-shell-popover button:hover{background:#eef3eb}
 .vouch-shell-menu-heading{font-size:12px;color:#687365;padding:10px 14px 9px;margin:0;border-bottom:1px solid #e5e9e2}.vouch-shell-popover .vouch-shell-logout{color:#a13232}
 .vouch-shell-hamburger,.vouch-shell-mobile{display:none}
 .vouch-shell-mobile{padding:8px 20px 18px;border-top:1px solid #d3ddcd;background:#f8faf6;box-shadow:0 15px 20px #2036250d}.vouch-shell-mobile button{display:block;text-align:left;padding:12px 8px;border:0;border-bottom:1px solid #e6e9df;background:transparent;width:100%;font-size:14px;color:#253d2b;cursor:pointer}

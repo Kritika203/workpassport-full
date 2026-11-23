@@ -65,8 +65,8 @@ export function FirstWorkFeed({ t, navTo, user, savedJobs, setSavedJobs, lang, a
     ...(match?[{value:t('tog_match'),remove:()=>setMatch(false)}]:[]),
   ];
   return <section className="fw-vouch" lang={lang} aria-labelledby="fw-vouch-title">
-    <div className="fw-vouch-heading"><div><span className="fw-vouch-eyebrow">FIRSTWORK</span><h1 id="fw-vouch-title">{t('fw_title')}</h1><p>{t('fw_sub')}</p></div><button type="button" onClick={onSwitchClient} className="fw-vouch-quiet-link">{copy.client} <span aria-hidden="true">↗</span></button></div>
-    <nav className="fw-vouch-tabs" aria-label="FirstWork views"><button type="button" aria-current="page">{copy.jobs}</button><button type="button" onClick={()=>navTo('opportunities')}>{copy.applied}</button><button type="button" onClick={()=>navTo('bring')}>{copy.bring}</button></nav>
+    <div className="fw-vouch-heading"><div><span className="fw-vouch-eyebrow">FIRSTWORK</span><h1 id="fw-vouch-title">{t('fw_title')}</h1><p>{t('fw_sub')}</p></div></div>
+    <nav className="fw-vouch-tabs" aria-label="FirstWork views"><button type="button" aria-current="page">{copy.jobs}</button><button type="button" onClick={()=>navTo('opportunities')}>{copy.applied}</button></nav>
     <div className="fw-vouch-toolbar"><label className="fw-vouch-search"><Search size={19} aria-hidden="true"/><span className="sr-only">{t('search_placeholder')}</span><input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder={t('search_placeholder')}/></label>
       <label className="fw-vouch-select"><span className="sr-only">{copy.category}</span><select value={category} onChange={e=>setCategory(e.target.value)}><option value="All">{t('cat_all')}</option>{ALL_CATEGORIES.map(c=><option key={c} value={c}>{c}</option>)}</select><ChevronDown size={15} aria-hidden="true"/></label>
       <button className="fw-vouch-filter-button" type="button" aria-expanded={showFilters} onClick={()=>setShowFilters(true)}><SlidersHorizontal size={17}/>{copy.filters}{activeCount>0&&<span className="fw-vouch-filter-count">{activeCount}</span>}</button>

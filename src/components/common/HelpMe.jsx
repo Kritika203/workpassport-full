@@ -45,14 +45,14 @@ export function HelpMe({ lang = 'en' }) {
     } finally { setLoading(false); }
   }
   return <div className="fixed bottom-5 right-4 sm:right-6 z-[75] flex flex-col items-end gap-2">
-    {open && <section role="dialog" aria-label="Vouch Help Me chatbot" className="w-[min(94vw,390px)] max-h-[75vh] bg-white border border-[#e5e7dd] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
-      <header className="px-4 py-3 bg-[#F6F4EF] flex justify-between items-center">
+    {open && <section role="dialog" aria-label="Vouch Help Me chatbot" className="w-[min(94vw,390px)] max-h-[75vh] bg-white border border-[#E3E6E1] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+      <header className="px-4 py-3 bg-[#F7F7F4] flex justify-between items-center">
         <div><h2 className="font-bold">{language === 'ne' ? 'Help Me च्याटबोट' : 'Help Me chatbot'}</h2><p className="text-xs text-gray-600">{language === 'ne' ? 'Vouch चलाउन मद्दत' : 'Guidance for using Vouch'}</p></div>
         <button type="button" onClick={() => setOpen(false)} aria-label="Close chatbot" className="min-w-10 min-h-10">✕</button>
       </header>
       <div aria-live="polite" className="p-4 space-y-3 overflow-y-auto min-h-[160px] max-h-[48vh]">
-        <p className="text-sm bg-[#F6F4EF] rounded-xl p-3">{WELCOME[language]}</p>
-        {messages.map((item, index) => <div key={index} className={`max-w-[95%] text-sm p-3 rounded-xl whitespace-pre-wrap break-words ${item.role === 'user' ? 'ml-auto bg-[#FAF0EE]' : 'mr-auto bg-[#F6F4EF]'}`}>
+        <p className="text-sm bg-[#F7F7F4] rounded-xl p-3">{WELCOME[language]}</p>
+        {messages.map((item, index) => <div key={index} className={`max-w-[95%] text-sm p-3 rounded-xl whitespace-pre-wrap break-words ${item.role === 'user' ? 'ml-auto bg-[#FAF0EE]' : 'mr-auto bg-[#F7F7F4]'}`}>
           {item.content}
           {item.mode === 'local' && <p className="text-[11px] text-gray-500 mt-2">{language === 'ne' ? 'एप मार्गदर्शन' : 'Built-in app guidance'}</p>}
         </div>)}
@@ -63,11 +63,11 @@ export function HelpMe({ lang = 'en' }) {
       {error && <p role="alert" className="px-4 text-xs text-red-700">{language === 'ne' ? 'नेटवर्क समस्या। तलको जवाफ सामान्य मार्गदर्शन मात्र हो।' : 'Connection issue. The reply below is general guidance only.'}</p>}
       <form className="p-3 border-t flex items-end gap-2" onSubmit={e => {e.preventDefault(); send();}}>
         <label htmlFor="wp-help-input" className="sr-only">{language === 'ne' ? 'प्रश्न सोध्नुहोस्' : 'Ask a question'}</label>
-        <textarea id="wp-help-input" rows={2} maxLength={500} value={draft} onChange={e => setDraft(e.target.value)} placeholder={language === 'ne' ? 'म के गरूँ? यहाँ लेख्नुहोस्…' : 'Ask about Vouch…'} className="flex-1 min-w-0 border border-[#e5e7dd] rounded-xl p-3 text-sm" onKeyDown={e => {if (e.key === 'Enter' && !e.shiftKey) {e.preventDefault(); send();}}}/>
-        <button type="submit" disabled={!draft.trim() || loading} className="bg-[#59684a] text-white rounded-xl px-4 min-h-[44px] disabled:opacity-50">{language === 'ne' ? 'पठाऊ' : 'Send'}</button>
+        <textarea id="wp-help-input" rows={2} maxLength={500} value={draft} onChange={e => setDraft(e.target.value)} placeholder={language === 'ne' ? 'म के गरूँ? यहाँ लेख्नुहोस्…' : 'Ask about Vouch…'} className="flex-1 min-w-0 border border-[#E3E6E1] rounded-xl p-3 text-sm" onKeyDown={e => {if (e.key === 'Enter' && !e.shiftKey) {e.preventDefault(); send();}}}/>
+        <button type="submit" disabled={!draft.trim() || loading} className="bg-[#003D14] text-white rounded-xl px-4 min-h-[44px] disabled:opacity-50">{language === 'ne' ? 'पठाऊ' : 'Send'}</button>
       </form>
       <p className="text-[11px] px-4 pb-3 text-gray-500">{language === 'ne' ? 'निजी जानकारी नलेख्नुहोस्। यो सहायकले खाता वा काममा परिवर्तन गर्दैन।' : 'Do not share passwords or private data. Help Me cannot change your account or submit applications.'}</p>
     </section>}
-    <button type="button" onClick={toggle} aria-label={open ? 'Close Help Me' : 'Open Help Me chatbot'} aria-expanded={open} className="w-16 h-16 rounded-full bg-[#59684a] text-white font-bold shadow-xl focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 flex justify-center items-center text-sm">{open ? '✕' : 'Help Me'}</button>
+    <button type="button" onClick={toggle} aria-label={open ? 'Close Help Me' : 'Open Help Me chatbot'} aria-expanded={open} title={open ? 'Close Vouch help' : 'Ask Vouch for help'} className="vouch-help-trigger w-11 h-11 rounded-full bg-[#003D14] text-white font-semibold shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 flex justify-center items-center text-xl">{open ? '×' : '?'}</button>
   </div>;
 }

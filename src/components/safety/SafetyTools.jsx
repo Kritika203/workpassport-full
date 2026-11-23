@@ -11,11 +11,11 @@ import { ToggleKnob } from '../privacy/Privacy.jsx';
 
 
 
-const SP_INPUT = "w-full border border-[#e5e7dd] bg-white rounded-[14px] px-4 text-base min-h-[48px] outline-none focus:border-[#59684a] focus:ring-2 focus:ring-[#59684a]/30 disabled:bg-[#F6F4EF]";
+const SP_INPUT = "w-full border border-[#E3E6E1] bg-white rounded-[14px] px-4 text-base min-h-[48px] outline-none focus:border-[#003D14] focus:ring-2 focus:ring-[#003D14]/30 disabled:bg-[#F7F7F4]";
 
-const SP_PRIMARY = "inline-flex items-center justify-center gap-2 bg-[#59684a] text-white rounded-full font-semibold text-base hover:bg-[#415947] min-h-[52px] px-6 disabled:opacity-50 disabled:hover:bg-[#59684a]";
+const SP_PRIMARY = "inline-flex items-center justify-center gap-2 bg-[#003D14] text-white rounded-full font-semibold text-base hover:bg-[#0E5C2A] min-h-[52px] px-6 disabled:opacity-50 disabled:hover:bg-[#003D14]";
 
-const SP_SECONDARY = "inline-flex items-center justify-center gap-2 border border-[#E3E0D9] bg-white text-[#1C1B1A] rounded-full font-semibold text-base hover:bg-[#F6F4EF] min-h-[48px] px-6 disabled:opacity-50";
+const SP_SECONDARY = "inline-flex items-center justify-center gap-2 border border-[#E3E6E1] bg-white text-[#141614] rounded-full font-semibold text-base hover:bg-[#F7F7F4] min-h-[48px] px-6 disabled:opacity-50";
 
 export function TrustedContactCard({ t, lang, user, allJobs, appliedJobs, trusted, setTrusted, checkin, setCheckin, showToast }) {
   const [editing, setEditing] = useState(false);
@@ -98,9 +98,9 @@ export function TrustedContactCard({ t, lang, user, allJobs, appliedJobs, truste
   const lbl = "block text-base font-semibold mb-2";
   return (
     <div>
-      <div className={`rounded-[20px] p-6 border ${overdue ? 'bg-[#FAF0EE] border-[#59684a]' : 'bg-white border-[#e5e7dd]'}`} role={overdue ? 'alert' : undefined}>
-        <h2 className="font-semibold text-[22px] mb-2 flex items-center gap-3"><HeartHandshake size={24} className="text-[#59684a] shrink-0" /> {t('sp_tc_title')}</h2>
-        <p className="text-base text-[#4A4744] mb-5">{t('sp_tc_intro')}</p>
+      <div className={`rounded-[20px] p-6 border ${overdue ? 'bg-[#FAF0EE] border-[#003D14]' : 'bg-white border-[#E3E6E1]'}`} role={overdue ? 'alert' : undefined}>
+        <h2 className="font-semibold text-[22px] mb-2 flex items-center gap-3"><HeartHandshake size={24} className="text-[#003D14] shrink-0" /> {t('sp_tc_title')}</h2>
+        <p className="text-base text-[#475249] mb-5">{t('sp_tc_intro')}</p>
 
         {showForm ? (
           <form onSubmit={saveContact} className="space-y-4">
@@ -111,7 +111,7 @@ export function TrustedContactCard({ t, lang, user, allJobs, appliedJobs, truste
             <div>
               <label htmlFor="sp-tc-phone" className={lbl}>{t('sp_tc_phone')}</label>
               <input id="sp-tc-phone" type="tel" inputMode="tel" autoComplete="off" value={ph} onChange={e => setPh(e.target.value)} aria-describedby="sp-tc-hint" className={SP_INPUT} />
-              <p id="sp-tc-hint" className="mt-2 text-sm text-[#6E6963]">{t('sp_ci_phone_help')}</p>
+              <p id="sp-tc-hint" className="mt-2 text-sm text-[#687169]">{t('sp_ci_phone_help')}</p>
             </div>
             <div className="flex flex-col sm:flex-row gap-3">
               <button type="submit" disabled={!nm.trim() || !smsHref(ph, 'test')} className={SP_PRIMARY}>{t('save')}</button>
@@ -119,33 +119,33 @@ export function TrustedContactCard({ t, lang, user, allJobs, appliedJobs, truste
             </div>
           </form>
         ) : (
-          <div className="flex items-center justify-between gap-3 border border-[#e5e7dd] bg-white rounded-[14px] p-4">
-            <p className="min-w-0 text-base font-medium text-[#1C1B1A] break-words">{trusted.name} — {trusted.phone}</p>
-            <button type="button" onClick={startEdit} className="shrink-0 text-base font-semibold text-[#4A4744] underline underline-offset-4 min-h-[44px] px-2">{t('sp_tc_edit')}</button>
+          <div className="flex items-center justify-between gap-3 border border-[#E3E6E1] bg-white rounded-[14px] p-4">
+            <p className="min-w-0 text-base font-medium text-[#141614] break-words">{trusted.name} — {trusted.phone}</p>
+            <button type="button" onClick={startEdit} className="shrink-0 text-base font-semibold text-[#475249] underline underline-offset-4 min-h-[44px] px-2">{t('sp_tc_edit')}</button>
           </div>
         )}
 
-        <div className="mt-6 pt-6 border-t border-[#e5e7dd]">
+        <div className="mt-6 pt-6 border-t border-[#E3E6E1]">
           <h3 className="font-semibold text-xl mb-4">{t('sp_ci_sub')}</h3>
-          {!trusted && <p className="text-base text-[#4A4744] mb-4">{t('sp_ci_add_first')}</p>}
+          {!trusted && <p className="text-base text-[#475249] mb-4">{t('sp_ci_add_first')}</p>}
 
           {overdue ? (
             <div className="space-y-4">
-              <h4 className="font-semibold text-xl text-[#1C1B1A]">{t('sp_ci_over_title')}</h4>
-              <p className="text-base text-[#1C1B1A]">{fmt(t(ck.jobTitle ? 'sp_ci_over_line' : 'sp_ci_over_line_nojob'), { clientName: ck.clientName, jobTitle: ck.jobTitle, time: spClock(ck.byISO, lang) })}</p>
+              <h4 className="font-semibold text-xl text-[#141614]">{t('sp_ci_over_title')}</h4>
+              <p className="text-base text-[#141614]">{fmt(t(ck.jobTitle ? 'sp_ci_over_line' : 'sp_ci_over_line_nojob'), { clientName: ck.clientName, jobTitle: ck.jobTitle, time: spClock(ck.byISO, lang) })}</p>
               {trusted && smsHref(trusted.phone, buildOverdueMessage()) && (
                 <a href={smsHref(trusted.phone, buildOverdueMessage())} className={SP_PRIMARY + ' w-full'}>
                   <MessageSquare size={21} /> {fmt(t('sp_ci_sms_over'), { contactName: trusted.name })}
                 </a>
               )}
-              <a href={telHref(trusted ? trusted.phone : '')} className="w-full flex items-center justify-center gap-3 border border-[#E3E0D9] bg-white text-[#1C1B1A] rounded-full font-semibold text-lg hover:bg-[#F6F4EF] min-h-[64px] px-6 text-center"><Phone size={22} className="shrink-0" /> <span>{fmt(t('sp_ci_call'), { contactName: ck.contactName })}</span></a>
+              <a href={telHref(trusted ? trusted.phone : '')} className="w-full flex items-center justify-center gap-3 border border-[#E3E6E1] bg-white text-[#141614] rounded-full font-semibold text-lg hover:bg-[#F7F7F4] min-h-[64px] px-6 text-center"><Phone size={22} className="shrink-0" /> <span>{fmt(t('sp_ci_call'), { contactName: ck.contactName })}</span></a>
               <button type="button" onClick={async () => { const copied = await copyToClipboard(buildOverdueMessage()); showToast(t(copied ? 'sp_ci_sms_copied' : 'sp_ci_sms_copy_fail')); }} className={SP_SECONDARY + ' w-full'}>{t('sp_ci_copy_help')}</button>
-              <p className="text-sm text-[#6E6963]">{t('sp_ci_no_auto')}</p>
-              <button type="button" onClick={imSafe} className="w-full border border-[#E3E0D9] bg-white text-[#1C1B1A] rounded-full font-semibold text-base hover:bg-[#F6F4EF] min-h-[52px] px-6">{t('sp_ci_safe_now')}</button>
+              <p className="text-sm text-[#687169]">{t('sp_ci_no_auto')}</p>
+              <button type="button" onClick={imSafe} className="w-full border border-[#E3E6E1] bg-white text-[#141614] rounded-full font-semibold text-base hover:bg-[#F7F7F4] min-h-[52px] px-6">{t('sp_ci_safe_now')}</button>
             </div>
           ) : waiting ? (
             <div className="space-y-4">
-              <p className="text-base text-[#1C1B1A]">{fmt(t('sp_ci_wait'), { time: spClock(ck.byISO, lang) })}</p>
+              <p className="text-base text-[#141614]">{fmt(t('sp_ci_wait'), { time: spClock(ck.byISO, lang) })}</p>
               {trusted && smsHref(trusted.phone, buildWaitingPlan()) && (
                 <a href={smsHref(trusted.phone, buildWaitingPlan())} className={SP_SECONDARY + ' w-full sm:w-auto'}><MessageSquare size={19} /> {t('sp_ci_sms_plan')}</a>
               )}
@@ -154,13 +154,13 @@ export function TrustedContactCard({ t, lang, user, allJobs, appliedJobs, truste
                 <a href={smsHref(trusted.phone, buildEmergencyMessage())} className={SP_PRIMARY + ' w-full sm:w-auto'}><MessageSquare size={19} /> {t('sp_ci_sos_now')}</a>
               )}
               <button type="button" onClick={imSafe} className={SP_SECONDARY + " w-full sm:w-auto"}><Check size={20} /> {t('sp_ci_safe_btn')}</button>
-              <p className="text-sm text-[#6E6963]">{t('sp_ci_no_auto')}</p>
+              <p className="text-sm text-[#687169]">{t('sp_ci_no_auto')}</p>
             </div>
           ) : (
             <>
               {safe && (
                 <div className="space-y-3 mb-5">
-                  <p className="flex items-start gap-2 text-base font-medium text-[#1C1B1A] bg-[#FAF0EE] border border-[#F3E1DD] rounded-[14px] p-4"><CheckCircle2 size={20} className="shrink-0 mt-0.5 text-[#59684a]" /> <span>{t('sp_ci_safe_done')}</span></p>
+                  <p className="flex items-start gap-2 text-base font-medium text-[#141614] bg-[#FAF0EE] border border-[#F3E1DD] rounded-[14px] p-4"><CheckCircle2 size={20} className="shrink-0 mt-0.5 text-[#003D14]" /> <span>{t('sp_ci_safe_done')}</span></p>
                   {trusted && smsHref(trusted.phone, buildSafeMessage()) && (
                     <a href={smsHref(trusted.phone, buildSafeMessage())} className={SP_SECONDARY + ' w-full sm:w-auto'}><MessageSquare size={19} /> {t('sp_ci_sms_safe')}</a>
                   )}
@@ -184,7 +184,7 @@ export function TrustedContactCard({ t, lang, user, allJobs, appliedJobs, truste
                   <div id="sp-ci-in" className={lbl}>{t('sp_ci_in')}</div>
                   <div className="flex flex-wrap gap-2">
                     {DURS.map(([m, k]) => (
-                      <button key={m} type="button" aria-pressed={mins === m} onClick={() => setMins(m)} className={`rounded-full border px-4 min-h-[44px] text-base font-medium ${mins === m ? 'border-[#59684a] bg-[#FAF0EE] text-[#1C1B1A]' : 'border-[#E3E0D9] bg-white text-[#1C1B1A] hover:bg-[#F6F4EF]'}`}>{t(k)}</button>
+                      <button key={m} type="button" aria-pressed={mins === m} onClick={() => setMins(m)} className={`rounded-full border px-4 min-h-[44px] text-base font-medium ${mins === m ? 'border-[#003D14] bg-[#FAF0EE] text-[#141614]' : 'border-[#E3E6E1] bg-white text-[#141614] hover:bg-[#F7F7F4]'}`}>{t(k)}</button>
                     ))}
                   </div>
                 </div>
@@ -194,7 +194,7 @@ export function TrustedContactCard({ t, lang, user, allJobs, appliedJobs, truste
                   <a href={controlsOff ? undefined : waHref(trusted.phone, buildMsg(planIso()))} target="_blank" rel="noopener noreferrer" aria-disabled={controlsOff} className={`${SP_SECONDARY} ${controlsOff ? 'opacity-50 pointer-events-none' : ''}`}>{t('wa_send')}</a>
                   <button type="button" onClick={startCheckin} disabled={controlsOff} className={SP_PRIMARY}>{t('sp_ci_start')}</button>
                 </div>
-                <p className="text-sm text-[#6E6963]">{t('sp_ci_no_auto')}</p>
+                <p className="text-sm text-[#687169]">{t('sp_ci_no_auto')}</p>
               </fieldset>
             </>
           )}
@@ -215,10 +215,10 @@ export function QuietHoursCard({ t, lang, quiet, setQuiet }) {
   };
   const lbl = "block text-base font-semibold mb-2";
   return (
-    <div className="bg-white border border-[#e5e7dd] rounded-[20px] p-6">
-      <h2 className="font-semibold text-[22px] mb-4 flex items-center gap-3"><Moon size={24} className="text-[#59684a] shrink-0" /> {t('sp_qh_title')}</h2>
-      <button type="button" onClick={() => setQuiet({ ...quiet, on: !quiet.on })} role="switch" aria-checked={quiet.on} aria-describedby="sp-qh-desc" className="w-full flex items-center justify-between gap-4 p-4 min-h-[56px] text-left border border-[#e5e7dd] rounded-[14px] hover:border-[#DDD8CE]">
-        <span id="sp-qh-desc" className="text-base text-[#4A4744]">{t('sp_qh_line')}</span>
+    <div className="bg-white border border-[#E3E6E1] rounded-[20px] p-6">
+      <h2 className="font-semibold text-[22px] mb-4 flex items-center gap-3"><Moon size={24} className="text-[#003D14] shrink-0" /> {t('sp_qh_title')}</h2>
+      <button type="button" onClick={() => setQuiet({ ...quiet, on: !quiet.on })} role="switch" aria-checked={quiet.on} aria-describedby="sp-qh-desc" className="w-full flex items-center justify-between gap-4 p-4 min-h-[56px] text-left border border-[#E3E6E1] rounded-[14px] hover:border-[#DDD8CE]">
+        <span id="sp-qh-desc" className="text-base text-[#475249]">{t('sp_qh_line')}</span>
         <ToggleKnob on={quiet.on} />
       </button>
       <div className="grid grid-cols-2 gap-4 mt-4">
@@ -232,8 +232,8 @@ export function QuietHoursCard({ t, lang, quiet, setQuiet }) {
         </div>
       </div>
       {quiet.on && (
-        <p id="sp-qh-status" role="status" className="mt-4 flex items-start gap-2 text-base font-medium text-[#1C1B1A]">
-          {active ? <Moon size={18} className="shrink-0 mt-1 text-[#59684a]" /> : <Info size={18} className="shrink-0 mt-1 text-[#6E6963]" />}
+        <p id="sp-qh-status" role="status" className="mt-4 flex items-start gap-2 text-base font-medium text-[#141614]">
+          {active ? <Moon size={18} className="shrink-0 mt-1 text-[#003D14]" /> : <Info size={18} className="shrink-0 mt-1 text-[#687169]" />}
           <span>{active ? t('sp_qh_on_now') : fmt(t('sp_qh_starts'), { from: spDigits(lang, quiet.from) })}</span>
         </p>
       )}
@@ -248,30 +248,30 @@ export function EmergencyView({ t, trusted, userName = '', showToast = () => {},
   const copyHelp = async () => { const copied = await copyToClipboard(helpMessage); showToast(t(copied ? 'sp_ci_sms_copied' : 'sp_ci_sms_copy_fail')); };
   return (
     <div className="max-w-[800px] mx-auto space-y-5">
-      <div className="bg-white border border-[#e5e7dd] rounded-[20px] p-6">
+      <div className="bg-white border border-[#E3E6E1] rounded-[20px] p-6">
         <h1 className="text-[28px] sm:text-[30px] font-semibold mb-3">{t('sp_em_title')}</h1>
-        <p className="text-lg text-[#4A4744]">{t('sp_em_line')}</p>
+        <p className="text-lg text-[#475249]">{t('sp_em_line')}</p>
       </div>
       <div className="space-y-4">
-        <a href="tel:100" className={`${big} bg-[#59684a] text-white hover:bg-[#415947]`}><Phone size={26} className="shrink-0" /> <span>{t('sp_em_police')}</span></a>
-        <a href="tel:1145" className={`${big} border border-[#E3E0D9] bg-white text-[#1C1B1A] hover:bg-[#F6F4EF]`}><Phone size={26} className="shrink-0 text-[#59684a]" /> <span>{t('sp_em_women')}</span></a>
+        <a href="tel:100" className={`${big} bg-[#003D14] text-white hover:bg-[#0E5C2A]`}><Phone size={26} className="shrink-0" /> <span>{t('sp_em_police')}</span></a>
+        <a href="tel:1145" className={`${big} border border-[#E3E6E1] bg-white text-[#141614] hover:bg-[#F7F7F4]`}><Phone size={26} className="shrink-0 text-[#003D14]" /> <span>{t('sp_em_women')}</span></a>
         {trusted ? (
           <>
-          <a href={telHref(trusted.phone)} className={`${big} border border-[#E3E0D9] bg-white text-[#1C1B1A] hover:bg-[#F6F4EF]`}><Phone size={26} className="shrink-0 text-[#59684a]" /> <span className="min-w-0 break-words">{fmt(t('sp_em_call'), { contactName: trusted.name, phone: trusted.phone })}</span></a>
+          <a href={telHref(trusted.phone)} className={`${big} border border-[#E3E6E1] bg-white text-[#141614] hover:bg-[#F7F7F4]`}><Phone size={26} className="shrink-0 text-[#003D14]" /> <span className="min-w-0 break-words">{fmt(t('sp_em_call'), { contactName: trusted.name, phone: trusted.phone })}</span></a>
           {smsHref(trusted.phone, helpMessage) && (
-            <a href={smsHref(trusted.phone, helpMessage)} className={`${big} border border-[#59684a] bg-[#FAF0EE] text-[#9A2C25] hover:bg-[#F4DFDA]`}><MessageSquare size={26} className="shrink-0" /> <span className="min-w-0 break-words">{fmt(t('sp_em_sms_btn'), { contactName: trusted.name })}</span></a>
+            <a href={smsHref(trusted.phone, helpMessage)} className={`${big} border border-[#003D14] bg-[#FAF0EE] text-[#9A2C25] hover:bg-[#F4DFDA]`}><MessageSquare size={26} className="shrink-0" /> <span className="min-w-0 break-words">{fmt(t('sp_em_sms_btn'), { contactName: trusted.name })}</span></a>
           )}
-          <a href={waHref(trusted.phone, helpMessage)} target="_blank" rel="noopener noreferrer" className={`${big} border border-[#E3E0D9] bg-white text-[#1C1B1A] hover:bg-[#F6F4EF]`}><MessageCircle size={26} className="shrink-0 text-[#59684a]" /> <span className="min-w-0 break-words">{fmt(t('wa_em_btn'), { contactName: trusted.name })}</span></a>
-          <button type="button" onClick={copyHelp} className={`${big} border border-[#E3E0D9] bg-white text-[#1C1B1A] hover:bg-[#F6F4EF]`}><span className="min-w-0 break-words">{t('sp_ci_copy_help')}</span></button>
-          <p className="text-sm text-[#6E6963]">{t('sp_ci_no_auto')}</p>
+          <a href={waHref(trusted.phone, helpMessage)} target="_blank" rel="noopener noreferrer" className={`${big} border border-[#E3E6E1] bg-white text-[#141614] hover:bg-[#F7F7F4]`}><MessageCircle size={26} className="shrink-0 text-[#003D14]" /> <span className="min-w-0 break-words">{fmt(t('wa_em_btn'), { contactName: trusted.name })}</span></a>
+          <button type="button" onClick={copyHelp} className={`${big} border border-[#E3E6E1] bg-white text-[#141614] hover:bg-[#F7F7F4]`}><span className="min-w-0 break-words">{t('sp_ci_copy_help')}</span></button>
+          <p className="text-sm text-[#687169]">{t('sp_ci_no_auto')}</p>
           </>
         ) : (
-          <p className="text-base text-[#4A4744] bg-white border border-[#e5e7dd] rounded-[20px] p-5">{t('sp_em_none')}</p>
+          <p className="text-base text-[#475249] bg-white border border-[#E3E6E1] rounded-[20px] p-5">{t('sp_em_none')}</p>
         )}
       </div>
       <div className="space-y-3 pt-2">
-        <button type="button" onClick={onHide} className="w-full flex items-center justify-center gap-2 border border-[#E3E0D9] bg-white text-[#1C1B1A] rounded-full font-semibold text-base hover:bg-[#F6F4EF] min-h-[52px] px-6"><EyeOff size={20} /> {t('sp_em_hide')}</button>
-        <button type="button" onClick={onBack} className="w-full flex items-center justify-center gap-2 text-[#4A4744] rounded-full font-semibold text-base hover:bg-[#F0EEE9] min-h-[52px] px-6"><ChevronLeft size={20} /> {t('back')}</button>
+        <button type="button" onClick={onHide} className="w-full flex items-center justify-center gap-2 border border-[#E3E6E1] bg-white text-[#141614] rounded-full font-semibold text-base hover:bg-[#F7F7F4] min-h-[52px] px-6"><EyeOff size={20} /> {t('sp_em_hide')}</button>
+        <button type="button" onClick={onBack} className="w-full flex items-center justify-center gap-2 text-[#475249] rounded-full font-semibold text-base hover:bg-[#E7F0E9] min-h-[52px] px-6"><ChevronLeft size={20} /> {t('back')}</button>
       </div>
     </div>
   );
@@ -280,11 +280,11 @@ export function EmergencyView({ t, trusted, userName = '', showToast = () => {},
 export function SafeTalkCard({ t, job }) {
   if (String(job.meetingTimeNepal || '').toLowerCase().includes('no meetings')) return null;
   return (
-    <div className="bg-white border border-[#e5e7dd] rounded-[20px] p-6 mb-10">
-      <h3 className="font-semibold text-xl mb-4 flex items-center gap-3"><ShieldCheck size={24} className="text-[#59684a] shrink-0" /> {t('sp_tm_title')}</h3>
+    <div className="bg-white border border-[#E3E6E1] rounded-[20px] p-6 mb-10">
+      <h3 className="font-semibold text-xl mb-4 flex items-center gap-3"><ShieldCheck size={24} className="text-[#003D14] shrink-0" /> {t('sp_tm_title')}</h3>
       <ul className="space-y-3">
         {['sp_tm_1', 'sp_tm_2', 'sp_tm_3', 'sp_tm_4'].map(k => (
-          <li key={k} className="flex items-start gap-3 text-base text-[#1C1B1A]"><Check size={20} className="mt-0.5 shrink-0 text-[#59684a]" /> <span>{t(k)}</span></li>
+          <li key={k} className="flex items-start gap-3 text-base text-[#141614]"><Check size={20} className="mt-0.5 shrink-0 text-[#003D14]" /> <span>{t(k)}</span></li>
         ))}
       </ul>
     </div>
@@ -298,13 +298,13 @@ export function EndChatModal({ t, onConfirm, onClose }) {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
   return (
-    <div className="fixed inset-0 z-[60] bg-[#1C1B1A]/40 flex items-center justify-center p-4" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-      <div role="dialog" aria-modal="true" aria-labelledby="sp-es-title" className="bg-white rounded-[20px] border border-[#e5e7dd] p-6 w-full max-w-[420px] max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-[60] bg-[#141614]/40 flex items-center justify-center p-4" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+      <div role="dialog" aria-modal="true" aria-labelledby="sp-es-title" className="bg-white rounded-[20px] border border-[#E3E6E1] p-6 w-full max-w-[420px] max-h-[90vh] overflow-y-auto">
         <h2 id="sp-es-title" className="font-semibold text-2xl mb-3">{t('sp_es_title')}</h2>
-        <p className="text-base text-[#4A4744] mb-6">{t('sp_es_expl')}</p>
+        <p className="text-base text-[#475249] mb-6">{t('sp_es_expl')}</p>
         <div className="space-y-3">
-          <button type="button" onClick={onConfirm} className="w-full bg-[#59684a] text-white rounded-full font-semibold text-base hover:bg-[#415947] min-h-[52px] px-6">{t('sp_es_confirm')}</button>
-          <button type="button" onClick={onClose} className="w-full border border-[#E3E0D9] bg-white text-[#1C1B1A] rounded-full font-semibold text-base hover:bg-[#F6F4EF] min-h-[48px] px-6">{t('cancel')}</button>
+          <button type="button" onClick={onConfirm} className="w-full bg-[#003D14] text-white rounded-full font-semibold text-base hover:bg-[#0E5C2A] min-h-[52px] px-6">{t('sp_es_confirm')}</button>
+          <button type="button" onClick={onClose} className="w-full border border-[#E3E6E1] bg-white text-[#141614] rounded-full font-semibold text-base hover:bg-[#F7F7F4] min-h-[48px] px-6">{t('cancel')}</button>
         </div>
       </div>
     </div>

@@ -128,8 +128,8 @@ export function AccountGate({ session, onSessionChange, onExit, children }) {
     return () => { live = false; };
   }, [session.access, attempt]);
 
-  if (error) return <div className="min-h-screen bg-[#fcfbf8] p-12 text-center"><p role="alert">{error}</p><button className="underline m-4" onClick={() => setAttempt(n => n + 1)}>Retry</button><button className="underline m-4" onClick={onExit}>Sign out</button></div>;
-  if (!data) return <div className="min-h-screen bg-[#fcfbf8] flex items-center justify-center" role="status">Opening your WorkPassport…</div>;
+  if (error) return <div className="min-h-screen bg-[#FFFFFF] p-12 text-center"><p role="alert">{error}</p><button className="underline m-4" onClick={() => setAttempt(n => n + 1)}>Retry</button><button className="underline m-4" onClick={onExit}>Sign out</button></div>;
+  if (!data) return <div className="min-h-screen bg-[#FFFFFF] flex items-center justify-center" role="status">Opening your WorkPassport…</div>;
   return <AccountStorage key={data.person.id} user={data.person} initial={data.state} onSessionChange={onSessionChange}>
     {children(data.person, data.jobs)}
   </AccountStorage>;

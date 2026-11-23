@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "check:ui": "node scripts/verify-ui-contracts.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

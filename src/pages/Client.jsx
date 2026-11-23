@@ -149,7 +149,7 @@ export function ClientView({ t, lang, navTo, showToast, clientJobs, setClientJob
           <p className="text-lg font-semibold mb-1">
             {onPost ? (lang === 'ne' ? `स्वागत छ, ${firstName}` : `Welcome, ${firstName}`) : t('cm_greeting')}
           </p>
-          <p className="text-base text-[#4A4744] mb-4 leading-[1.6]">
+          <p className="text-base text-[#475249] mb-4 leading-[1.6]">
             {onPost
               ? (clientProfile?.business
                 ? (lang === 'ne'
@@ -169,7 +169,7 @@ export function ClientView({ t, lang, navTo, showToast, clientJobs, setClientJob
               if (onPost) navTo('client-workroom', { appId: item.application_id });
               else navTo('workroom', { id: item.job_key });
             }} />
-          <button onClick={() => { if (formRef.current) formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' }); }} className="bg-[#59684a] text-white px-6 rounded-full font-semibold text-base hover:bg-[#415947] min-h-[52px] mb-4">
+          <button onClick={() => { if (formRef.current) formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' }); }} className="bg-[#003D14] text-white px-6 rounded-full font-semibold text-base hover:bg-[#0E5C2A] min-h-[52px] mb-4">
             {t('cm_post_new')}
           </button>
           <Disclaimer t={t} k="disc_client" />
@@ -177,7 +177,7 @@ export function ClientView({ t, lang, navTo, showToast, clientJobs, setClientJob
       ) : (
         <div className="bg-[#FAF0EE] border border-[#F3E1DD] rounded-[20px] p-4 flex items-start gap-3">
           <Info size={20} className="shrink-0 mt-0.5 text-[#AE332A]" />
-          <p className="text-base text-[#1C1B1A]">{t('cl_demo_note')}</p>
+          <p className="text-base text-[#141614]">{t('cl_demo_note')}</p>
         </div>
       )}
 
@@ -188,7 +188,7 @@ export function ClientView({ t, lang, navTo, showToast, clientJobs, setClientJob
             <option value="">{lang === 'ne' ? 'टेम्प्लेट छैन' : 'No template'}</option>
             {JOB_TEMPLATES.map(x => <option key={x.category} value={x.category}>{x.category}</option>)}
           </select>
-          <p className="text-sm text-[#6E6963] mt-1">{lang === 'ne'
+          <p className="text-sm text-[#687169] mt-1">{lang === 'ne'
             ? 'टेम्प्लेटले सीप, डेलिभरेबल विवरण र उचित बजेट दायरा भरिदिन्छ। सबै पछि सच्याउन सकिन्छ।'
             : 'A template pre-fills the skills, deliverable specs and a fair budget range. You can edit everything after.'}</p>
         </div>
@@ -204,7 +204,7 @@ export function ClientView({ t, lang, navTo, showToast, clientJobs, setClientJob
             onChange={e => setJobLocation(e.target.value)} className={CL_INPUT}
             placeholder={lang === 'ne' ? 'उदाहरण: काठमाडौं, नेपाल वा Remote' : 'e.g. Kathmandu, Nepal or Remote'}
             aria-required={!!onPost} />
-          {onPost && <p className="text-sm text-[#6E6963] mt-1">
+          {onPost && <p className="text-sm text-[#687169] mt-1">
             {lang === 'ne' ? 'यो स्थान काम खोज्ने व्यक्तिहरूलाई देखिन्छ।' : 'This location will appear on the public job listing.'}
           </p>}
         </div>
@@ -227,7 +227,7 @@ export function ClientView({ t, lang, navTo, showToast, clientJobs, setClientJob
       <div className={`${CL_CARD} space-y-4`}>
         <div>
           <div className={CL_LABEL}>{t('cl_f_deliv')}</div>
-          <p className="text-sm text-[#6E6963] mt-1">{lang === 'ne'
+          <p className="text-sm text-[#687169] mt-1">{lang === 'ne'
             ? 'फ्रीलान्सरले ठीक के बुझाउनुपर्छ, स्पष्ट लेख्नुहोस्। अस्पष्ट डेलिभरेबल नै विवादको मुख्य कारण हो। हरेक डेलिभरेबलको नाम, ठीक वर्णन, सङ्ख्या, ढाँचा र अधिकतम साइज दिनुहोस्।'
             : 'Say exactly what the freelancer must hand over. Vague deliverables are the top cause of disputes. Give every deliverable a name, an exact description, a quantity, formats and a max file size.'}</p>
         </div>
@@ -244,7 +244,7 @@ export function ClientView({ t, lang, navTo, showToast, clientJobs, setClientJob
             set(next);
           };
           return (
-            <div key={i} className="border border-[#e5e7dd] rounded-[14px] p-4 space-y-3">
+            <div key={i} className="border border-[#E3E6E1] rounded-[14px] p-4 space-y-3">
               <div className="flex items-center justify-between gap-2">
                 <span className="font-semibold text-base">{lang === 'ne' ? `डेलिभरेबल ${digits(i + 1)}` : `Deliverable ${digits(i + 1)}`}</span>
                 {specs.length > 1 && (
@@ -283,7 +283,7 @@ export function ClientView({ t, lang, navTo, showToast, clientJobs, setClientJob
                     const on = s.formats.includes(f);
                     return (
                       <button key={f} type="button" aria-pressed={on} onClick={() => toggleFormat(f)}
-                        className={`min-h-[38px] px-3 rounded-full border text-sm font-semibold uppercase ${on ? 'bg-[#FAF0EE] border-[#59684a] text-[#AE332A]' : 'bg-white border-[#e5e7dd] text-[#4A4744] hover:bg-[#F6F4EF]'}`}>
+                        className={`min-h-[38px] px-3 rounded-full border text-sm font-semibold uppercase ${on ? 'bg-[#FAF0EE] border-[#003D14] text-[#AE332A]' : 'bg-white border-[#E3E6E1] text-[#475249] hover:bg-[#F7F7F4]'}`}>
                         {f}
                       </button>
                     );
@@ -308,7 +308,7 @@ export function ClientView({ t, lang, navTo, showToast, clientJobs, setClientJob
           );
         })}
         {specs.length < 5 && (
-          <button type="button" onClick={() => setSpecs(prev => [...prev, emptySpec()])} className="min-h-[48px] px-5 rounded-full bg-white border border-[#E3E0D9] text-[#1C1B1A] font-semibold text-base hover:bg-[#F6F4EF] flex items-center gap-2">
+          <button type="button" onClick={() => setSpecs(prev => [...prev, emptySpec()])} className="min-h-[48px] px-5 rounded-full bg-white border border-[#E3E6E1] text-[#141614] font-semibold text-base hover:bg-[#F7F7F4] flex items-center gap-2">
             <Plus size={20} /> {t('cl_add_one')}
           </button>
         )}
@@ -321,7 +321,7 @@ export function ClientView({ t, lang, navTo, showToast, clientJobs, setClientJob
             const on = skills.includes(sk);
             return (
               <button key={sk} type="button" aria-pressed={on} onClick={() => setSkills(prev => prev.includes(sk) ? prev.filter(x => x !== sk) : [...prev, sk])}
-                className={`min-h-[44px] px-4 rounded-full border text-base font-medium ${on ? 'bg-[#FAF0EE] border-[#59684a] text-[#AE332A]' : 'bg-white border-[#e5e7dd] text-[#4A4744] hover:bg-[#F6F4EF]'}`}>
+                className={`min-h-[44px] px-4 rounded-full border text-base font-medium ${on ? 'bg-[#FAF0EE] border-[#003D14] text-[#AE332A]' : 'bg-white border-[#E3E6E1] text-[#475249] hover:bg-[#F7F7F4]'}`}>
                 {sk}
               </button>
             );
@@ -333,7 +333,7 @@ export function ClientView({ t, lang, navTo, showToast, clientJobs, setClientJob
         <div>
           <label htmlFor="cl-budget" className={CL_LABEL}>{t('cl_f_budget')}</label>
           <input id="cl-budget" type="number" inputMode="numeric" min="1" value={budget} onChange={e => setBudget(e.target.value)} className={CL_INPUT} />
-          {budgetHint && <p className="text-sm text-[#6E6963] mt-1">{lang === 'ne'
+          {budgetHint && <p className="text-sm text-[#687169] mt-1">{lang === 'ne'
             ? `यस किसिमको कामको उचित दायरा: $${budgetHint[0]}–$${budgetHint[1]} (NPR ${fmtMoney(budgetHint[0] * 133)}–${fmtMoney(budgetHint[1] * 133)})`
             : `Fair range for this kind of work: $${budgetHint[0]}–$${budgetHint[1]} (NPR ${fmtMoney(budgetHint[0] * 133)}–${fmtMoney(budgetHint[1] * 133)})`}</p>}
         </div>
@@ -367,37 +367,37 @@ export function ClientView({ t, lang, navTo, showToast, clientJobs, setClientJob
       {error && (
         <div role="alert" className="bg-[#FAF0EE] border border-[#F3E1DD] rounded-[14px] p-4 flex items-start gap-3">
           <AlertTriangle size={20} className="shrink-0 mt-0.5 text-[#AE332A]" />
-          <p className="text-base text-[#1C1B1A]">{t('cl_error')}</p>
+          <p className="text-base text-[#141614]">{t('cl_error')}</p>
         </div>
       )}
-      <button type="button" onClick={submit} className="w-full bg-[#59684a] text-white py-3.5 rounded-full font-semibold text-lg hover:bg-[#415947] min-h-[52px]">
+      <button type="button" onClick={submit} className="w-full bg-[#003D14] text-white py-3.5 rounded-full font-semibold text-lg hover:bg-[#0E5C2A] min-h-[52px]">
         {t('cl_submit')}
       </button>
 
       <div ref={mineRef} className="pt-4 scroll-mt-24">
         <h2 className="text-[22px] font-semibold mb-4">{t('cl_my_jobs')}</h2>
         {clientJobs.length === 0 ? (
-          <p className="text-base text-[#4A4744]">{t('cl_none')}</p>
+          <p className="text-base text-[#475249]">{t('cl_none')}</p>
         ) : (
           <div className="space-y-4">
             {clientJobs.map(j => (
               <div key={j.id} className={CL_CARD}>
                 <div className="font-semibold text-xl mb-1 break-words">{j.title}</div>
-                {onPost && j.status && <span className="inline-block bg-[#F0EEE9] text-[#4A4744] px-3 py-1 rounded-full text-[13px] mb-2 mr-2">{j.status === 'pending_review' ? (lang === 'ne' ? 'समीक्षामा' : 'Pending review') : j.status === 'published' ? (lang === 'ne' ? 'प्रकाशित' : 'Published') : j.status === 'rejected' ? (lang === 'ne' ? 'अस्वीकृत' : 'Rejected') : (lang === 'ne' ? 'बन्द' : 'Closed')}</span>}
+                {onPost && j.status && <span className="inline-block bg-[#E7F0E9] text-[#475249] px-3 py-1 rounded-full text-[13px] mb-2 mr-2">{j.status === 'pending_review' ? (lang === 'ne' ? 'समीक्षामा' : 'Pending review') : j.status === 'published' ? (lang === 'ne' ? 'प्रकाशित' : 'Published') : j.status === 'rejected' ? (lang === 'ne' ? 'अस्वीकृत' : 'Rejected') : (lang === 'ne' ? 'बन्द' : 'Closed')}</span>}
                 {j.seededDemo && (
-                  <span className="inline-block bg-[#F0EEE9] text-[#1C1B1A] px-3 py-1 rounded-full text-[13px] font-semibold mb-2">{t('cm_seed_chip')}</span>
+                  <span className="inline-block bg-[#E7F0E9] text-[#141614] px-3 py-1 rounded-full text-[13px] font-semibold mb-2">{t('cm_seed_chip')}</span>
                 )}
-                <div className="text-base text-[#4A4744] mb-4">{j.clientName} · ${fmtMoney(j.budgetUSD)} (NPR {fmtMoney(j.budgetUSD * 133)}) · {fmt(t('wr_days'), { days: digits(j.deadlineDays) })}</div>
+                <div className="text-base text-[#475249] mb-4">{j.clientName} · ${fmtMoney(j.budgetUSD)} (NPR {fmtMoney(j.budgetUSD * 133)}) · {fmt(t('wr_days'), { days: digits(j.deadlineDays) })}</div>
                 {j.accepted && (
                   <div className="bg-[#FAF0EE] border border-[#F3E1DD] rounded-[14px] p-4 mb-4 space-y-2">
-                    <div className="flex items-start gap-2 text-base font-semibold text-[#1C1B1A]"><CheckCircle2 size={20} className="shrink-0 mt-0.5 text-[#59684a]" /> <span>{fmt(t('ag_made'), { name: j.accepted.applicantName })}</span></div>
-                    <p className="text-base text-[#4A4744]">{t('ag_full_product')}</p>
+                    <div className="flex items-start gap-2 text-base font-semibold text-[#141614]"><CheckCircle2 size={20} className="shrink-0 mt-0.5 text-[#003D14]" /> <span>{fmt(t('ag_made'), { name: j.accepted.applicantName })}</span></div>
+                    <p className="text-base text-[#475249]">{t('ag_full_product')}</p>
                   </div>
                 )}
-                <button onClick={() => navTo('client-applicants', { id: j.id })} className="w-full sm:w-auto bg-[#59684a] text-white px-6 rounded-full font-semibold text-base hover:bg-[#415947] min-h-[48px]">
+                <button onClick={() => navTo('client-applicants', { id: j.id })} className="w-full sm:w-auto bg-[#003D14] text-white px-6 rounded-full font-semibold text-base hover:bg-[#0E5C2A] min-h-[48px]">
                   {t('cl_view_applicants')}
                 </button>
-                <button type="button" onClick={() => navTo('job-feedback', { id: j.id })} className="ml-0 sm:ml-3 mt-2 sm:mt-0 rounded-full border border-[#d6ded2] px-5 min-h-[44px] font-semibold text-sm text-[#59684a]">Read worker feedback</button>
+                <button type="button" onClick={() => navTo('job-feedback', { id: j.id })} className="ml-0 sm:ml-3 mt-2 sm:mt-0 rounded-full border border-[#d6ded2] px-5 min-h-[44px] font-semibold text-sm text-[#003D14]">Read worker feedback</button>
               </div>
             ))}
           </div>

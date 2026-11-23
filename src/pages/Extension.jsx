@@ -71,38 +71,38 @@ function ExtensionPairing({ connected, lang }) {
     try { await navigator.clipboard.writeText(text); setCopied(kind); }
     catch { setError(t.failed); }
   };
-  return <section className="bg-white border border-[#e5e7dd] rounded-[20px] p-5 sm:p-6 space-y-4">
-    <div className="flex items-start gap-3"><Link2 className="shrink-0 text-[#59684a] mt-1" size={24} />
-      <div><h2 className="font-semibold text-[21px]">{t.title}</h2><p className="mt-2 text-[#4A4744]">{t.description}</p></div>
+  return <section className="bg-white border border-[#E3E6E1] rounded-[20px] p-5 sm:p-6 space-y-4">
+    <div className="flex items-start gap-3"><Link2 className="shrink-0 text-[#003D14] mt-1" size={24} />
+      <div><h2 className="font-semibold text-[21px]">{t.title}</h2><p className="mt-2 text-[#475249]">{t.description}</p></div>
     </div>
-    {!connected ? <p className="bg-[#F6F4EF] rounded-xl p-4">{t.signIn}</p> : <>
+    {!connected ? <p className="bg-[#F7F7F4] rounded-xl p-4">{t.signIn}</p> : <>
       <button type="button" onClick={generate} disabled={busy}
-        className="inline-flex items-center gap-2 min-h-[48px] rounded-full px-5 font-semibold text-white bg-[#59684a] hover:bg-[#415947] disabled:opacity-50">
+        className="inline-flex items-center gap-2 min-h-[48px] rounded-full px-5 font-semibold text-white bg-[#003D14] hover:bg-[#0E5C2A] disabled:opacity-50">
         <PlugZap size={19}/>{busy ? t.generating : t.create}
       </button>
       {code && Date.now() < expires && <div className="rounded-[14px] bg-[#FAF0EE] border border-[#F3E1DD] p-4 space-y-2" role="status">
         <p className="font-medium">{t.code}</p>
         <div className="flex flex-wrap items-center gap-3"><code className="font-mono text-xl font-bold tracking-[0.12em] select-all break-all">{code}</code>
-          <button type="button" onClick={() => copy(code, 'code')} className="rounded-full px-4 min-h-[42px] bg-white border border-[#E3E0D9] inline-flex items-center gap-2"><Copy size={16}/>{copied === 'code' ? t.copied : t.copy}</button>
+          <button type="button" onClick={() => copy(code, 'code')} className="rounded-full px-4 min-h-[42px] bg-white border border-[#E3E6E1] inline-flex items-center gap-2"><Copy size={16}/>{copied === 'code' ? t.copied : t.copy}</button>
         </div>
-        <p className="text-sm text-[#4A4744]">{t.expires}</p>
+        <p className="text-sm text-[#475249]">{t.expires}</p>
       </div>}
-      <div className="rounded-[14px] bg-[#F6F4EF] p-4 space-y-2">
+      <div className="rounded-[14px] bg-[#F7F7F4] p-4 space-y-2">
         <p className="font-medium">{t.endpoint}</p>
         <div className="flex flex-wrap items-center gap-2"><code className="min-w-0 break-all text-sm">{apiAddress}</code>
-          <button type="button" onClick={() => copy(apiAddress, 'url')} className="rounded-full px-4 min-h-[42px] bg-white border border-[#E3E0D9] inline-flex items-center gap-2"><Copy size={16}/>{copied === 'url' ? t.copied : t.copy}</button>
+          <button type="button" onClick={() => copy(apiAddress, 'url')} className="rounded-full px-4 min-h-[42px] bg-white border border-[#E3E6E1] inline-flex items-center gap-2"><Copy size={16}/>{copied === 'url' ? t.copied : t.copy}</button>
         </div>
-        <p className="text-sm text-[#6E6963]">{t.addressHelp}</p>
+        <p className="text-sm text-[#687169]">{t.addressHelp}</p>
       </div>
       <h3 className="font-semibold">{t.existing}</h3>
-      {!sessions.length && <p className="text-[#6E6963]">{t.none}</p>}
-      {sessions.map(item => <div key={item.id} className="flex gap-3 items-center justify-between border-t border-[#e5e7dd] pt-3">
+      {!sessions.length && <p className="text-[#687169]">{t.none}</p>}
+      {sessions.map(item => <div key={item.id} className="flex gap-3 items-center justify-between border-t border-[#E3E6E1] pt-3">
         <span className="text-sm">{item.label} · {new Date(item.created_at).toLocaleDateString(lang === 'ne' ? 'ne-NP' : 'en-US')}</span>
-        <button type="button" onClick={() => revoke(item.id)} className="inline-flex gap-1 items-center rounded-full px-3 min-h-[42px] border border-[#E3E0D9] hover:bg-[#FAF0EE] text-sm"><Trash2 size={15}/>{t.revoke}</button>
+        <button type="button" onClick={() => revoke(item.id)} className="inline-flex gap-1 items-center rounded-full px-3 min-h-[42px] border border-[#E3E6E1] hover:bg-[#FAF0EE] text-sm"><Trash2 size={15}/>{t.revoke}</button>
       </div>)}
     </>}
     {error && <p role="alert" className="rounded-xl bg-[#FAF0EE] p-3 text-[#AE332A]">{error}</p>}
-    <p className="flex gap-2 text-sm text-[#6E6963]"><Lock size={16} className="shrink-0 mt-1"/>{t.privacy}</p>
+    <p className="flex gap-2 text-sm text-[#687169]"><Lock size={16} className="shrink-0 mt-1"/>{t.privacy}</p>
   </section>;
 }
 
@@ -123,9 +123,9 @@ export function ExtensionPage({ t, lang, navTo, connected = false }) {
     }
   };
 
-  const Bang = () => <span className="shrink-0 w-6 h-6 rounded-full bg-[#FAF0EE] text-[#59684a] text-sm font-bold flex items-center justify-center mt-0.5" aria-hidden="true">!</span>;
+  const Bang = () => <span className="shrink-0 w-6 h-6 rounded-full bg-[#FAF0EE] text-[#003D14] text-sm font-bold flex items-center justify-center mt-0.5" aria-hidden="true">!</span>;
   const Card = ({ title, children, className = "" }) => (
-    <div className={`bg-white border border-[#e5e7dd] rounded-[20px] p-6 sm:p-6 ${className}`}>
+    <div className={`bg-white border border-[#E3E6E1] rounded-[20px] p-6 sm:p-6 ${className}`}>
       <h2 className="font-semibold text-[22px] mb-5">{title}</h2>
       {children}
     </div>
@@ -141,7 +141,7 @@ export function ExtensionPage({ t, lang, navTo, connected = false }) {
       {/* A1 header */}
       <div>
         <h1 className="text-[28px] sm:text-[30px] font-semibold mb-3">{t('ex_title')}</h1>
-        <p className="text-lg text-[#4A4744]">{t('ex_intro')}</p>
+        <p className="text-lg text-[#475249]">{t('ex_intro')}</p>
       </div>
 
       {/* A2 how it works */}
@@ -149,9 +149,9 @@ export function ExtensionPage({ t, lang, navTo, connected = false }) {
         <h2 className="font-semibold text-[22px] mb-4">{t('ex_how_title')}</h2>
         <div className="grid gap-4 sm:grid-cols-3">
           {[1, 2, 3].map(n => (
-            <div key={n} className="bg-white border border-[#e5e7dd] rounded-[20px] p-5 sm:p-6">
+            <div key={n} className="bg-white border border-[#E3E6E1] rounded-[20px] p-5 sm:p-6">
               <span className="w-9 h-9 rounded-full bg-[#FAF0EE] text-[#AE332A] flex items-center justify-center font-semibold mb-3">{num(n)}</span>
-              <p className="text-base text-[#1C1B1A] font-medium">{t('ex_s' + n)}</p>
+              <p className="text-base text-[#141614] font-medium">{t('ex_s' + n)}</p>
             </div>
           ))}
         </div>
@@ -160,46 +160,46 @@ export function ExtensionPage({ t, lang, navTo, connected = false }) {
       {/* A3 practice simulation */}
       <div id="extension-demo" className="scroll-mt-28">
         <h2 className="font-semibold text-[22px] mb-2">{t('ex_try_title')}</h2>
-        <p className="text-base text-[#4A4744] mb-4">{t('ex_try_line')}</p>
+        <p className="text-base text-[#475249] mb-4">{t('ex_try_line')}</p>
 
-        <div className="inline-flex bg-[#F0EEE9] rounded-full p-1 mb-4" role="group">
+        <div className="inline-flex bg-[#E7F0E9] rounded-full p-1 mb-4" role="group">
           {[['job', 'ex_tab_job'], ['chat', 'ex_tab_chat']].map(([k, label]) => (
             <button key={k} onClick={() => switchTab(k)} aria-pressed={tab === k}
-              className={`rounded-full px-5 py-2 text-[15px] font-medium min-h-[44px] transition-all ${tab === k ? 'bg-white text-[#1C1B1A] shadow-[0_1px_2px_rgba(28,27,26,0.08)]' : 'text-[#8A8580] hover:text-[#4A4744]'}`}>
+              className={`rounded-full px-5 py-2 text-[15px] font-medium min-h-[44px] transition-all ${tab === k ? 'bg-white text-[#141614] shadow-[0_1px_2px_rgba(28,27,26,0.08)]' : 'text-[#70776F] hover:text-[#475249]'}`}>
               {t(label)}
             </button>
           ))}
         </div>
 
         {/* fake browser window */}
-        <div className={`relative bg-white border border-[#e5e7dd] rounded-[20px] overflow-hidden `}>
-          <div className="flex items-center gap-3 px-4 py-3 bg-[#F0EEE9] border-b border-[#e5e7dd]">
+        <div className={`relative bg-white border border-[#E3E6E1] rounded-[20px] overflow-hidden `}>
+          <div className="flex items-center gap-3 px-4 py-3 bg-[#E7F0E9] border-b border-[#E3E6E1]">
             <div className="flex gap-1.5" aria-hidden="true">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#D8D4CC]" /><span className="w-2.5 h-2.5 rounded-full bg-[#D8D4CC]" /><span className="w-2.5 h-2.5 rounded-full bg-[#D8D4CC]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#D6E2D8]" /><span className="w-2.5 h-2.5 rounded-full bg-[#D6E2D8]" /><span className="w-2.5 h-2.5 rounded-full bg-[#D6E2D8]" />
             </div>
-            <div className="flex-1 min-w-0 bg-white rounded-full px-4 py-1.5 text-sm text-[#8A8580] truncate">{t(isJob ? 'ex_addr_job' : 'ex_addr_chat')}</div>
+            <div className="flex-1 min-w-0 bg-white rounded-full px-4 py-1.5 text-sm text-[#70776F] truncate">{t(isJob ? 'ex_addr_job' : 'ex_addr_chat')}</div>
           </div>
           <div className="sm:flex sm:items-start sm:gap-4 sm:p-6">
           <div className="p-5 sm:p-0 sm:flex-1 sm:min-w-0">
-            <div className="text-sm text-[#8A8580] mb-3">{t(isJob ? 'ex_label_job' : 'ex_label_chat')}</div>
+            <div className="text-sm text-[#70776F] mb-3">{t(isJob ? 'ex_label_job' : 'ex_label_chat')}</div>
             {isJob ? (
-              <div className="border border-[#e5e7dd] rounded-[14px] p-4 ">
-                <p className="text-base text-[#1C1B1A] leading-relaxed"><span className={result ? 'bg-[#FAF0EE] underline decoration-[#C73E33]/40' : ''}>{mockText}</span></p>
+              <div className="border border-[#E3E6E1] rounded-[14px] p-4 ">
+                <p className="text-base text-[#141614] leading-relaxed"><span className={result ? 'bg-[#FAF0EE] underline decoration-[#C73E33]/40' : ''}>{mockText}</span></p>
               </div>
             ) : (
-              <div className="bg-[#F0EEE9] rounded-[20px] rounded-tl-md px-4 py-3 ">
-                <p className="text-base text-[#1C1B1A] leading-relaxed"><span className={result ? 'bg-[#FAF0EE] underline decoration-[#C73E33]/40' : ''}>{mockText}</span></p>
+              <div className="bg-[#E7F0E9] rounded-[20px] rounded-tl-md px-4 py-3 ">
+                <p className="text-base text-[#141614] leading-relaxed"><span className={result ? 'bg-[#FAF0EE] underline decoration-[#C73E33]/40' : ''}>{mockText}</span></p>
               </div>
             )}
           </div>
 
           {/* extension-style popup overlay (sits beside the post on wide screens, below it on phones) */}
           {result && (
-            <div className="m-3 sm:m-0 sm:w-[360px] sm:shrink-0 bg-white border border-[#e5e7dd] rounded-[14px] p-4 shadow-[0_2px_10px_rgba(28,27,26,0.08)]" role="dialog" aria-label="WorkShield">
+            <div className="m-3 sm:m-0 sm:w-[360px] sm:shrink-0 bg-white border border-[#E3E6E1] rounded-[14px] p-4 shadow-[0_2px_10px_rgba(28,27,26,0.08)]" role="dialog" aria-label="WorkShield">
               <div className="flex items-center gap-2 mb-3">
-                <Shield size={22} className="text-[#59684a]" />
+                <Shield size={22} className="text-[#003D14]" />
                 <span className="font-semibold">WorkShield</span>
-                <span className="text-sm text-[#8A8580]">{t('ex_pop_by')}</span>
+                <span className="text-sm text-[#70776F]">{t('ex_pop_by')}</span>
               </div>
               {result.kind === 'job' ? (
                 <>
@@ -215,23 +215,23 @@ export function ExtensionPage({ t, lang, navTo, connected = false }) {
                   <div className="space-y-3 mb-4">
                     {result.cats.map(id => (
                       <div key={id} className="flex items-start gap-3 text-base"><Bang />
-                        <span><span className="block font-semibold text-[#1C1B1A]">{SAFETY_DATA[id].name[lang]}</span>{SAFETY_DATA[id].expl[lang]}</span>
+                        <span><span className="block font-semibold text-[#141614]">{SAFETY_DATA[id].name[lang]}</span>{SAFETY_DATA[id].expl[lang]}</span>
                       </div>
                     ))}
                   </div>
                 </>
               )}
-              <p className="text-sm text-[#8A8580] mb-4 flex items-center gap-1.5"><Lock size={14} className="shrink-0" /> {t('sh_private')}</p>
+              <p className="text-sm text-[#70776F] mb-4 flex items-center gap-1.5"><Lock size={14} className="shrink-0" /> {t('sh_private')}</p>
               <div className="flex gap-2">
-                <button onClick={() => navTo(result.kind === 'job' ? 'shield' : 'safety')} className="flex-1 bg-[#59684a] text-white rounded-full font-semibold text-base hover:bg-[#415947] min-h-[44px] px-3">{t(result.kind === 'job' ? 'ex_open_full' : 'ex_open_safety')}</button>
-                <button onClick={() => setResult(null)} className="bg-white border border-[#E3E0D9] text-[#1C1B1A] rounded-full font-semibold text-base hover:bg-[#F6F4EF] min-h-[44px] px-5">{t('ex_close')}</button>
+                <button onClick={() => navTo(result.kind === 'job' ? 'shield' : 'safety')} className="flex-1 bg-[#003D14] text-white rounded-full font-semibold text-base hover:bg-[#0E5C2A] min-h-[44px] px-3">{t(result.kind === 'job' ? 'ex_open_full' : 'ex_open_safety')}</button>
+                <button onClick={() => setResult(null)} className="bg-white border border-[#E3E6E1] text-[#141614] rounded-full font-semibold text-base hover:bg-[#F7F7F4] min-h-[44px] px-5">{t('ex_close')}</button>
               </div>
             </div>
           )}
           </div>
         </div>
 
-        <button onClick={runCheck} className="mt-4 w-full sm:w-auto sm:px-10 bg-[#59684a] text-white py-3.5 rounded-full font-semibold text-base hover:bg-[#415947] min-h-[52px] px-5">{t(isJob ? 'ex_btn_job' : 'ex_btn_chat')}</button>
+        <button onClick={runCheck} className="mt-4 w-full sm:w-auto sm:px-10 bg-[#003D14] text-white py-3.5 rounded-full font-semibold text-base hover:bg-[#0E5C2A] min-h-[52px] px-5">{t(isJob ? 'ex_btn_job' : 'ex_btn_chat')}</button>
       </div>
 
       {/* Account pairing is optional and cannot access a user's password. */}
@@ -239,23 +239,23 @@ export function ExtensionPage({ t, lang, navTo, connected = false }) {
 
       {/* A4 install steps */}
       <Card title={t('ex_inst_title')}>
-        <ol className="space-y-4 text-base text-[#1C1B1A]">
+        <ol className="space-y-4 text-base text-[#141614]">
           {[1, 2, 3, 4].map(n => (
             <li key={n} className="flex items-start gap-3">
-              <span className="shrink-0 w-7 h-7 rounded-full bg-[#F0EEE9] flex items-center justify-center text-sm font-semibold">{num(n)}</span>
+              <span className="shrink-0 w-7 h-7 rounded-full bg-[#E7F0E9] flex items-center justify-center text-sm font-semibold">{num(n)}</span>
               <span className="flex-1">{t('ex_i' + n)}</span>
             </li>
           ))}
         </ol>
-        <p className="mt-5 text-base font-semibold text-[#1C1B1A] flex items-center gap-2"><Check size={20} className="text-[#59684a] shrink-0" /> {t('ex_i_note')}</p>
+        <p className="mt-5 text-base font-semibold text-[#141614] flex items-center gap-2"><Check size={20} className="text-[#003D14] shrink-0" /> {t('ex_i_note')}</p>
       </Card>
 
       {/* A5 privacy */}
       <div>
         <Card title={t('ex_priv_title')}>
-          <div className="space-y-4 text-base text-[#1C1B1A]">
+          <div className="space-y-4 text-base text-[#141614]">
             {[1, 2, 3].map(n => (
-              <div key={n} className="flex items-start gap-3"><Lock size={20} className="shrink-0 mt-0.5 text-[#59684a]" /> <span>{t('ex_p' + n)}</span></div>
+              <div key={n} className="flex items-start gap-3"><Lock size={20} className="shrink-0 mt-0.5 text-[#003D14]" /> <span>{t('ex_p' + n)}</span></div>
             ))}
           </div>
         </Card>

@@ -12,7 +12,7 @@ export function CVImport({ user, onSave, lang='en' }) {
       const data=await response.json();if(!response.ok)throw new Error(data.detail||JSON.stringify(data));setPreview(data);
     }catch(err){setError(err.message||'CV import failed.');}finally{setLoading(false);}}
   function save(){if(!preview)return;onSave({...user,...preview, skills:[...new Set([...(user.skills||[]),...(preview.skills||[])])],onboarded:true});setPreview(null);}
-  return <section className="bg-white border border-[#e5e7dd] rounded-2xl p-5 space-y-3">
+  return <section className="bg-white border border-[#E3E6E1] rounded-2xl p-5 space-y-3">
     <h3 className="font-semibold text-lg">{ne?'CV बाट प्रोफाइल भर्नुहोस्':'Import your CV'}</h3>
     <p className="text-sm text-gray-600">{ne?'PDF वा DOCX (३ MB सम्म)। सुरक्षित गर्नु अघि जाँच्नुहोस्।':'Upload a text-based PDF or DOCX (up to 3 MB). Review extracted details before saving. Scanned files may not work.'}</p>
     <input type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={upload} aria-label="CV file"/>
@@ -22,7 +22,7 @@ export function CVImport({ user, onSave, lang='en' }) {
       <label className="block">Headline<input className="border rounded p-2 w-full" value={preview.headline||''} onChange={e=>setPreview({...preview,headline:e.target.value})}/></label>
       <label className="block">About<textarea className="border rounded p-2 w-full" rows={3} value={preview.about||''} onChange={e=>setPreview({...preview,about:e.target.value})}/></label>
       <label className="block">Skills (comma-separated)<input className="border rounded p-2 w-full" value={(preview.skills||[]).join(', ')} onChange={e=>setPreview({...preview,skills:e.target.value.split(',').map(x=>x.trim()).filter(Boolean).slice(0,30)})}/></label>
-      <button onClick={save} className="bg-[#59684a] text-white rounded-full px-5 py-3">{ne?'जाँचेर सुरक्षित गर्नुहोस्':'Save reviewed details'}</button>
+      <button onClick={save} className="bg-[#003D14] text-white rounded-full px-5 py-3">{ne?'जाँचेर सुरक्षित गर्नुहोस्':'Save reviewed details'}</button>
     </div>}
   </section>;
 }

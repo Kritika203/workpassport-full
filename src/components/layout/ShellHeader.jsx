@@ -1,6 +1,6 @@
-import { Bell, ChevronDown, Menu, X } from 'lucide-react';
+import { ChevronDown, Menu, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { NotificationBell, PassportShieldIcon } from './Header.jsx';
+import { NotificationBell } from './Header.jsx';
 import './ShellHeader.css';
 
 /** Compact, accessible navigation shared by workers and employers. */
@@ -52,19 +52,11 @@ export function ShellHeader({ mode = 'worker', lang = 'en', setLang, currentView
   const toggle = id => setOpen(prev => prev === id ? '' : id);
   return <nav className="vouch-shell" aria-label={isClient ? 'Employer navigation' : 'Vouch navigation'} ref={root}>
     <div className="vouch-shell-inner">
-      <button type="button" className="vouch-shell-logo" onClick={() => navigate(isClient ? 'client' : 'firstwork')} aria-label="WorkPassport home"><PassportShieldIcon color="#28563e" size={24}/><span>WorkPassport</span></button>
+      <button type="button" className="vouch-shell-logo" onClick={() => navigate(isClient ? 'client' : 'firstwork')} aria-label="Vouch home"><span>vouch<span className="vouch-shell-dot">.</span></span></button>
       <div className="vouch-shell-links">
         {links.map(item => <button key={item.view} type="button" onClick={() => pick(item)} className={item.active ? 'is-current' : ''} aria-current={item.active ? 'page' : undefined}>{item.label}</button>)}
       </div>
       <div className="vouch-shell-actions">
-        <div className="vouch-shell-more">
-          <button type="button" aria-expanded={open === 'more'} aria-haspopup="true" className="vouch-shell-secondary" onClick={() => toggle('more')}>{words.more}<ChevronDown size={15} aria-hidden="true"/></button>
-          {open === 'more' && <div className="vouch-shell-popover vouch-shell-more-popover" role="menu">
-            <button type="button" role="menuitem" onClick={() => navigate('payments')}>{words.payments}</button>
-            {!isClient && <><button type="button" role="menuitem" onClick={() => navigate('skillbridge')}>{words.learning}</button><button type="button" role="menuitem" onClick={() => navigate('ext')}>{words.extension}</button></>}
-            {isClient && <button type="button" role="menuitem" onClick={() => { setOpen(''); onPost?.(); }}>{words.post}</button>}
-          </div>}
-        </div>
         {!isClient && <NotificationBell t={t} priv={sharedOn} connected={connected} />}
         <button type="button" className="vouch-shell-language" onClick={() => setLang(lang === 'en' ? 'ne' : 'en')} title="Switch language" aria-label={lang === 'en' ? 'Switch to Nepali' : 'Switch to English'}>{lang === 'en' ? 'EN' : 'ने'}</button>
         <div className="vouch-shell-user">
@@ -72,6 +64,9 @@ export function ShellHeader({ mode = 'worker', lang = 'en', setLang, currentView
           {open === 'account' && <div className="vouch-shell-popover vouch-shell-account-menu" role="menu">
             <p className="vouch-shell-menu-heading">{first} · {words.account}</p>
             {!isClient && <button type="button" role="menuitem" onClick={() => navigate('passport')}>{words.passport}</button>}
+            <button type="button" role="menuitem" onClick={() => navigate('payments')}>{words.payments}</button>
+            {!isClient && <><button type="button" role="menuitem" onClick={() => navigate('skillbridge')}>{words.learning}</button><button type="button" role="menuitem" onClick={() => navigate('ext')}>{words.extension}</button></>}
+            {isClient && <button type="button" role="menuitem" onClick={() => { setOpen(''); onPost?.(); }}>{words.post}</button>}
             <button type="button" role="menuitem" aria-pressed={lowData} onClick={() => { onToggleLowData?.(); setOpen(''); }}>{lowData ? words.normal : words.lowData}</button>
             {sharedOn && onQuickHide && <button type="button" role="menuitem" onClick={() => { setOpen(''); onQuickHide(); }}>{words.quickHide}</button>}
             {sharedOn && onLock && <button type="button" role="menuitem" onClick={() => { setOpen(''); onLock(); }}>{words.lock}</button>}

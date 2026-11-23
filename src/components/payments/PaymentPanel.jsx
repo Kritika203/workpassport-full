@@ -7,9 +7,9 @@ import { PROVIDER_URLS, downloadPaymentFile, fileToUpload, methodRows, payCopy }
 // DirectPay panel inside a Workroom milestone. Shown once the milestone is
 // approved (released). The employer pays directly in their own app, records
 // the transaction here, and only the freelancer can confirm receipt.
-const field = 'w-full mt-1 px-4 border border-[#e5e7dd] rounded-[12px] text-base min-h-[44px] bg-white focus:outline-none focus:border-[#59684a]';
-const redBtn = 'px-5 rounded-full bg-[#59684a] text-white font-semibold min-h-[44px] hover:bg-[#415947] disabled:opacity-50 inline-flex items-center gap-2';
-const ghostBtn = 'px-4 rounded-full border border-[#e5e7dd] bg-white font-semibold min-h-[40px] hover:border-[#DDD8CE] inline-flex items-center gap-1.5 disabled:opacity-50';
+const field = 'w-full mt-1 px-4 border border-[#E3E6E1] rounded-[12px] text-base min-h-[44px] bg-white focus:outline-none focus:border-[#003D14]';
+const redBtn = 'px-5 rounded-full bg-[#003D14] text-white font-semibold min-h-[44px] hover:bg-[#0E5C2A] disabled:opacity-50 inline-flex items-center gap-2';
+const ghostBtn = 'px-4 rounded-full border border-[#E3E6E1] bg-white font-semibold min-h-[40px] hover:border-[#DDD8CE] inline-flex items-center gap-1.5 disabled:opacity-50';
 
 function StatusChip({ status, lang }) {
   const s = payCopy(lang);
@@ -53,9 +53,9 @@ export function PaymentPanel({ payment, milestone, isClient, lang, refresh, show
   if (!payment) {
     if (!isClient) return null;
     return (
-      <section className="mt-3 rounded-xl border border-[#e5e7dd] bg-white p-4 space-y-2">
-        <div className="flex items-center gap-2 font-semibold"><Wallet size={18} className="text-[#59684a]" /> {s.title}</div>
-        <p className="text-sm text-[#4A4744]">{s.startNote}</p>
+      <section className="mt-3 rounded-xl border border-[#E3E6E1] bg-white p-4 space-y-2">
+        <div className="flex items-center gap-2 font-semibold"><Wallet size={18} className="text-[#003D14]" /> {s.title}</div>
+        <p className="text-sm text-[#475249]">{s.startNote}</p>
         <button type="button" className={redBtn} disabled={busy}
           onClick={() => run(() => flow('payments/start/', { method: 'POST', body: { milestone_id: milestone.id } }))}>
           {s.payBtn}
@@ -92,20 +92,20 @@ export function PaymentPanel({ payment, milestone, isClient, lang, refresh, show
   };
 
   return (
-    <section className="mt-3 rounded-xl border border-[#e5e7dd] bg-white p-4 space-y-3">
+    <section className="mt-3 rounded-xl border border-[#E3E6E1] bg-white p-4 space-y-3">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="flex items-center gap-2 font-semibold"><Wallet size={18} className="text-[#59684a]" /> {s.title}</span>
+        <span className="flex items-center gap-2 font-semibold"><Wallet size={18} className="text-[#003D14]" /> {s.title}</span>
         <StatusChip status={payment.status} lang={lang} />
         {payment.attempt > 1 && <span className="text-sm text-[#6B6561]">#{payment.attempt}</span>}
       </div>
-      <p className="text-sm text-[#4A4744]">{s.agreed}: <strong>${payment.agreed_amount_usd}</strong>
+      <p className="text-sm text-[#475249]">{s.agreed}: <strong>${payment.agreed_amount_usd}</strong>
         {payment.reported_amount_usd && <> · {s.status.sent}: <strong>${payment.reported_amount_usd}</strong></>}
         {payment.transaction_ref && <> · {payment.transaction_ref}</>}
         {payment.paid_date && <> · {payment.paid_date}</>}
       </p>
 
       {(payment.status === 'awaiting_payment' || payment.status === 'sent') && (
-        <div className="rounded-[12px] bg-[#FAFAF9] border border-[#e5e7dd] p-3 space-y-1.5">
+        <div className="rounded-[12px] bg-[#FAFAF9] border border-[#E3E6E1] p-3 space-y-1.5">
           <div className="text-sm font-semibold">{s.methodFor}: {s.kinds[kind] || kind}</div>
           {rows.map(r => (
             <div key={r.label} className="flex items-center gap-2 text-sm">
@@ -124,14 +124,14 @@ export function PaymentPanel({ payment, milestone, isClient, lang, refresh, show
         </div>
       )}
 
-      <p className="flex items-start gap-2 text-sm text-[#4A4744] bg-[#F7F3E8] border border-[#EAE0C3] rounded-[12px] p-3">
+      <p className="flex items-start gap-2 text-sm text-[#475249] bg-[#F7F3E8] border border-[#EAE0C3] rounded-[12px] p-3">
         <AlertTriangle size={16} className="mt-0.5 shrink-0 text-[#7A5B12]" /> <span>{s.safety}</span>
       </p>
 
       {payment.status === 'awaiting_payment' && !isClient && <p className="text-sm text-[#6B6561]">{s.waitingFreelancer}</p>}
       {payment.status === 'awaiting_payment' && isClient && !showSent && (
         <div className="space-y-2">
-          <p className="text-sm text-[#4A4744]">{s.completeOutside}</p>
+          <p className="text-sm text-[#475249]">{s.completeOutside}</p>
           <div className="flex flex-wrap gap-2">
             <button type="button" className={redBtn} disabled={busy} onClick={() => { setAmount(payment.agreed_amount_usd); setShowSent(true); }}>{s.sentBtn}</button>
             <button type="button" className={ghostBtn} disabled={busy} onClick={() => run(() => flow(`payments/${payment.id}/cancel/`, { method: 'POST', body: {} }))}>{s.cancelBtn}</button>
@@ -139,7 +139,7 @@ export function PaymentPanel({ payment, milestone, isClient, lang, refresh, show
         </div>
       )}
       {payment.status === 'awaiting_payment' && isClient && showSent && (
-        <form onSubmit={submitSent} className="space-y-3 rounded-[12px] border border-[#e5e7dd] p-3">
+        <form onSubmit={submitSent} className="space-y-3 rounded-[12px] border border-[#E3E6E1] p-3">
           <label className="block text-sm font-semibold">{s.amountPaid}
             <input required type="number" min="0.01" step="0.01" value={amount} onChange={e => setAmount(e.target.value)} className={field} />
           </label>
@@ -154,7 +154,7 @@ export function PaymentPanel({ payment, milestone, isClient, lang, refresh, show
             <input type="file" accept="image/jpeg,image/png,application/pdf" onChange={e => setReceiptFile(e.target.files?.[0] || null)} className="mt-1 block text-sm" />
           </label>
           <label className="flex items-start gap-2 text-sm">
-            <input type="checkbox" checked={tick} onChange={e => setTick(e.target.checked)} className="w-5 h-5 mt-0.5 accent-[#59684a]" />
+            <input type="checkbox" checked={tick} onChange={e => setTick(e.target.checked)} className="w-5 h-5 mt-0.5 accent-[#003D14]" />
             {s.confirmTick}
           </label>
           <button type="submit" className={redBtn} disabled={busy || !tick}>{s.recordBtn}</button>
@@ -170,7 +170,7 @@ export function PaymentPanel({ payment, milestone, isClient, lang, refresh, show
       {payment.status === 'sent' && !isClient && !showDispute && (
         <div className="space-y-2">
           <label className="flex items-start gap-2 text-sm">
-            <input type="checkbox" checked={tick} onChange={e => setTick(e.target.checked)} className="w-5 h-5 mt-0.5 accent-[#59684a]" />
+            <input type="checkbox" checked={tick} onChange={e => setTick(e.target.checked)} className="w-5 h-5 mt-0.5 accent-[#003D14]" />
             {s.confirmTickFree}
           </label>
           <div className="flex flex-wrap gap-2">
@@ -184,7 +184,7 @@ export function PaymentPanel({ payment, milestone, isClient, lang, refresh, show
       )}
       {payment.status === 'sent' && !isClient && showDispute && (
         <form onSubmit={submitDispute} className="space-y-3 rounded-[12px] border border-[#F3E1DD] p-3">
-          <p className="text-sm text-[#4A4744]">{s.problemNote}</p>
+          <p className="text-sm text-[#475249]">{s.problemNote}</p>
           <label className="block text-sm font-semibold">{s.reasonLabel}
             <select value={reason} onChange={e => setReason(e.target.value)} className={field}>
               {Object.entries(s.reasons).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
@@ -206,7 +206,7 @@ export function PaymentPanel({ payment, milestone, isClient, lang, refresh, show
       {payment.status === 'disputed' && dispute && (
         <div className="rounded-[12px] bg-[#FAF0EE] border border-[#F3E1DD] p-3 text-sm space-y-1">
           <div className="font-semibold text-[#AE332A]">{s.reasons[dispute.reason] || dispute.reason}</div>
-          <p className="text-[#4A4744]">{dispute.note}</p>
+          <p className="text-[#475249]">{dispute.note}</p>
         </div>
       )}
       {(payment.status === 'disputed' || payment.status === 'cancelled') && isClient && (
@@ -218,7 +218,7 @@ export function PaymentPanel({ payment, milestone, isClient, lang, refresh, show
 
       {!!payment.events?.length && (
         <details className="text-sm">
-          <summary className="cursor-pointer font-semibold text-[#4A4744]">History</summary>
+          <summary className="cursor-pointer font-semibold text-[#475249]">History</summary>
           <ul className="mt-1 space-y-1 text-[#6B6561]">
             {payment.events.map(ev => (
               <li key={ev.id}>{s.events[ev.action] || ev.action} · {ev.actor_name} · {new Date(ev.created_at).toLocaleString()}</li>

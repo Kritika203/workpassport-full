@@ -72,10 +72,10 @@ export function BringView({ t, lang, navTo, onSubmit, canReview = true }) {
       <div className="max-w-2xl mx-auto space-y-6">
         <div className={`${CL_CARD} space-y-5`}>
           <div className="flex items-start gap-3">
-            <CheckCircle2 size={24} className="shrink-0 mt-0.5 text-[#59684a]" />
-            <p className="text-base text-[#1C1B1A]">{t('br_thanks')}</p>
+            <CheckCircle2 size={24} className="shrink-0 mt-0.5 text-[#003D14]" />
+            <p className="text-base text-[#141614]">{t('br_thanks')}</p>
           </div>
-          <button type="button" onClick={() => navTo('firstwork')} className="w-full sm:w-auto bg-[#59684a] text-white px-8 rounded-full font-semibold text-base hover:bg-[#415947] min-h-[48px]">
+          <button type="button" onClick={() => navTo('firstwork')} className="w-full sm:w-auto bg-[#003D14] text-white px-8 rounded-full font-semibold text-base hover:bg-[#0E5C2A] min-h-[48px]">
             {t('back_to_jobs')}
           </button>
         </div>
@@ -83,24 +83,24 @@ export function BringView({ t, lang, navTo, onSubmit, canReview = true }) {
     );
   }
 
-  const pill = (on) => `min-h-[48px] px-5 py-2 rounded-full border text-base font-semibold text-left ${on ? 'bg-[#FAF0EE] border-[#59684a] text-[#AE332A]' : 'bg-white border-[#e5e7dd] text-[#4A4744] hover:bg-[#F6F4EF]'}`;
+  const pill = (on) => `min-h-[48px] px-5 py-2 rounded-full border text-base font-semibold text-left ${on ? 'bg-[#FAF0EE] border-[#003D14] text-[#AE332A]' : 'bg-white border-[#E3E6E1] text-[#475249] hover:bg-[#F7F7F4]'}`;
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
-        <button onClick={() => navTo('firstwork')} className="flex items-center gap-2 text-base text-[#4A4744] mb-4 hover:text-[#1C1B1A] min-h-[48px] px-2 -ml-2 font-medium">
+        <button onClick={() => navTo('firstwork')} className="flex items-center gap-2 text-base text-[#475249] mb-4 hover:text-[#141614] min-h-[48px] px-2 -ml-2 font-medium">
           <ChevronLeft size={20} /> {t('back_to_jobs')}
         </button>
         <h1 className="text-[28px] sm:text-[30px] font-semibold mb-2">{t('br_title')}</h1>
-        <p className="text-base text-[#4A4744] mb-3">{t('br_intro')}</p>
-        {canReview && <button type="button" onClick={() => navTo('bring-queue')} className="inline-flex items-center gap-2 text-base font-semibold text-[#1C1B1A] underline underline-offset-4 min-h-[44px]">
+        <p className="text-base text-[#475249] mb-3">{t('br_intro')}</p>
+        {canReview && <button type="button" onClick={() => navTo('bring-queue')} className="inline-flex items-center gap-2 text-base font-semibold text-[#141614] underline underline-offset-4 min-h-[44px]">
           <ClipboardList size={20} className="shrink-0" /> {t('br_queue_link')}
         </button>}
-        <button type="button" onClick={() => navTo('institution-insight')} className="mt-3 w-full text-left bg-white border border-[#e5e7dd] rounded-[20px] p-4 hover:bg-[#F6F4EF] min-h-[44px] flex items-start gap-3">
-          <TrendingUp size={22} className="shrink-0 mt-0.5 text-[#59684a]" />
+        <button type="button" onClick={() => navTo('institution-insight')} className="mt-3 w-full text-left bg-white border border-[#E3E6E1] rounded-[20px] p-4 hover:bg-[#F7F7F4] min-h-[44px] flex items-start gap-3">
+          <TrendingUp size={22} className="shrink-0 mt-0.5 text-[#003D14]" />
           <span>
-            <span className="block text-base font-semibold text-[#1C1B1A]">{t('ii_entry')}</span>
-            <span className="block text-base text-[#4A4744]">{t('ii_entry_sub')}</span>
+            <span className="block text-base font-semibold text-[#141614]">{t('ii_entry')}</span>
+            <span className="block text-base text-[#475249]">{t('ii_entry_sub')}</span>
           </span>
         </button>
       </div>
@@ -156,7 +156,7 @@ export function BringView({ t, lang, navTo, onSubmit, canReview = true }) {
             <div>
               <label htmlFor="br-source" className={CL_LABEL}>{t('br_f_source')}</label>
               <input id="br-source" type="url" inputMode="url" placeholder="https://" value={sourceURL} onChange={e => setSourceURL(e.target.value)} className={CL_INPUT} />
-              <p className="mt-1 text-sm text-[#6E6963]">{t('br_f_source_help')}</p>
+              <p className="mt-1 text-sm text-[#687169]">{t('br_f_source_help')}</p>
             </div>
           </div>
 
@@ -166,7 +166,7 @@ export function BringView({ t, lang, navTo, onSubmit, canReview = true }) {
               <input key={i} type="text" aria-label={`${t('cl_f_deliv')} ${digits(i + 1)}`} value={d} onChange={e => setDeliverables(prev => prev.map((x, k) => k === i ? e.target.value : x))} className={CL_INPUT} />
             ))}
             {deliverables.length < 3 && (
-              <button type="button" onClick={() => setDeliverables(prev => [...prev, ''])} className="min-h-[48px] px-5 rounded-full bg-white border border-[#E3E0D9] text-[#1C1B1A] font-semibold text-base hover:bg-[#F6F4EF] flex items-center gap-2">
+              <button type="button" onClick={() => setDeliverables(prev => [...prev, ''])} className="min-h-[48px] px-5 rounded-full bg-white border border-[#E3E6E1] text-[#141614] font-semibold text-base hover:bg-[#F7F7F4] flex items-center gap-2">
                 <Plus size={20} /> {t('cl_add_one')}
               </button>
             )}
@@ -179,7 +179,7 @@ export function BringView({ t, lang, navTo, onSubmit, canReview = true }) {
                 const on = skills.includes(sk);
                 return (
                   <button key={sk} type="button" aria-pressed={on} onClick={() => setSkills(prev => prev.includes(sk) ? prev.filter(x => x !== sk) : [...prev, sk])}
-                    className={`min-h-[44px] px-4 rounded-full border text-base font-medium ${on ? 'bg-[#FAF0EE] border-[#59684a] text-[#AE332A]' : 'bg-white border-[#e5e7dd] text-[#4A4744] hover:bg-[#F6F4EF]'}`}>
+                    className={`min-h-[44px] px-4 rounded-full border text-base font-medium ${on ? 'bg-[#FAF0EE] border-[#003D14] text-[#AE332A]' : 'bg-white border-[#E3E6E1] text-[#475249] hover:bg-[#F7F7F4]'}`}>
                     {sk}
                   </button>
                 );
@@ -192,11 +192,11 @@ export function BringView({ t, lang, navTo, onSubmit, canReview = true }) {
               <div className={CL_LABEL}>{t('br_f_budget')}</div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label htmlFor="br-bmin" className="block text-sm text-[#6E6963] mb-1">{t('br_from')}</label>
+                  <label htmlFor="br-bmin" className="block text-sm text-[#687169] mb-1">{t('br_from')}</label>
                   <input id="br-bmin" type="number" inputMode="numeric" min="1" value={bMin} onChange={e => setBMin(e.target.value)} className={CL_INPUT} />
                 </div>
                 <div>
-                  <label htmlFor="br-bmax" className="block text-sm text-[#6E6963] mb-1">{t('br_to')}</label>
+                  <label htmlFor="br-bmax" className="block text-sm text-[#687169] mb-1">{t('br_to')}</label>
                   <input id="br-bmax" type="number" inputMode="numeric" min="1" value={bMax} onChange={e => setBMax(e.target.value)} className={CL_INPUT} />
                 </div>
               </div>
@@ -231,10 +231,10 @@ export function BringView({ t, lang, navTo, onSubmit, canReview = true }) {
       {error && (
         <div role="alert" className="bg-[#FAF0EE] border border-[#F3E1DD] rounded-[14px] p-4 flex items-start gap-3">
           <AlertTriangle size={20} className="shrink-0 mt-0.5 text-[#AE332A]" />
-          <p className="text-base text-[#1C1B1A]">{type === 'insight' ? t('br_error_ins') : t('br_error_opp')}</p>
+          <p className="text-base text-[#141614]">{type === 'insight' ? t('br_error_ins') : t('br_error_opp')}</p>
         </div>
       )}
-      <button type="button" onClick={submit} className="w-full bg-[#59684a] text-white py-3.5 rounded-full font-semibold text-lg hover:bg-[#415947] min-h-[52px]">
+      <button type="button" onClick={submit} className="w-full bg-[#003D14] text-white py-3.5 rounded-full font-semibold text-lg hover:bg-[#0E5C2A] min-h-[52px]">
         {t('br_submit')}
       </button>
     </div>

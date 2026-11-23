@@ -51,6 +51,7 @@ import { ConnectedInstitutionInsight } from './connected/ConnectedInstitutionIns
 import { PublicPassport } from './connected/PublicPassport.jsx';
 import { PasswordReset } from './connected/PasswordReset.jsx';
 import './EditorialRefinement.css';
+import './VouchPolish.css';
 
 
 
@@ -79,7 +80,7 @@ function ClientFirstWorkBrowse({ jobs, lang }) {
     <section className="max-w-4xl mx-auto space-y-6">
       <header>
         <h1 className="text-[28px] sm:text-[30px] font-semibold">FirstWork</h1>
-        <p className="mt-2 text-[#4A4744]">
+        <p className="mt-2 text-[#475249]">
           {ne ? 'प्रकाशित कामहरू हेर्नुहोस्। यस रोजगारदाता खाताबाट आवेदन दिन मिल्दैन।'
             : 'Browse published opportunities. This employer account cannot apply for jobs.'}
         </p>
@@ -88,25 +89,25 @@ function ClientFirstWorkBrowse({ jobs, lang }) {
         <span className="sr-only">{ne ? 'काम खोज्नुहोस्' : 'Search jobs'}</span>
         <input type="search" value={search} onChange={event => setSearch(event.target.value)}
           placeholder={ne ? 'काम वा सीप खोज्नुहोस्' : 'Search jobs or skills'}
-          className="w-full bg-white border border-[#e5e7dd] rounded-[14px] px-4 py-3 min-h-[48px] outline-none focus:border-[#59684a]" />
+          className="w-full bg-white border border-[#E3E6E1] rounded-[14px] px-4 py-3 min-h-[48px] outline-none focus:border-[#003D14]" />
       </label>
-      <p className="text-sm text-[#6E6963]">{results.length} {ne ? 'कामहरू' : 'published jobs'}</p>
+      <p className="text-sm text-[#687169]">{results.length} {ne ? 'कामहरू' : 'published jobs'}</p>
       {results.length === 0 ? (
-        <div className="rounded-[18px] border border-[#e5e7dd] bg-white p-6 text-[#6E6963]">
+        <div className="rounded-[18px] border border-[#E3E6E1] bg-white p-6 text-[#687169]">
           {ne ? 'मिल्दो काम भेटिएन।' : 'No matching jobs found.'}
         </div>
       ) : results.map(job => (
-        <article key={job.id} className="rounded-[20px] border border-[#e5e7dd] bg-white p-5 sm:p-6 space-y-3">
+        <article key={job.id} className="rounded-[20px] border border-[#E3E6E1] bg-white p-5 sm:p-6 space-y-3">
           <div className="flex flex-wrap justify-between gap-2">
             <h2 className="text-lg font-semibold">{job.title}</h2>
-            {job.isDemo && <span className="rounded-full bg-[#F0EEE9] px-3 py-1 text-xs font-semibold">{ne ? 'अभ्यास काम' : 'Practice job'}</span>}
+            {job.isDemo && <span className="rounded-full bg-[#E7F0E9] px-3 py-1 text-xs font-semibold">{ne ? 'अभ्यास काम' : 'Practice job'}</span>}
           </div>
-          <p className="text-sm text-[#6E6963]">{job.clientName || (ne ? 'रोजगारदाता' : 'Employer')}
+          <p className="text-sm text-[#687169]">{job.clientName || (ne ? 'रोजगारदाता' : 'Employer')}
             {job.category ? ` · ${job.category}` : ''}</p>
-          <p className="text-[#4A4744] whitespace-pre-wrap">{job.description || (ne ? 'विवरण उपलब्ध छैन।' : 'No description provided.')}</p>
+          <p className="text-[#475249] whitespace-pre-wrap">{job.description || (ne ? 'विवरण उपलब्ध छैन।' : 'No description provided.')}</p>
           {Array.isArray(job.skillsRequired) && job.skillsRequired.length > 0 && (
             <div className="flex flex-wrap gap-2">{job.skillsRequired.map(skill => (
-              <span key={skill} className="rounded-full bg-[#F6F4EF] px-3 py-1 text-sm">{skill}</span>
+              <span key={skill} className="rounded-full bg-[#F7F7F4] px-3 py-1 text-sm">{skill}</span>
             ))}</div>
           )}
           <button type="button" onClick={() => setExpanded(old => old === job.id ? null : job.id)}
@@ -114,12 +115,12 @@ function ClientFirstWorkBrowse({ jobs, lang }) {
             {expanded === job.id ? (ne ? 'कम देखाउनुहोस्' : 'Show less') : (ne ? 'कामको विवरण हेर्नुहोस्' : 'View job details')}
           </button>
           {expanded === job.id && (
-            <div className="border-t border-[#e5e7dd] pt-3 space-y-2 text-sm text-[#4A4744]">
+            <div className="border-t border-[#E3E6E1] pt-3 space-y-2 text-sm text-[#475249]">
               {Number.isFinite(Number(job.budgetUSD)) && <p>{ne ? 'बजेट' : 'Budget'}: USD {Number(job.budgetUSD).toLocaleString()}</p>}
               {job.deadlineDays && <p>{ne ? 'समयसीमा' : 'Deadline'}: {job.deadlineDays} {ne ? 'दिन' : 'days'}</p>}
               {Array.isArray(job.deliverables) && job.deliverables.length > 0 &&
                 <p>{ne ? 'अपेक्षित परिणाम' : 'Deliverables'}: {job.deliverables.map(d => (typeof d === 'string' ? d : d.name)).join(', ')}</p>}
-              <p className="text-[#6E6963]">{ne ? 'आवेदन दिनको लागि छुट्टै फ्रीलान्सर खाता आवश्यक छ।'
+              <p className="text-[#687169]">{ne ? 'आवेदन दिनको लागि छुट्टै फ्रीलान्सर खाता आवश्यक छ।'
                 : 'Applying requires a separate freelancer account.'}</p>
             </div>
           )}
@@ -546,16 +547,16 @@ function Experience({ account, backendJobs = [], onOpenAccount, onDemo, onLogout
   };
 
   const successOverlay = currentView === 'setup_success' ? (
-           <div className="fixed inset-0 bg-[#fcfbf8] z-50 flex flex-col items-center justify-center p-6 text-center">
-              <CheckCircle2 size={64} strokeWidth={1.5} className="text-[#59684a] mx-auto mb-6" />
+           <div className="fixed inset-0 bg-[#FFFFFF] z-50 flex flex-col items-center justify-center p-6 text-center">
+              <CheckCircle2 size={64} strokeWidth={1.5} className="text-[#003D14] mx-auto mb-6" />
               <h1 className="text-[28px] sm:text-[30px] font-semibold mb-4">{t('setup_success_title')}, {userProfile?.name?.split(' ')[0]}!</h1>
-              <p className="text-lg text-[#4A4744] mb-10 max-w-md">{t('setup_success_sub')}</p>
+              <p className="text-lg text-[#475249] mb-10 max-w-md">{t('setup_success_sub')}</p>
               
               <div className="w-full max-w-sm flex flex-col gap-4">
-                <button onClick={() => navTo('firstwork')} className="w-full bg-[#59684a] text-white py-3.5 rounded-full font-semibold text-lg hover:bg-[#415947] transition-colors min-h-[52px]">
+                <button onClick={() => navTo('firstwork')} className="w-full bg-[#003D14] text-white py-3.5 rounded-full font-semibold text-lg hover:bg-[#0E5C2A] transition-colors min-h-[52px]">
                   {t('btn_find_job')}
                 </button>
-                <button onClick={() => navTo('passport')} className="w-full bg-white text-[#1C1B1A] border border-[#E3E0D9] py-3.5 rounded-full font-semibold text-lg hover:bg-[#F6F4EF] transition-colors min-h-[52px]">
+                <button onClick={() => navTo('passport')} className="w-full bg-white text-[#141614] border border-[#E3E6E1] py-3.5 rounded-full font-semibold text-lg hover:bg-[#F7F7F4] transition-colors min-h-[52px]">
                   {t('btn_see_wp')}
                 </button>
               </div>
@@ -576,7 +577,7 @@ function Experience({ account, backendJobs = [], onOpenAccount, onDemo, onLogout
 
   if (clientMode) {
     return (
-      <div className={`wp-app min-h-screen flex flex-col bg-[#fcfbf8] font-sans text-base text-[#1C1B1A] ${lang === 'ne' ? 'leading-relaxed' : ''}`}>
+      <div className={`wp-app min-h-screen flex flex-col bg-[#FFFFFF] font-sans text-base text-[#141614] ${lang === 'ne' ? 'leading-relaxed' : ''}`}>
         <ShellHeader mode="client" lang={lang} setLang={setLang} currentView={currentView}
           navTo={navTo} t={t} user={activeClientProfile} connected={!!account}
           lowData={settings.lowdata} onToggleLowData={() => setSettings({ ...settings, lowdata: !settings.lowdata })}
@@ -616,10 +617,10 @@ function Experience({ account, backendJobs = [], onOpenAccount, onDemo, onLogout
           )}
         </main>
 
-        <footer className="border-t border-[#e5e7dd] py-10 px-4">
+        <footer className="border-t border-[#E3E6E1] py-10 px-4">
           <div className="max-w-[1200px] mx-auto flex flex-col items-center gap-3 text-center">
             <div className="max-w-2xl text-left"><Disclaimer t={t} k="disc_footer" /></div>
-            <div className="text-[13px] text-[#8A8580]">{t('footer_text')}</div>
+            <div className="text-[13px] text-[#70776F]">{t('footer_text')}</div>
           </div>
         </footer>
 
@@ -629,7 +630,7 @@ function Experience({ account, backendJobs = [], onOpenAccount, onDemo, onLogout
   }
 
   return (
-    <div className={`wp-app ${simpleOn ? 'wp-simple' : ''} min-h-screen flex flex-col bg-[#fcfbf8] font-sans text-base text-[#1C1B1A] ${lang === 'ne' ? 'leading-relaxed' : ''}`}>
+    <div className={`wp-app ${simpleOn ? 'wp-simple' : ''} min-h-screen flex flex-col bg-[#FFFFFF] font-sans text-base text-[#141614] ${lang === 'ne' ? 'leading-relaxed' : ''}`}>
       {/* Navbar */}
       <ShellHeader lang={lang} setLang={setLang} currentView={currentView} navTo={navTo} t={t}
         user={userProfile} connected={!!account} sharedOn={sharedOn}
@@ -643,7 +644,7 @@ function Experience({ account, backendJobs = [], onOpenAccount, onDemo, onLogout
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-[1200px] mx-auto w-full p-4 sm:p-6 pb-28">
-        {currentView === 'account-setup' && <div className="max-w-[560px] mx-auto bg-white border border-[#e5e7dd] rounded-[20px] p-6"><SetupFlow t={t} lang={lang} initialName={userProfile?.name || ''} onBack={() => { setUserProfile({ ...userProfile, onboarded: true }); navTo('firstwork'); }} onComplete={profile => { setUserProfile({ ...userProfile, ...profile, onboarded: true }); navTo('setup_success'); }} /></div>}
+        {currentView === 'account-setup' && <div className="max-w-[560px] mx-auto bg-white border border-[#E3E6E1] rounded-[20px] p-6"><SetupFlow t={t} lang={lang} initialName={userProfile?.name || ''} onBack={() => { setUserProfile({ ...userProfile, onboarded: true }); navTo('firstwork'); }} onComplete={profile => { setUserProfile({ ...userProfile, ...profile, onboarded: true }); navTo('setup_success'); }} /></div>}
         {currentView === 'firstwork' && <FirstWorkFeed allJobs={allJobs} t={t} navTo={navTo} user={userProfile} savedJobs={savedJobs} setSavedJobs={setSavedJobs} lang={lang} lowdata={settings.lowdata} onSwitchClient={() => { if (account?.role === 'client') enterClientMode(); else if (account) showToast('To post a job, please use a client account.'); else { setUnlocked(false); setIsLoggedIn(false); navTo('welcome'); } }} />}
         {currentView === 'community' && <VouchCommunity lang={lang} name={userProfile?.name || 'Vouch member'} viewer="worker" onJobBoard={() => navTo('firstwork')} />}
         {currentView === 'job-feedback' && <JobFeedback job={allJobs.find(j => j.id === viewParams.id) || clientJobs.find(j => j.id === viewParams.id)} lang={lang} name={userProfile?.name || 'Vouch member'} canReview={confirmedJobs.includes(viewParams.id)} onBack={() => navTo('job-detail', { id: viewParams.id })} />}
@@ -672,10 +673,10 @@ function Experience({ account, backendJobs = [], onOpenAccount, onDemo, onLogout
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-[#e5e7dd] py-10 px-4">
+      <footer className="border-t border-[#E3E6E1] py-10 px-4">
         <div className="max-w-[1200px] mx-auto flex flex-col items-center gap-3 text-center">
           <div className="max-w-2xl text-left"><Disclaimer t={t} k="disc_footer" /></div>
-          <div className="text-[13px] text-[#8A8580]">{t('footer_text')}</div>
+          <div className="text-[13px] text-[#70776F]">{t('footer_text')}</div>
         </div>
       </footer>
 
@@ -710,12 +711,12 @@ function InstallBanner({ t }) {
     setDeferred(null);
   };
   return (
-    <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-sm z-50 bg-white border border-[#e5e7dd] rounded-[20px] shadow-lg p-5">
+    <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-sm z-50 bg-white border border-[#E3E6E1] rounded-[20px] shadow-lg p-5">
       <div className="font-semibold text-lg mb-1">{t('pwa_title')}</div>
-      <p className="text-base text-[#4A4744] mb-4">{t('pwa_desc')}</p>
+      <p className="text-base text-[#475249] mb-4">{t('pwa_desc')}</p>
       <div className="flex gap-3">
-        <button onClick={install} className="flex-1 py-3 bg-[#59684a] text-white font-semibold text-base rounded-full hover:bg-[#415947] min-h-[48px]">{t('pwa_btn')}</button>
-        <button onClick={() => setDismissed(true)} className="flex-1 py-3 border border-[#E3E0D9] font-semibold text-base rounded-full hover:bg-[#F6F4EF] min-h-[48px] bg-white">{t('pwa_later')}</button>
+        <button onClick={install} className="flex-1 py-3 bg-[#003D14] text-white font-semibold text-base rounded-full hover:bg-[#0E5C2A] min-h-[48px]">{t('pwa_btn')}</button>
+        <button onClick={() => setDismissed(true)} className="flex-1 py-3 border border-[#E3E6E1] font-semibold text-base rounded-full hover:bg-[#F7F7F4] min-h-[48px] bg-white">{t('pwa_later')}</button>
       </div>
     </div>
   );

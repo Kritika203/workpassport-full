@@ -28,7 +28,7 @@ export function ClientDashboard({ lang = 'en', connected = false, demoData = nul
   }, [connected, demoData]);
 
   if (error) return <p role="alert" className="bg-[#FAF0EE] border border-[#F3E1DD] rounded-[14px] p-4 text-base text-[#AE332A]">{error}</p>;
-  if (!data) return <p className="text-base text-[#6E6963]">{ne ? 'लोड हुँदैछ...' : 'Loading your dashboard...'}</p>;
+  if (!data) return <p className="text-base text-[#687169]">{ne ? 'लोड हुँदैछ...' : 'Loading your dashboard...'}</p>;
 
   const review = data.review_items || [];
   const waiting = data.applicants_waiting || 0;
@@ -69,29 +69,29 @@ export function ClientDashboard({ lang = 'en', connected = false, demoData = nul
           { label: ne ? 'छनोट सूचीमा' : 'Shortlisted', value: digits(data.shortlisted || 0) },
           { label: ne ? 'जारी भएको (डेमो)' : 'Released (demo)', value: money(released) },
         ].map(item => (
-          <div key={item.label} className="rounded-[18px] bg-white border border-[#e5e7dd] px-4 py-4">
-            <p className="text-[#6E6963] text-sm">{item.label}</p>
+          <div key={item.label} className="rounded-[18px] bg-white border border-[#E3E6E1] px-4 py-4">
+            <p className="text-[#687169] text-sm">{item.label}</p>
             <p className="text-xl font-semibold mt-1 break-words">{item.value}</p>
           </div>
         ))}
       </div>
 
       <div className="grid sm:grid-cols-2 gap-3">
-        <div className="rounded-[18px] bg-white border border-[#e5e7dd] p-4">
+        <div className="rounded-[18px] bg-white border border-[#E3E6E1] p-4">
           <p className="font-semibold text-base mb-3">{ne ? 'स्थितिअनुसार कामहरू' : 'Jobs by status'}</p>
-          {statusRows.length === 0 && <p className="text-sm text-[#6E6963]">{ne ? 'अहिलेसम्म कुनै काम छैन।' : 'No jobs yet.'}</p>}
+          {statusRows.length === 0 && <p className="text-sm text-[#687169]">{ne ? 'अहिलेसम्म कुनै काम छैन।' : 'No jobs yet.'}</p>}
           <div className="space-y-2.5">
             {statusRows.map(([key, n]) => (
               <div key={key}>
                 <div className="flex justify-between text-sm mb-1"><span>{(STATUS_LABELS[key] || [key, key])[ne ? 1 : 0]}</span><strong>{digits(n)}</strong></div>
-                <div className="h-2.5 rounded-full bg-[#F0EEE9] overflow-hidden"><div className="h-full rounded-full bg-[#59684a]" style={{ width: `${Math.round((n / maxStatus) * 100)}%` }} /></div>
+                <div className="h-2.5 rounded-full bg-[#E7F0E9] overflow-hidden"><div className="h-full rounded-full bg-[#003D14]" style={{ width: `${Math.round((n / maxStatus) * 100)}%` }} /></div>
               </div>
             ))}
           </div>
         </div>
-        <div className="rounded-[18px] bg-white border border-[#e5e7dd] p-4">
+        <div className="rounded-[18px] bg-white border border-[#E3E6E1] p-4">
           <p className="font-semibold text-base mb-3">{ne ? 'कामअनुसार खर्च (डेमो)' : 'Spending by job (demo)'}</p>
-          {spent.length === 0 && <p className="text-sm text-[#6E6963]">{ne ? 'सहमत काम सुरु भएपछि यहाँ देखिन्छ।' : 'Appears once agreed work starts.'}</p>}
+          {spent.length === 0 && <p className="text-sm text-[#687169]">{ne ? 'सहमत काम सुरु भएपछि यहाँ देखिन्छ।' : 'Appears once agreed work starts.'}</p>}
           <div className="space-y-3">
             {spent.map((row, i) => {
               const rel = Number(row.released_usd || 0);
@@ -100,26 +100,26 @@ export function ClientDashboard({ lang = 'en', connected = false, demoData = nul
               return (
                 <div key={i}>
                   <div className="flex justify-between gap-2 text-sm mb-1"><span className="truncate">{row.job_title}</span><strong>{money(rel)} / {money(agr)}</strong></div>
-                  <div className="h-2.5 rounded-full bg-[#F0EEE9] overflow-hidden"><div className="h-full rounded-full bg-[#4A7A2E]" style={{ width: `${pct}%` }} /></div>
+                  <div className="h-2.5 rounded-full bg-[#E7F0E9] overflow-hidden"><div className="h-full rounded-full bg-[#4A7A2E]" style={{ width: `${pct}%` }} /></div>
                 </div>
               );
             })}
           </div>
-          {agreed > 0 && <p className="text-sm text-[#6E6963] mt-3">{ne ? 'जम्मा सहमत' : 'Total agreed'}: {money(agreed)} · {ne ? 'जारी' : 'Released'}: {money(released)}</p>}
+          {agreed > 0 && <p className="text-sm text-[#687169] mt-3">{ne ? 'जम्मा सहमत' : 'Total agreed'}: {money(agreed)} · {ne ? 'जारी' : 'Released'}: {money(released)}</p>}
         </div>
       </div>
 
       {review.length > 0 && (
-        <div className="rounded-[18px] bg-white border border-[#e5e7dd] p-4">
+        <div className="rounded-[18px] bg-white border border-[#E3E6E1] p-4">
           <p className="font-semibold text-base mb-3">{ne ? 'समीक्षा गर्न बाँकी डेलिभरेबल' : 'Deliverables to review'}</p>
           <div className="space-y-2">
             {review.map((item, i) => (
-              <div key={i} className="flex flex-wrap items-center justify-between gap-2 border border-[#e5e7dd] rounded-[12px] px-4 py-3">
+              <div key={i} className="flex flex-wrap items-center justify-between gap-2 border border-[#E3E6E1] rounded-[12px] px-4 py-3">
                 <div className="min-w-0">
                   <p className="font-medium text-base truncate">{item.milestone_title} — {item.job_title}</p>
-                  <p className="text-sm text-[#6E6963]">{item.applicant_name} · ${fmtMoney(Math.round(Number(item.amount_usd || 0)))}</p>
+                  <p className="text-sm text-[#687169]">{item.applicant_name} · ${fmtMoney(Math.round(Number(item.amount_usd || 0)))}</p>
                 </div>
-                <button onClick={() => onOpenReview && onOpenReview(item)} className="bg-[#59684a] text-white px-5 rounded-full font-semibold text-sm hover:bg-[#415947] min-h-[40px]">
+                <button onClick={() => onOpenReview && onOpenReview(item)} className="bg-[#003D14] text-white px-5 rounded-full font-semibold text-sm hover:bg-[#0E5C2A] min-h-[40px]">
                   {ne ? 'समीक्षा गर्नुहोस्' : 'Review'}
                 </button>
               </div>

@@ -46,7 +46,7 @@ export function AccountStorage({ user, initial, children, onSessionChange }) {
   return (
     <AccountStorageContext.Provider value={{ userId: user.id, initial, save, flush }}>
       {problem && (
-        <div role="alert" className="fixed bottom-3 right-3 z-[100] bg-white border border-[#59684a] text-[#AE332A] rounded-xl px-4 py-3 shadow-lg max-w-sm text-sm">
+        <div role="alert" className="fixed bottom-3 right-3 z-[100] bg-white border border-[#003D14] text-[#AE332A] rounded-xl px-4 py-3 shadow-lg max-w-sm text-sm">
           {problem} <button className="underline font-semibold ml-2" onClick={flush}>Retry</button>
         </div>
       )}
