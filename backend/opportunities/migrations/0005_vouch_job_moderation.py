@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
         migrations.AddField(model_name='job',name='moderation_reasons',field=models.JSONField(default=list,blank=True)),
         migrations.AddField(model_name='job',name='moderated_at',field=models.DateTimeField(null=True,blank=True)),
         migrations.CreateModel(name='JobModerationEvent',fields=[
-            ('id',models.BigAutoField(primary_key=True,serialize=False)),
+            ('id',models.BigAutoField(auto_created=True,primary_key=True,serialize=False,verbose_name='ID')),
             ('source',models.CharField(max_length=15)),
             ('old_status',models.CharField(max_length=20,blank=True)),
             ('new_status',models.CharField(max_length=20)),
