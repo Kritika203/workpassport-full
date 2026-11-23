@@ -20,14 +20,14 @@ export function ShellHeader({ mode = 'worker', lang = 'en', setLang, currentView
 
   const isClient = mode === 'client';
   const words = lang === 'ne' ? {
-    jobs: 'FirstWork', passport: 'मेरो WorkPassport', community: 'समुदाय', safety: 'सुरक्षा',
+    jobs: 'FirstWork', passport: 'मेरो WorkPassport', community: 'समुदाय', safety: 'WorkShield',
     dashboard: 'ड्यासबोर्ड', talent: 'फ्रिलान्सरहरू', inbox: 'सन्देश', more: 'थप',
     payments: 'भुक्तानी', extension: 'एक्सटेन्सन', learning: 'सीप विकास',
     post: 'काम पोस्ट गर्नुहोस्', switch: 'FirstWork मा जानुहोस्', logout: 'लग आउट',
     lowData: 'कम डाटा / ठूलो अक्षर', normal: 'सामान्य दृश्य', quickHide: 'छिटो लुकाउनुहोस्',
     lock: 'स्क्रिन लक गर्नुहोस्', account: 'खाता', menu: 'मेनु',
   } : {
-    jobs: 'FirstWork', passport: 'My WorkPassport', community: 'Community', safety: 'Safety',
+    jobs: 'FirstWork', passport: 'My WorkPassport', community: 'Community', safety: 'WorkShield',
     dashboard: 'Dashboard', talent: 'Find talent', inbox: 'Messages', more: 'More',
     payments: 'Payments', extension: 'Extension', learning: 'SkillBridge',
     post: 'Post a job', switch: 'Switch to FirstWork', logout: 'Log out',
