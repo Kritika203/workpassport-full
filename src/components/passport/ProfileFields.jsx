@@ -1,7 +1,7 @@
 // Edit the freelancer's profile.
 
 import { Plus, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PF_LANG_OPTIONS, PF_TOOL_OPTIONS } from '../../data/demo.js';
 import { profileHasDetails } from '../../utils/profile.js';
 import { PROOF_BTN, PROOF_INPUT } from './Proof.jsx';
@@ -41,7 +41,7 @@ export function ProfileFieldsList({ t, user }) {
   );
 }
 
-export function ProfileDetails({ t, lang = 'en', user, setUser, showToast }) {
+export function ProfileDetails({ t, lang = 'en', user, setUser, showToast, editRequest = 0 }) {
   const [editing, setEditing] = useState(false);
   const [headline, setHeadline] = useState('');
   const [district, setDistrict] = useState('');
@@ -62,6 +62,7 @@ export function ProfileDetails({ t, lang = 'en', user, setUser, showToast }) {
     setTraining(Array.isArray(user.training) && user.training.length ? user.training.map(x => ({ title: x.title || '', where: x.where || '', year: x.year || '' })) : [{ title: '', where: '', year: '' }]);
     setEditing(true);
   };
+  useEffect(() => { if (editRequest > 0) startEdit(); }, [editRequest]);
   const save = () => {
     setUser({ ...user, headline: headline.trim(), district: district.trim(), about: about.trim(), languages, availability: availability.trim(), rateNote: rateNote.trim(), tools, training: training.filter(x => x.title.trim()).map(x => ({ title: x.title.trim(), where: x.where.trim(), year: x.year.trim() })) });
     setEditing(false);

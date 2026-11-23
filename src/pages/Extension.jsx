@@ -41,7 +41,7 @@ function ExtensionPairing({ connected, lang }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState('');
-  const apiAddress = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000').replace(/\/$/, '');
+  const apiAddress = (import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://workpassport-api.onrender.com' : 'http://127.0.0.1:8000')).replace(/\/$/, '');
   const load = async () => {
     const response = await flow('extension/pair/');
     setSessions(response.sessions || []);
@@ -132,12 +132,7 @@ export function ExtensionPage({ t, lang, navTo, connected = false }) {
   );
 
   return (
-    <div className="max-w-[850px] mx-auto space-y-8 vouch-extension-page">
-      <nav className="vouch-page-jump" aria-label="Extension sections">
-        <a href="#extension-how">{lang === 'ne' ? 'कसरी काम गर्छ' : 'How it works'}</a>
-        <a href="#extension-demo">{lang === 'ne' ? 'डेमो हेर्नुहोस्' : 'Try a check'}</a>
-        <a href="#extension-install">{lang === 'ne' ? 'जडान / इन्स्टल' : 'Connect & install'}</a>
-      </nav>
+    <div className="max-w-[850px] mx-auto space-y-8 vouch-extension-page vouch-reference-extension">
       {/* A1 header */}
       <div>
         <h1 className="text-[28px] sm:text-[30px] font-semibold mb-3">{t('ex_title')}</h1>
@@ -150,7 +145,7 @@ export function ExtensionPage({ t, lang, navTo, connected = false }) {
         <div className="grid gap-4 sm:grid-cols-3">
           {[1, 2, 3].map(n => (
             <div key={n} className="bg-white border border-[#E3E6E1] rounded-[20px] p-5 sm:p-6">
-              <span className="w-9 h-9 rounded-full bg-[#FAF0EE] text-[#AE332A] flex items-center justify-center font-semibold mb-3">{num(n)}</span>
+              <span className="w-9 h-9 rounded-full bg-[#E7F0E9] text-[#003D14] flex items-center justify-center font-semibold mb-3">{num(n)}</span>
               <p className="text-base text-[#141614] font-medium">{t('ex_s' + n)}</p>
             </div>
           ))}

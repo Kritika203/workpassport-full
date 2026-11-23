@@ -1,0 +1,131 @@
+/* Vouch reference layout 2026-11-23 — UI only. No data/API changes.
+   Gallery inspired by supplied screenshots: calm mint gradient, editorial headings,
+   white cards, discreet navigation, and right-aligned arrows. */
+:root{--vr-green:#06452D;--vr-dark:#0E4932;--vr-text:#34453B;--vr-muted:#64736B;--vr-border:#E2EAE3;--vr-mint:#E9F5EC}
+.wp-app{background:radial-gradient(ellipse 72% 42% at 92% 13%,rgba(210,242,223,.77),transparent 76%),radial-gradient(ellipse 80% 50% at 0% 89%,rgba(218,244,228,.65),transparent 78%),#FBFDFC!important}
+.wp-app>nav.vouch-shell{background:rgba(250,254,251,.70)!important;box-shadow:none!important;border:0!important}
+.wp-app>main{background:transparent!important}
+.wp-app>footer{border:0!important;background:transparent!important}
+.wp-app>footer>div{border:0!important}
+/* Parent's reference card tabs and content stay mounted to preserve form state. */
+.vouch-passport-layout{padding:3px 0 50px}
+.vouch-passport-layout [data-passport-pane][hidden],.vouch-shield-page [data-shield-pane][hidden]{display:none!important}
+.vouch-passport-tabs,.vouch-shield-tabs{display:flex;gap:20px;align-items:center;overflow-x:auto;scrollbar-width:thin;padding:0 0 1px;margin-bottom:31px;border:0!important}
+.vouch-passport-tabs button,.vouch-shield-tabs button{border:0;border-bottom:2px solid transparent;background:transparent;color:#67786D;font:600 13px 'DM Sans',system-ui,sans-serif;padding:12px 4px 14px;white-space:nowrap;min-height:46px;cursor:pointer;transition:color 120ms ease,border-color 120ms ease}
+.vouch-passport-tabs button[aria-selected='true'],.vouch-shield-tabs button[aria-selected='true']{color:var(--vr-green);border-bottom-color:var(--vr-green)}
+.vouch-passport-tabs button:hover,.vouch-shield-tabs button:hover{color:var(--vr-green)}
+.vouch-passport-pane{min-height:300px}
+.vouch-passport-hero-card{display:flex;align-items:center;justify-content:space-between;gap:22px;background:#FFF;border:1px solid var(--vr-border);border-radius:26px;padding:35px 37px;box-shadow:0 14px 36px rgba(4,58,31,.045)}
+.vouch-passport-identity{display:flex;align-items:center;gap:21px;min-width:0}
+.vouch-passport-initials{display:grid;place-items:center;flex:none;width:67px;height:67px;border-radius:50%;background:#DCEFE1;color:var(--vr-green);font:700 25px Georgia,serif}
+.wp-app .vouch-passport-name{font:600 clamp(27px,3.7vw,39px)/1.1 'Cormorant Garamond',Georgia,serif!important;color:var(--vr-green)!important;overflow-wrap:anywhere}
+.vouch-passport-location{font-size:14px;color:var(--vr-muted);margin-top:8px;line-height:1.35}
+.vouch-passport-hero-actions{display:grid;justify-items:end;gap:7px;flex:none}
+.vouch-passport-outline,.vouch-passport-text-action{display:inline-flex;align-items:center;justify-content:center;gap:12px;color:var(--vr-green);font-size:13px;font-weight:700;min-height:36px;padding:7px 11px;border:0;background:transparent;cursor:pointer;text-align:right}
+.vouch-passport-outline{background:#FFF;border:1px solid #D8E5DA;border-radius:999px;padding:9px 16px}
+.vouch-passport-outline:hover,.vouch-passport-text-action:hover{background:#EEF7F0;color:#064E33}
+.vouch-passport-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin-top:18px}
+.vouch-passport-metric{display:grid;align-content:center;gap:5px;min-height:110px;padding:23px 25px;border:1px solid var(--vr-border);border-radius:22px;background:#FFF;box-shadow:0 11px 26px rgba(4,58,31,.045)}
+.vouch-passport-metric>span{font-size:11px;text-transform:uppercase;letter-spacing:.075em;font-weight:750;color:#6C8271}
+.vouch-passport-metric>strong{font:600 clamp(24px,2.9vw,34px)/1.2 'Cormorant Garamond',Georgia,serif;color:var(--vr-green)}
+.vouch-passport-next-step{display:flex;justify-content:space-between;align-items:center;gap:22px;margin-top:18px;padding:26px 30px;border-radius:24px;background:linear-gradient(104deg,#E5F4E9,#EEF7EF);color:var(--vr-green)}
+.vouch-passport-next-step h2,.vouch-passport-progress-card h2,.vouch-passport-proof-explainer h3,.vouch-passport-settings-card h3{font:650 24px/1.16 'Cormorant Garamond',Georgia,serif;margin:0 0 8px}
+.vouch-passport-next-step p{font-size:14px;color:#52695A;line-height:1.55}
+.vouch-passport-primary{display:inline-flex;gap:14px;align-items:center;justify-content:center;min-height:43px;white-space:normal;background:var(--vr-green);color:#FFF;padding:10px 20px;border:0;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 6px 15px rgba(4,69,45,.10)}
+.vouch-passport-primary:hover{background:#126346}
+.vouch-passport-primary:disabled{opacity:.5;cursor:not-allowed}
+.vouch-passport-progress-card{padding:22px 26px;border-radius:21px;border:1px solid var(--vr-border);background:rgba(255,255,255,.89);color:var(--vr-green)}
+.vouch-passport-progress-card p{font-size:13px;line-height:1.55;color:var(--vr-muted);margin-top:10px}
+.vouch-passport-progress-bar{background:#E8F1E9;height:8px;overflow:hidden;border-radius:20px}
+.vouch-passport-progress-bar span{display:block;height:100%;background:#0E5C2A;border-radius:20px;transition:width 200ms ease}
+.vouch-passport-layout #passport-profile>div:first-child,.vouch-passport-disclosure,
+.vouch-passport-work-card,.vouch-passport-empty,.vouch-passport-skill-card,.vouch-passport-settings-card{border:1px solid var(--vr-border);background:#FFF;border-radius:24px;padding:26px 30px;box-shadow:0 10px 25px rgba(4,58,31,.035)}
+.vouch-passport-layout #passport-profile>div:first-child>div:first-child h2{font:650 33px 'Cormorant Garamond',Georgia,serif;color:var(--vr-green)}
+.vouch-passport-layout #passport-profile .bg-white.border{box-shadow:none}
+.vouch-passport-disclosure{padding:0!important;overflow:hidden}
+.vouch-passport-disclosure>button{width:100%;min-height:62px;display:flex;align-items:center;justify-content:space-between;gap:15px;padding:14px 25px;font-size:14px;font-weight:750;color:var(--vr-green);background:transparent;border:0;text-align:left;cursor:pointer}
+.vouch-passport-disclosure>button:hover{background:#F2F8F3}
+.vouch-passport-disclosure>section{margin:0!important;border:0!important;border-top:1px solid #E2EAE3!important;border-radius:0!important;box-shadow:none!important}
+.vouch-passport-section-title{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.wp-app .vouch-passport-section-title h2,.wp-app .vouch-passport-section-heading{font:650 clamp(28px,3vw,37px)/1.12 'Cormorant Garamond',Georgia,serif;color:var(--vr-green)}
+.vouch-passport-add-skill{background:#FFF;border:1px solid var(--vr-border);border-radius:21px;padding:21px 24px}
+.vouch-passport-add-skill>label{display:block;font-size:13px;font-weight:700;color:var(--vr-muted);margin-bottom:10px}
+.vouch-passport-add-skill select{width:min(330px,100%);flex:1;min-height:43px;background-color:white;border:1px solid #D5E1D8;border-radius:12px;padding:9px 34px 9px 13px;font-size:14px;color:var(--vr-text)}
+.vouch-passport-empty{font-size:14px;color:#68766D}
+.vouch-passport-skill-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+.vouch-passport-proof-explainer{margin-top:26px}
+.vouch-passport-proof-explainer>p{font-size:14px;color:var(--vr-muted);margin:4px 0 20px}
+.vouch-passport-proof-steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:17px;list-style:none;padding:0;margin:0}
+.vouch-passport-proof-steps li{min-width:0;position:relative;padding-top:30px}
+.vouch-passport-proof-steps li:before{content:'';position:absolute;top:9px;left:0;right:-17px;border-top:1px solid #BAD9C4}
+.vouch-passport-proof-steps li:last-child:before{right:0}
+.vouch-proof-dot{display:block;position:absolute;top:0;left:0;width:17px;height:17px;background:#FFF;border-radius:50%;border:2px solid #4B9471;z-index:1}
+.vouch-passport-proof-steps strong{display:block;color:var(--vr-green);font-size:12px;line-height:1.4}
+.vouch-passport-proof-steps p{font-size:12px;line-height:1.55;color:#627369;margin-top:7px}
+.vouch-passport-completed-empty{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:18px;min-height:225px;border:1px solid var(--vr-border);border-radius:24px;background:#FFF;padding:28px}
+.vouch-passport-completed-empty>svg{color:#CAD9CE}
+.vouch-passport-completed-empty p{max-width:420px;font-size:14px;color:var(--vr-muted)}
+.vouch-passport-work-card>strong{font-size:18px;color:var(--vr-green)}
+.vouch-passport-work-card p{font-size:14px;color:var(--vr-muted)}
+.vouch-passport-link-card{width:100%;border:1px solid var(--vr-border);padding:19px 22px;background:#FFF;border-radius:22px;display:flex;align-items:center;gap:15px;text-align:left;color:var(--vr-green)}
+.vouch-passport-link-card>span:nth-child(2){flex:1;min-width:0}.vouch-passport-link-card strong{display:block;font-size:15px}.vouch-passport-link-card small{display:block;margin-top:4px;color:var(--vr-muted);font-size:12px}
+.vouch-passport-link-card:hover{background:#F2F8F3}
+.vouch-passport-settings-card h3{margin-top:5px;color:var(--vr-green)}
+.vouch-passport-checkline{width:100%;display:flex;align-items:center;gap:12px;text-align:left;min-height:45px;background:transparent;border:0;border-bottom:1px solid #E8EEE8;padding:11px 3px;color:#46584A;font-size:13px}
+.vouch-passport-checkline:last-child{border:0}
+.vouch-passport-checkline svg{color:#537E5E;flex:none}
+/* Payments: same action paths, now grouped like the screenshot. */
+.vouch-reference-payments{max-width:1080px;margin:0 auto;padding:9px 0 44px}
+.vouch-payments-heading h1{font:650 clamp(36px,4vw,48px)/1.12 'Cormorant Garamond',Georgia,serif;color:var(--vr-green)}
+.vouch-payments-heading p{max-width:760px;color:var(--vr-muted);font-size:14px;line-height:1.7;margin-top:9px}
+.vouch-payments-grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:21px;align-items:start}
+.vouch-payments-grid>div>section,.vouch-payments-checklist,.vouch-payments-calculator>div>div:first-child{background:#FFF;border:1px solid var(--vr-border);border-radius:24px;padding:24px 27px;box-shadow:0 12px 28px #003d1408}
+.vouch-payments-grid>div>section>h3,.vouch-payments-checklist h2,.vouch-payments-calculator h3,.vouch-payments-history h2{font:650 28px/1.2 'Cormorant Garamond',Georgia,serif;color:var(--vr-green);margin:0 0 12px}
+.vouch-payments-grid .vouch-payments-checklist p{font-size:13px;color:var(--vr-muted);margin:0 0 14px;line-height:1.5}
+.vouch-payments-check-row{display:flex;align-items:center;gap:11px;border:0;border-bottom:1px solid #E3EAE4;background:transparent;text-align:left;min-height:45px;width:100%;font-size:13px;padding:9px 0;color:var(--vr-text)}
+.vouch-payments-check-row svg{flex:none;color:#3D7856}
+.vouch-payments-grid .vouch-payments-checklist .vouch-payments-caution{margin:13px 0 0;padding-top:10px;font-size:12px;line-height:1.5}
+.vouch-payments-calculator>div{margin:0!important}.vouch-payments-calculator>div>label{font-size:13px}
+.vouch-payments-calculator>div>div:first-child{padding:22px 24px!important}
+.vouch-payments-history{padding-top:5px}
+.vouch-payments-history>section{background:#FFF;border:1px solid var(--vr-border);border-radius:22px;padding:18px}
+/* WorkShield sections use tabs while retaining existing checking and safety actions. */
+.vouch-shield-page{max-width:950px!important;margin:0 auto}
+.vouch-shield-heading{display:flex;justify-content:space-between;align-items:start;gap:20px;margin-bottom:15px}
+.wp-app .vouch-shield-heading h1{font:650 clamp(37px,4vw,49px)/1.08 'Cormorant Garamond',Georgia,serif;color:var(--vr-green)!important}
+.vouch-shield-heading p{font-size:14px;line-height:1.6;color:var(--vr-muted);margin-top:9px}
+.vouch-shield-help{display:inline-flex;align-items:center;justify-content:center;gap:9px;background:#FFF;border:1px solid #E2D8D6;color:#8A3B36;border-radius:999px;padding:11px 16px;min-height:44px;font-size:12px;font-weight:700;flex:none}
+.vouch-shield-check-card,.vouch-shield-saved-panel{background:#FFF;border:1px solid var(--vr-border);border-radius:26px;padding:27px 30px;box-shadow:0 12px 30px #003d1407}
+.wp-app .vouch-shield-check-title{font:650 clamp(24px,3vw,30px) 'Cormorant Garamond',Georgia,serif;color:var(--vr-green);margin-bottom:17px}
+.vouch-shield-check-card textarea{min-height:185px;border-radius:17px}
+.vouch-shield-check-card [role='alert']{color:#A13636}
+.vouch-shield-tools-panel{max-width:920px;margin:auto}
+.vouch-shield-tools-panel>div{max-width:920px!important}
+.vouch-shield-tools-panel [id='safety-section']{background:#EAF5EB!important;border:1px solid #DCEADD!important}
+/* Extension: aligned guide, browser preview and connection sections. */
+.vouch-reference-extension{padding:10px 0 40px}
+.wp-app .vouch-reference-extension>div:first-child h1{font:650 clamp(36px,4vw,46px)/1.15 'Cormorant Garamond',Georgia,serif;color:var(--vr-green)}
+.vouch-reference-extension>div:first-child p{font-size:14px;line-height:1.65;color:var(--vr-muted)}
+.vouch-reference-extension h2{font:650 27px/1.18 'Cormorant Garamond',Georgia,serif;color:var(--vr-green)}
+.vouch-reference-extension [id='extension-how'] .grid>div{background:#FFF;border-radius:24px;padding:25px;min-height:145px}
+.vouch-reference-extension [id='extension-demo']>div.relative{border-radius:24px}
+.vouch-reference-extension [id='extension-install'] section,.vouch-reference-extension>div>div.bg-white.border{border-radius:24px}
+/* Native select arrow: place it at the far right, not below the selected text. */
+.vouch-district-select{appearance:none!important;background-color:#FFF!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23064e32' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 16px center!important;background-size:17px!important;padding-right:48px!important;min-height:54px!important;line-height:1.4;cursor:pointer}
+/* Separate keyboard focus from mouse focus; visible keyboard indication is intentional. */
+@media(max-width:720px){
+ .vouch-passport-hero-card{padding:24px 20px;align-items:flex-start;flex-direction:column}
+ .vouch-passport-hero-actions{display:flex;align-items:center;flex-wrap:wrap;justify-items:start}
+ .vouch-passport-identity{gap:13px}.vouch-passport-initials{width:51px;height:51px;font-size:20px}
+ .vouch-passport-metrics{gap:8px}.vouch-passport-metric{min-height:89px;padding:16px 12px;border-radius:18px}
+ .vouch-passport-metric>span{font-size:10px}.vouch-passport-metric>strong{font-size:25px}
+ .vouch-passport-next-step{padding:21px;align-items:flex-start;flex-direction:column}
+ .vouch-passport-tabs,.vouch-shield-tabs{gap:17px}
+ .vouch-passport-proof-steps{grid-template-columns:1fr;gap:10px}
+ .vouch-passport-proof-steps li{padding:0 0 12px 30px;border-left:1px solid #BAD9C4}
+ .vouch-passport-proof-steps li:before{display:none}.vouch-proof-dot{left:-9px;top:0}
+ .vouch-passport-layout #passport-profile>div:first-child,.vouch-passport-empty,.vouch-passport-skill-card,.vouch-passport-settings-card{padding:22px 19px}
+ .vouch-payments-grid{grid-template-columns:1fr}
+ .vouch-shield-heading{flex-wrap:wrap}.vouch-shield-check-card,.vouch-shield-saved-panel{padding:21px}
+}
+@media(prefers-reduced-motion:reduce){.vouch-passport-progress-bar span{transition:none!important}}

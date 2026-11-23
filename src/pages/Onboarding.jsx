@@ -99,7 +99,7 @@ export function SetupFlow({ t, lang = 'en', onBack, onComplete, initialName = ''
       <input className="block w-full border rounded-xl p-4 mt-2" maxLength={120} value={name} onChange={e=>setName(e.target.value)} required autoComplete="name" />
     </label>
     <label className="block font-medium">{t('district')} ({lang === 'ne' ? 'ऐच्छिक' : 'optional'})
-      <select className="block w-full border rounded-xl p-4 mt-2 bg-white" value={district} onChange={e=>setDistrict(e.target.value)}><option value="">{lang === 'ne' ? 'पछि छान्नुहोस्' : 'Choose later'}</option>{DISTRICTS.map(d=><option key={d} value={d}>{d}</option>)}</select>
+      <select className="vouch-district-select block w-full border rounded-xl p-4 mt-2 bg-white" value={district} onChange={e=>setDistrict(e.target.value)}><option value="">{lang === 'ne' ? 'पछि छान्नुहोस्' : 'Choose later'}</option>{DISTRICTS.map(d=><option key={d} value={d}>{d}</option>)}</select>
     </label>
     <details className="border rounded-xl p-4"><summary className="cursor-pointer font-medium">{lang === 'ne' ? 'कामका रुचिहरू (ऐच्छिक)' : 'Work interests (optional)'}</summary>
       <div className="flex flex-wrap gap-2 mt-3">{ALL_CATEGORIES.map(c=><button type="button" key={c} onClick={()=>setWorkWanted(old=>old.includes(c)?old.filter(x=>x!==c):[...old,c])} aria-pressed={workWanted.includes(c)} className={'border rounded-full px-3 py-2 '+(workWanted.includes(c)?'bg-[#FAF0EE] border-[#003D14]':'')}>{c}</button>)}</div>

@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Wallet } from 'lucide-react';
+import { CheckSquare, Square } from 'lucide-react';
 import { flow } from '../api/flows.js';
 import { payCopy } from '../components/payments/paymentsShared.js';
+import { PaymentSettings } from '../components/payments/PaymentSettings.jsx';
+import { NetPayCalculator } from '../components/payment/Payment.jsx';
 
 // Payments page for both roles. Connected accounts read their DirectPay
 // records from Django (they survive refresh and re-login). Demo mode lists
@@ -23,8 +25,14 @@ const COPY = {
   },
 };
 
-export function PaymentsPage({ lang, workrooms = {}, allJobs = [] }) {
+export function PaymentsPage({ lang, workrooms = {}, allJobs = [], t, payChecklist = [], setPayChecklist = () => {}, showToast, role = 'worker' }) {
   const s = COPY[lang] || COPY.en;
+  const isEmployer = role === 'client';
+  const togglePay = (index) => setPayChecklist(old => {
+    const current = Array.isArray(old) && old.length === 4 ? [...old] : [false,false,false,false];
+    current[index] = !current[index];
+    return current;
+  });
   const p = payCopy(lang);
   const [rows, setRows] = useState(null);
   const [demoMode, setDemoMode] = useState(false);
@@ -88,12 +96,31 @@ export function PaymentsPage({ lang, workrooms = {}, allJobs = [] }) {
   ) : null;
 
   return (
-    <div className="space-y-5">
-      <section className="rounded-[20px] border border-[#E3E6E1] bg-white p-5 space-y-2">
-        <h2 className="text-xl font-semibold flex items-center gap-2"><Wallet size={22} className="text-[#003D14]" /> {s.title}</h2>
-        <p className="text-base text-[#475249]">{s.intro}</p>
-        {demoMode && <p className="text-sm text-[#6B6561]">{s.demoNote}</p>}
-      </section>
+    <div className="vouch-reference-payments space-y-7">
+      <header className="vouch-payments-heading">
+        <h1>{s.title}</h1>
+        <p>{s.intro}</p>
+        {demoMode && <p className="text-sm">{s.demoNote}</p>}
+      </header>
+      {!isEmployer && t && <div className="vouch-payments-grid">
+        <div className="space-y-5">
+          <PaymentSettings lang={lang} showToast={showToast}/>
+          <section className="vouch-payments-checklist">
+            <h2>{lang === 'ne' ? 'भुक्तानी लिनुअघि' : 'Before you get paid'}</h2>
+            <p>{lang === 'ne' ? 'आफूसँग भएका कुरा चिन्ह लगाउनुहोस्।' : 'A quick checklist. Tick what you already have.'}</p>
+            {[0,1,2,3].map(index => <button key={index} type="button" role="checkbox"
+              aria-checked={!!payChecklist[index]} onClick={() => togglePay(index)} className="vouch-payments-check-row">
+              {payChecklist[index] ? <CheckSquare size={20}/> : <Square size={20}/>}<span>{t('pp_pay_'+(index+1))}</span>
+            </button>)}
+            <p className="vouch-payments-caution">{lang === 'ne' ? 'यो सूची सुझाव मात्र हो। Vouch ले पैसा राख्दैन वा सार्दैन।' : 'This checklist is guidance only. Vouch does not transfer or hold money. Confirm terms with your employer.'}</p>
+          </section>
+        </div>
+        <div className="vouch-payments-calculator">
+          <NetPayCalculator t={t}/>
+        </div>
+      </div>}
+      <section className="vouch-payments-history space-y-4">
+        <h2>{lang === 'ne' ? 'भुक्तानीको इतिहास' : 'Payment history'}</h2>
       {!list.length && (
         <section className="rounded-[20px] border border-[#E3E6E1] bg-white p-5">
           <p className="text-base text-[#6B6561]">{s.empty}</p>
@@ -104,6 +131,7 @@ export function PaymentsPage({ lang, workrooms = {}, allJobs = [] }) {
       <Section title={s.confirmed} items={confirmed} />
       <Section title={s.disputed} items={disputed} />
       {!!list.length && <Section title={s.history} items={list} />}
+      </section>
     </div>
   );
 }

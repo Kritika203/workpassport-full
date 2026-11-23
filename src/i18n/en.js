@@ -438,7 +438,7 @@ export const en = {
     ex_i_note: "No account is needed and it works offline.",
     ex_priv_title: "Your privacy",
     ex_p1: "The extension reads text only when you select it and click. It never reads a page on its own.",
-    ex_p2: "Checks happen on your device. Your text is never sent to a server.",
+    ex_p2: "Offline checks run on your device. If you choose to connect your Vouch account, selected checks may be sent securely to your account.",
     ex_p3: "It asks only for the smallest permissions: reading your selection when you click, and saving your checks on this device.",
     disc_ext: "The extension gives the same checks as WorkShield and Safety in this app. A check with no danger signs is not a promise that a job or message is safe. The final decision is always yours.",
     report_title: "Report this job",

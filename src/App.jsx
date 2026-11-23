@@ -52,6 +52,7 @@ import { PublicPassport } from './connected/PublicPassport.jsx';
 import { PasswordReset } from './connected/PasswordReset.jsx';
 import './EditorialRefinement.css';
 import './VouchPolish.css';
+import './VouchReferenceLayout.css';
 
 
 
@@ -607,7 +608,7 @@ function Experience({ account, backendJobs = [], onOpenAccount, onDemo, onLogout
           ) : currentView === 'client-explore' ? (
             <ClientExplore t={t} lang={lang} navTo={navTo} showToast={showToast} connected={!!account} clientJobs={clientJobs} />
           ) : currentView === 'payments' ? (
-            <PaymentsPage lang={lang} workrooms={workrooms} allJobs={allJobs} />
+            <PaymentsPage lang={lang} workrooms={workrooms} allJobs={allJobs} t={t} payChecklist={payChecklist} setPayChecklist={setPayChecklist} showToast={showToast} role="client" />
           ) : currentView === 'client-applicants' ? (
             <ClientApplicants t={t} lang={lang} navTo={navTo} job={clientJobs.find(j => j.id === viewParams.id)} isDemo={!account} applicants={DEMO_APPLICANTS} />
           ) : currentView === 'client-agreement' ? (
@@ -651,8 +652,8 @@ function Experience({ account, backendJobs = [], onOpenAccount, onDemo, onLogout
         {currentView === 'job-detail' && <JobDetail onReport={account ? submitSafetyReport : null} t={t} navTo={navTo} job={allJobs.find(j => j.id === viewParams.id)} user={userProfile} skillLevels={skillLevels} savedJobs={savedJobs} setSavedJobs={setSavedJobs} lang={lang} showToast={showToast} hasDraft={simpleOn && !!applyDraft && applyDraft.jobId === viewParams.id} onSeeFeedback={() => navTo('job-feedback', { id: viewParams.id })} />}
         {currentView === 'apply' && <ApplyWizard key={viewParams.id} onSubmit={submitApplication} onDraftProposal={draftProposal} t={t} navTo={navTo} job={allJobs.find(j => j.id === viewParams.id)} user={userProfile} setAppliedJobs={setAppliedJobs} lang={lang} simple={simpleOn} applyDraft={applyDraft} setApplyDraft={setApplyDraft} />}
         {currentView === 'opportunities' && <MyOpportunities allJobs={allJobs} key={viewParams.tab || 'saved'} initialTab={viewParams.tab} t={t} navTo={navTo} savedJobs={savedJobs} setSavedJobs={setSavedJobs} appliedJobs={appliedJobs} confirmedJobs={confirmedJobs} hideMoney={sharedOn} draftJobId={simpleOn && applyDraft ? applyDraft.jobId : null} connected={!!account} lang={lang} />}
-        {currentView === 'passport' && <PassportPage allowDemoConfirm={!account} allJobs={allJobs} t={t} lang={lang} user={userProfile} setUser={setUserProfile} navTo={navTo} showToast={showToast} skillLevels={skillLevels} setSkillLevels={setSkillLevels} confirmedJobs={confirmedJobs} setConfirmedJobs={setConfirmedJobs} payChecklist={payChecklist} setPayChecklist={setPayChecklist} appliedJobs={appliedJobs} skillEvidence={skillEvidence} setSkillEvidence={setSkillEvidence} hideMoney={sharedOn} settings={settings} setSettings={setSettings} onSharedEnabled={() => setUnlocked(true)} evidence={evidence} onCreateShare={createPublicShare} />}
-        {currentView === 'payments' && <PaymentsPage lang={lang} workrooms={workrooms} allJobs={allJobs} />}
+        {currentView === 'passport' && <PassportPage allowDemoConfirm={!account} allJobs={allJobs} t={t} lang={lang} user={userProfile} setUser={setUserProfile} navTo={navTo} showToast={showToast} skillLevels={skillLevels} setSkillLevels={setSkillLevels} confirmedJobs={confirmedJobs} setConfirmedJobs={setConfirmedJobs} payChecklist={payChecklist} setPayChecklist={setPayChecklist} appliedJobs={appliedJobs} skillEvidence={skillEvidence} setSkillEvidence={setSkillEvidence} hideMoney={sharedOn} settings={settings} setSettings={setSettings} onSharedEnabled={() => setUnlocked(true)} evidence={evidence} onCreateShare={createPublicShare} initialTab={viewParams.tab || 'overview'} />}
+        {currentView === 'payments' && <PaymentsPage lang={lang} workrooms={workrooms} allJobs={allJobs} t={t} payChecklist={payChecklist} setPayChecklist={setPayChecklist} showToast={showToast} role="worker" />}
         {currentView === 'shield' && <ShieldSafetyPage onAnalyze={analyzeOnBackend} onSaveShield={saveShieldCheck} onClearShield={clearShieldChecks} t={t} lang={lang} user={userProfile} navTo={navTo} showToast={showToast} history={shieldHistory} setHistory={setShieldHistory} evidence={evidence} setEvidence={setEvidence} scrollKey={viewParams.n} scrollTo={viewParams.scrollTo} allJobs={allJobs} appliedJobs={appliedJobs} trusted={trusted} setTrusted={setTrusted} checkin={checkin} setCheckin={setCheckin} quiet={quiet} setQuiet={setQuiet} onQuickHide={() => setQuickHidden(true)} />}
         {currentView === 'ext' && <ExtensionPage t={t} lang={lang} navTo={navTo} connected={!!account} />}
         {currentView === 'skillbridge' && <SkillBridgePage allJobs={allJobs} t={t} lang={lang} user={userProfile} navTo={navTo} insights={approvedInsights} connected={!!account} />}

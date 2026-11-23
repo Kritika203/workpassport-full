@@ -14,12 +14,14 @@ import { fmt, fmtDate } from '../utils/format.js';
 
 export function ShieldSafetyPage({ t, lang, user, navTo, showToast, history, setHistory, evidence, setEvidence, scrollTo, scrollKey, allJobs = [], appliedJobs = [], trusted = null, setTrusted = () => {}, checkin = null, setCheckin = () => {}, quiet = QUIET_DEFAULT, setQuiet = () => {}, onQuickHide = () => {}, onAnalyze = null, onSaveShield = null, onClearShield = null }) {
   const [emergency, setEmergency] = useState(false);
+  const [activeSection, setActiveSection] = useState('check');
   useEffect(() => {
     if (scrollTo === 'safety') {
+      setActiveSection('tools');
       const el = document.getElementById('safety-section');
       if (el) el.scrollIntoView({ block: 'start' });
     }
-  }, [scrollTo, scrollKey]);
+  }, [scrollTo, scrollKey, activeSection]);
 
   const [text, setText] = useState("");
   const [wsResult, setWsResult] = useState(null); // WorkShield: { findings, verdict, snippet }
@@ -110,16 +112,23 @@ export function ShieldSafetyPage({ t, lang, user, navTo, showToast, history, set
 
   return (
     <div className="space-y-10 vouch-shield-page">
-      <nav className="vouch-page-jump" aria-label={lang === 'ne' ? 'WorkShield खण्डहरू' : 'WorkShield sections'}>
-        <a href="#workshield-check">{lang === 'ne' ? 'काम र सन्देश जाँच्नुहोस्' : 'Check a job or message'}</a>
-        <a href="#workshield-saved">{lang === 'ne' ? 'सुरक्षित जाँचहरू' : 'Saved checks'}</a>
-        <a href="#safety-section">{lang === 'ne' ? 'सुरक्षा र सहयोग' : 'Safety & support'}</a>
+      <header className="vouch-shield-heading">
+        <div><h1>{lang === 'ne' ? 'WorkShield र सुरक्षा' : 'WorkShield & Safety'}</h1>
+          <p>{lang === 'ne' ? 'सन्देश र काममा शङ्कास्पद संकेत तथा असहज सीमाहरू जाँच्नुहोस्।' : 'One check looks for warning signs in jobs and messages that cross your boundaries.'}</p>
+        </div>
+        <button type="button" onClick={() => setEmergency(true)} className="vouch-shield-help"><Phone size={16}/>{t('sp_em_btn')}</button>
+      </header>
+      <nav className="vouch-shield-tabs" aria-label={lang === 'ne' ? 'WorkShield खण्डहरू' : 'WorkShield sections'}>
+        {[['check', lang === 'ne' ? 'जाँच्नुहोस्' : 'Check'],
+          ['tools', lang === 'ne' ? 'सुरक्षा उपकरण' : 'Safety tools'],
+          ['saved', lang === 'ne' ? 'सुरक्षित जाँचहरू' : 'Saved items']].map(([id,label]) =>
+            <button type="button" role="tab" aria-selected={activeSection===id} key={id} onClick={() => setActiveSection(id)}>{label}</button>)}
       </nav>
-      <div id="workshield-check" className="max-w-[800px] mx-auto space-y-8 scroll-mt-28">
+      <div id="workshield-check" className="max-w-[920px] mx-auto space-y-8 scroll-mt-28">
+        <section data-shield-pane="check" hidden={activeSection !== 'check'} className="vouch-shield-check-card space-y-6">
         <div ref={topRef} className="scroll-mt-[128px] md:scroll-mt-24">
-          <h1 className="text-[28px] sm:text-[30px] font-semibold mb-3">{t('sh_title')}</h1>
-          <p className="text-lg text-[#475249] mb-6">{t('ws_one_intro')}</p>
-          <label htmlFor="ws-one-text" className="block font-semibold text-base mb-2">{t('ws_one_label')}</label>
+          <h2 className="vouch-shield-check-title">{t('ws_one_label')}</h2>
+          <label htmlFor="ws-one-text" className="sr-only">{t('ws_one_label')}</label>
           <textarea id="ws-one-text" value={text} onChange={e => { setText(e.target.value); setEmptyErr(false); }} placeholder={t('sh_placeholder')} className="w-full min-h-[140px] border border-[#E3E6E1] bg-white rounded-[14px] px-5 py-4 text-base outline-none focus:border-[#003D14] focus:ring-2 focus:ring-[#003D14]/30 mb-4" />
           {emptyErr && <p role="alert" className="text-[#AE332A] text-sm mb-4 flex items-start gap-2 bg-[#FAF0EE] p-3 rounded-[12px]"><ShieldAlert size={18} className="shrink-0 mt-0.5" /> <span>{t('err_paste_first')}</span></p>}
           <button onClick={runText} className={`w-full sm:w-auto sm:px-12 py-3.5 rounded-full font-semibold text-base min-h-[52px] ${!text.trim() ? 'opacity-60' : ''} ${checked ? 'bg-white border border-[#E3E6E1] text-[#141614] hover:bg-[#F7F7F4]' : 'bg-[#003D14] text-white hover:bg-[#0E5C2A]'}`}>{t('sh_check')}</button>
@@ -265,7 +274,8 @@ export function ShieldSafetyPage({ t, lang, user, navTo, showToast, history, set
           </div>
         </div>
 
-        <div>
+        </section>
+        <section data-shield-pane="saved" hidden={activeSection !== 'saved'} className="vouch-shield-saved-panel">
           <div className="flex items-center justify-between gap-3 mb-4">
             <h2 id="workshield-saved" className="font-semibold text-[22px] scroll-mt-28">{t('sh_hist_title')}</h2>
             {history.length > 0 && <button onClick={clearHistory} className="text-base font-semibold text-[#475249] underline underline-offset-4 min-h-[44px] px-2">{t('sh_clear')}</button>}
@@ -283,9 +293,10 @@ export function ShieldSafetyPage({ t, lang, user, navTo, showToast, history, set
               ))}
             </div>
           )}
-        </div>
+        </section>
       </div>
 
+      <section data-shield-pane="tools" hidden={activeSection !== 'tools'} className="vouch-shield-tools-panel space-y-6">
       <div className="max-w-[800px] mx-auto">
         <div id="safety-section" className="scroll-mt-[128px] md:scroll-mt-24 bg-[#FAF0EE] border border-[#F3E1DD] rounded-[20px] p-6 flex items-start gap-4">
           <HeartHandshake size={28} className="text-[#003D14] shrink-0 mt-0.5" />
@@ -322,7 +333,7 @@ export function ShieldSafetyPage({ t, lang, user, navTo, showToast, history, set
               </div>
             ))}
           </div>
-          <button onClick={() => navTo('passport')} className="w-full sm:w-auto border border-[#E3E6E1] bg-white text-[#141614] rounded-full px-6 font-semibold text-base hover:bg-[#F7F7F4] min-h-[52px]">{t('sf_edit_rules')}</button>
+          <button onClick={() => navTo('passport', { tab: 'settings' })} className="w-full sm:w-auto border border-[#E3E6E1] bg-white text-[#141614] rounded-full px-6 font-semibold text-base hover:bg-[#F7F7F4] min-h-[52px]">{t('sf_edit_rules')}</button>
         </div>
 
         <TrustedContactCard t={t} lang={lang} user={user} allJobs={allJobs} appliedJobs={appliedJobs} trusted={trusted} setTrusted={setTrusted} checkin={checkin} setCheckin={setCheckin} showToast={showToast} />
@@ -355,6 +366,7 @@ export function ShieldSafetyPage({ t, lang, user, navTo, showToast, history, set
           <p className="text-sm text-[#70776F] flex items-center gap-1.5"><Lock size={14} className="shrink-0" /> {t('sf_proof_private')}</p>
         </div>
       </div>
+      </section>
     </div>
   );
 }

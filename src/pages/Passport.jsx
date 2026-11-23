@@ -12,7 +12,7 @@ import { NetPayCalculator } from '../components/payment/Payment.jsx';
 import { PrivacySection } from '../components/privacy/Privacy.jsx';
 import { MASK } from '../constants/privacy.js';
 import { DEFAULT_RULES, LEVEL_ORDER, LEVEL_WEIGHT, RULE_KEYS } from '../constants/skills.js';
-import { DEMO_INSTITUTE } from '../data/demo.js';
+import { ALL_SKILLS, DEMO_INSTITUTE } from '../data/demo.js';
 import { DUMMY_JOBS } from '../data/jobs.js';
 import { EVIDENCE_KEY, MAX_PROOF, evidenceGroups } from '../services/evidence.js';
 import { printDocument } from '../services/print.js';
@@ -21,8 +21,12 @@ import { getLevel, isDemoUser, profileHasDetails } from '../utils/profile.js';
 
 
 
-export function PassportPage({ allowDemoConfirm = true, allJobs = DUMMY_JOBS, t, lang, user, setUser, navTo, showToast, skillLevels, setSkillLevels, confirmedJobs, setConfirmedJobs, payChecklist, setPayChecklist, appliedJobs, skillEvidence = {}, setSkillEvidence = () => {}, hideMoney = false, settings, setSettings, onSharedEnabled = () => {}, evidence = [], onCreateShare = null }) {
+export function PassportPage({ allowDemoConfirm = true, allJobs = DUMMY_JOBS, t, lang, user, setUser, navTo, showToast, skillLevels, setSkillLevels, confirmedJobs, setConfirmedJobs, payChecklist, setPayChecklist, appliedJobs, skillEvidence = {}, setSkillEvidence = () => {}, hideMoney = false, settings, setSettings, onSharedEnabled = () => {}, evidence = [], onCreateShare = null, initialTab = 'overview' }) {
   const [view, setView] = useState('main'); // main | public
+  const [activeTab, setActiveTab] = useState(initialTab);
+  const [cvExpanded, setCvExpanded] = useState(false);
+  const [editRequest, setEditRequest] = useState(0);
+  const [skillDraft, setSkillDraft] = useState('');
   const [shareOpen, setShareOpen] = useState(false);
   const [remoteShare, setRemoteShare] = useState('');
   const openShare = async () => {
@@ -38,6 +42,8 @@ export function PassportPage({ allowDemoConfirm = true, allJobs = DUMMY_JOBS, t,
   const progress = levels.length ? Math.round(levels.reduce((a, l) => a + LEVEL_WEIGHT[l.level], 0) / levels.length) : 0;
   const provenCount = levels.filter(l => l.level !== 'self').length;
   const confirmedList = confirmedJobs.map(id => allJobs.find(j => j.id === id)).filter(Boolean);
+  const totalProofItems = Object.values(skillEvidence || {}).reduce((sum, rows) => sum + (Array.isArray(rows) ? rows.length : 0), 0)
+    + (Array.isArray(evidence) ? evidence.length : 0);
   const earned = confirmedList.reduce((a, j) => a + j.budgetUSD * 133, 0);
   const waiting = [];
   appliedJobs.forEach(a => { if (!confirmedJobs.includes(a.jobId) && !waiting.some(w => w.jobId === a.jobId)) waiting.push(a); });
@@ -71,6 +77,18 @@ export function PassportPage({ allowDemoConfirm = true, allJobs = DUMMY_JOBS, t,
   };
   const togglePay = (i) => setPayChecklist(prev => { const a = [...(Array.isArray(prev) && prev.length === 4 ? prev : [false, false, false, false])]; a[i] = !a[i]; return a; });
   const toggleRule = (k) => setUser({ ...user, safetyRules: { ...rules, [k]: !rules[k] } });
+  const addSkill = (event) => {
+    event.preventDefault();
+    const nextSkill = skillDraft.trim();
+    if (!nextSkill || skills.includes(nextSkill)) return;
+    setUser({ ...user, skills: [...skills, nextSkill] });
+    setSkillDraft('');
+    showToast?.(lang === 'ne' ? 'सीप थपियो।' : 'Skill added to your WorkPassport.');
+  };
+  const openHeadlineEditor = () => {
+    setActiveTab('profile');
+    setEditRequest(n => n + 1);
+  };
   const copyLink = async () => {
     try { await navigator.clipboard.writeText(link); } catch (e) {
       try { const ta = document.createElement('textarea'); ta.value = link; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); } catch (e2) { /* ignore */ }
@@ -139,187 +157,170 @@ export function PassportPage({ allowDemoConfirm = true, allJobs = DUMMY_JOBS, t,
   }
 
   return (
-    <div className="max-w-[900px] mx-auto space-y-8">
+    <div className="vouch-passport-layout max-w-[1020px] mx-auto" data-active-tab={activeTab}>
       {printDoc}
-      <div className="vouch-page-intro"><p className="vouch-page-kicker">WORKPASSPORT</p><h1>{lang === 'ne' ? 'मेरो WorkPassport' : 'My WorkPassport'}</h1><p>{lang === 'ne' ? 'तपाईंको प्रोफाइल, सीपको प्रमाण र गरेको काम एकै ठाउँमा।' : 'Your profile, proof of skills and completed work, organised in one place.'}</p></div>
-      <nav className="vouch-page-jump" aria-label="WorkPassport sections">
-        <a href="#passport-overview">{lang === 'ne' ? 'परिचय' : 'Overview'}</a>
-        <a href="#passport-profile">{lang === 'ne' ? 'प्रोफाइल' : 'Profile & CV'}</a>
-        <a href="#passport-skills">{lang === 'ne' ? 'सीप' : 'Skills & proof'}</a>
-        <a href="#passport-work">{lang === 'ne' ? 'काम' : 'Work history'}</a>
-        <a href="#passport-payment">{lang === 'ne' ? 'भुक्तानी' : 'Payments & safety'}</a>
-        <a href="#passport-privacy">{lang === 'ne' ? 'गोपनीयता' : 'Privacy'}</a>
+      <nav className="vouch-passport-tabs" aria-label={lang === 'ne' ? 'WorkPassport पृष्ठहरू' : 'WorkPassport sections'}>
+        {[
+          ['overview', lang === 'ne' ? 'परिचय' : 'Overview'],
+          ['profile', lang === 'ne' ? 'प्रोफाइल' : 'Profile'],
+          ['skills', lang === 'ne' ? 'सीप र प्रमाण' : 'Skills & proof'],
+          ['work', lang === 'ne' ? 'गरिएका काम' : 'Completed work'],
+          ['settings', lang === 'ne' ? 'सेटिङ र गोपनीयता' : 'Settings & privacy'],
+        ].map(([id, label]) => (
+          <button key={id} type="button" role="tab" aria-selected={activeTab === id}
+            onClick={() => setActiveTab(id)}>{label}</button>
+        ))}
       </nav>
-      {/* Section 1: header */}
-      <div id="passport-overview" className="vouch-passport-overview scroll-mt-28 bg-white border border-[#E3E6E1] rounded-[20px] p-6 sm:p-7">
-        <div className="flex items-center gap-4 mb-6">
-          <div className="w-16 h-16 rounded-full bg-[#E7F0E9] border border-[#E3E6E1] flex items-center justify-center font-semibold text-xl text-[#141614] shrink-0">{initialsOf(user.name)}</div>
-          <div className="min-w-0">
-            <h1 className="text-[28px] sm:text-[30px] font-semibold truncate">{user.name}</h1>
-            <div className="text-base text-[#475249] flex flex-wrap items-center gap-x-3 gap-y-1"><span className="flex items-center gap-1.5"><MapPin size={20} /> {user.district}</span><span className="bg-[#E7F0E9] px-3 py-0.5 rounded-full text-sm font-semibold">{t('pp_beginner')}</span></div>
-            {user.headline && <div className="text-base text-[#475249] mt-1.5">{user.headline}</div>}
+
+      <section id="passport-overview" data-passport-pane="overview" hidden={activeTab !== 'overview'} className="vouch-passport-pane space-y-5">
+        <div className="vouch-passport-hero-card">
+          <div className="vouch-passport-identity">
+            <div className="vouch-passport-initials" aria-hidden="true">{initialsOf(user.name)}</div>
+            <div className="min-w-0">
+              <h1 className="vouch-passport-name">{user.name}</h1>
+              {user.district && <p className="vouch-passport-location">{user.district}</p>}
+              {user.headline && <p className="vouch-passport-location">{user.headline}</p>}
+              {!isDemoUser(user) && user.institute && <p className="vouch-passport-location">{fmt(t('pp_institute_pending'), { name: user.institute })}</p>}
+            </div>
+          </div>
+          <div className="vouch-passport-hero-actions">
+            <button type="button" onClick={() => { setView('public'); window.scrollTo(0, 0); }} className="vouch-passport-outline">{lang === 'ne' ? 'पासपोर्ट पूर्वावलोकन' : 'Passport preview'} <span aria-hidden="true">→</span></button>
+            <button type="button" onClick={openShare} className="vouch-passport-text-action">{lang === 'ne' ? 'सेयर गर्नुहोस्' : 'Share & export'} <span aria-hidden="true">→</span></button>
+            <button type="button" onClick={() => printDocument('passport')} className="vouch-passport-text-action">{t('pdf_btn')} <span aria-hidden="true">→</span></button>
           </div>
         </div>
-        {!isDemoUser(user) && user.institute && <p className="text-base text-[#475249] mb-6">{fmt(t('pp_institute_pending'), { name: user.institute })}</p>}
-
-        <div className="mb-6">
-          <div className="flex justify-between items-baseline mb-2"><span className="font-semibold text-base">{t('pp_progress')}</span><span className="font-semibold text-base">{digits(progress)}%</span></div>
-          <div className="h-2 bg-[#E7F0E9] rounded-full overflow-hidden"><div className="h-full bg-[#003D14] rounded-full transition-all" style={{ width: `${progress}%` }}></div></div>
-          <p className="text-base text-[#475249] mt-3">{enc}</p>
+        <div className="vouch-passport-metrics">
+          <div className="vouch-passport-metric"><span>{lang === 'ne' ? 'सीपहरू' : 'Skills'}</span><strong>{digits(skills.length)}</strong></div>
+          <div className="vouch-passport-metric"><span>{lang === 'ne' ? 'प्रमाणहरू' : 'Proof items'}</span><strong>{digits(totalProofItems)}</strong></div>
+          <div className="vouch-passport-metric"><span>{lang === 'ne' ? 'स्तर' : 'Level'}</span><strong>{user.badge || t('pp_beginner')}</strong></div>
         </div>
-
-        <div className="vouch-passport-stats grid grid-cols-3 gap-3 mb-6">
-          {[[t('pp_stat_skills'), digits(provenCount)], [t('pp_stat_jobs'), digits(confirmedList.length)], [t('pp_stat_earned'), hideMoney ? MASK : `NPR ${fmtMoney(earned)}`]].map(([label, val]) => (
-            <div key={label} className="vouch-passport-stat bg-[#F7F7F4] border border-[#E3E6E1] rounded-[14px] p-3 sm:p-4">
-              <div className="font-semibold text-lg sm:text-2xl break-words">{val}</div>
-              <div className="text-sm text-[#475249] mt-1">{label}</div>
-            </div>
-          ))}
+        <div className="vouch-passport-next-step">
+          <div><h2>{lang === 'ne' ? 'तपाईंको अर्को कदम' : 'Your next step'}</h2>
+            <p>{!user.headline ? (lang === 'ne' ? 'आफ्नो कामको छोटो परिचय थप्नुहोस्।' : 'Add a short headline that says what you do.')
+              : skills.length === 0 ? (lang === 'ne' ? 'आफ्नो पहिलो सीप थप्नुहोस्।' : 'Add your first skill to start building proof.')
+                : (lang === 'ne' ? 'कामको प्रमाण थपेर पासपोर्ट सुधार्नुहोस्।' : 'Keep building your profile with real proof of work.')}</p>
+          </div>
+          <button type="button" onClick={!user.headline ? openHeadlineEditor : () => setActiveTab('skills')} className="vouch-passport-primary">
+            {!user.headline ? (lang === 'ne' ? 'हेडलाइन थप्नुहोस्' : 'Add a headline') : skills.length === 0 ? (lang === 'ne' ? 'सीप थप्नुहोस्' : 'Add a skill') : (lang === 'ne' ? 'प्रमाण हेर्नुहोस्' : 'Build proof')}
+            <span aria-hidden="true">→</span>
+          </button>
         </div>
-
-        <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
-          <button onClick={openShare} className="flex-1 bg-[#003D14] text-white py-3.5 rounded-full font-semibold text-base hover:bg-[#0E5C2A] min-h-[52px] px-5">{t('pp_share')}</button>
-          <button onClick={() => { setView('public'); window.scrollTo(0, 0); }} className="flex-1 bg-white border border-[#E3E6E1] text-[#141614] py-3.5 rounded-full font-semibold text-base hover:bg-[#F7F7F4] min-h-[52px] px-5">{t('pp_see_clients')}</button>
-          <button onClick={() => printDocument('passport')} className="flex-1 bg-white border border-[#E3E6E1] text-[#141614] py-3.5 rounded-full font-semibold text-base hover:bg-[#F7F7F4] min-h-[52px] px-5 inline-flex items-center justify-center gap-2"><Download size={20} /> {t('pdf_btn')}</button>
+        <div className="vouch-passport-progress-card">
+          <div className="flex flex-wrap justify-between gap-3 items-baseline"><h2>{t('pp_progress')}</h2><span>{digits(progress)}%</span></div>
+          <div className="vouch-passport-progress-bar"><span style={{width:`${progress}%`}} /></div>
+          <p>{enc}</p>
+          {confirmedList.length > 0 && <p>{t('pp_stat_jobs')}: {digits(confirmedList.length)} · {t('pp_stat_earned')}: {hideMoney ? MASK : `NPR ${fmtMoney(earned)}`}</p>}
         </div>
-      </div>
+      </section>
 
-      {/* Section 1b: richer profile fields */}
-      <div id="passport-profile" className="vouch-page-group scroll-mt-28"><CVImport user={user} onSave={setUser} lang={lang} /><ProfileDetails t={t} lang={lang} user={user} setUser={setUser} showToast={showToast} /></div>
+      <section id="passport-profile" data-passport-pane="profile" hidden={activeTab !== 'profile'} className="vouch-passport-pane space-y-5">
+        <ProfileDetails t={t} lang={lang} user={user} setUser={setUser} showToast={showToast} editRequest={editRequest} />
+        <div className="vouch-passport-disclosure">
+          <button type="button" aria-expanded={cvExpanded} onClick={() => setCvExpanded(old => !old)}>
+            <span>{lang === 'ne' ? 'CV अपलोड गर्नुहोस्' : 'Import CV'}</span>
+            <span aria-hidden="true">{cvExpanded ? '−' : '→'}</span>
+          </button>
+          {cvExpanded && <CVImport user={user} onSave={setUser} lang={lang} />}
+        </div>
+      </section>
 
-      {/* Section 2: skills */}
-      <div id="passport-skills" className="scroll-mt-28">
-        <h2 className="font-semibold text-[22px] mb-4">{t('pp_skills_title')}</h2>
-        <div className="vouch-passport-skill-grid mb-6">
+      <section id="passport-skills" data-passport-pane="skills" hidden={activeTab !== 'skills'} className="vouch-passport-pane space-y-7">
+        <div className="vouch-passport-section-title">
+          <h2>{t('pp_skills_title')}</h2>
+          <button type="button" className="vouch-passport-text-action" onClick={() => navTo('skillbridge')}>SkillBridge <span aria-hidden="true">→</span></button>
+        </div>
+        <form className="vouch-passport-add-skill" onSubmit={addSkill}>
+          <label htmlFor="wp-add-skill">{lang === 'ne' ? 'सीप थप्नुहोस्' : 'Add a skill'}</label>
+          <div className="flex flex-wrap gap-3">
+            <select id="wp-add-skill" value={skillDraft} onChange={event => setSkillDraft(event.target.value)}>
+              <option value="">{lang === 'ne' ? 'सीप छान्नुहोस्' : 'Choose a skill'}</option>
+              {ALL_SKILLS.filter(skill => !skills.includes(skill)).map(skill => <option key={skill} value={skill}>{skill}</option>)}
+            </select>
+            <button type="submit" className="vouch-passport-primary" disabled={!skillDraft}>{lang === 'ne' ? 'थप्नुहोस्' : 'Add skill'} <span aria-hidden="true">→</span></button>
+          </div>
+        </form>
+        {!skills.length && <div className="vouch-passport-empty">{lang === 'ne' ? 'अहिलेसम्म सीप थपिएको छैन।' : 'No skills listed yet.'}</div>}
+        <div className="vouch-passport-skill-grid">
           {levels.map(({ skill, level }) => (
             <div key={skill} className="vouch-passport-skill-card p-5 sm:p-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-3 mb-2"><span className="font-semibold text-lg">{skill}</span><LevelBadge level={level} t={t} /></div>
-                <p className="text-base text-[#475249]">{t('pp_desc_' + level)}</p>
-                {level === 'demonstrated' && <p className="text-sm text-[#70776F] mt-1">{t('pp_source')} {t('pp_src_demo')}</p>}
-                {level === 'institution' && instituteOf(skill, level) && <p className="text-sm text-[#70776F] mt-1">{t('pp_source')} {instituteOf(skill, level)}</p>}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-3 mb-2"><span className="font-semibold text-lg">{skill}</span><LevelBadge level={level} t={t} /></div>
+                  <p className="text-base text-[#475249]">{t('pp_desc_' + level)}</p>
+                  {level === 'demonstrated' && <p className="text-sm text-[#70776F] mt-1">{t('pp_source')} {t('pp_src_demo')}</p>}
+                  {level === 'institution' && instituteOf(skill, level) && <p className="text-sm text-[#70776F] mt-1">{t('pp_source')} {instituteOf(skill, level)}</p>}
+                </div>
+                <div className="sm:max-w-[220px] sm:text-right shrink-0">
+                  {level === 'demonstrated' && <p className="text-sm text-[#70776F]">{t('pp_next_demo')}</p>}
+                  {level === 'institution' && <p className="text-sm text-[#70776F]">{t('pp_next_inst')}</p>}
+                  {(level === 'client' || level === 'platform') && <p className="text-sm text-[#70776F] flex items-center gap-2 sm:justify-end"><Check size={16} className="text-[#141614]" /> {t('pp_top')}</p>}
+                </div>
               </div>
-              <div className="sm:max-w-[220px] sm:text-right shrink-0">
-                {level === 'demonstrated' && <p className="text-sm text-[#70776F]">{t('pp_next_demo')}</p>}
-                {level === 'institution' && <p className="text-sm text-[#70776F]">{t('pp_next_inst')}</p>}
-                {(level === 'client' || level === 'platform') && <p className="text-sm text-[#70776F] flex items-center gap-2 sm:justify-end"><Check size={16} className="text-[#141614]" /> {t('pp_top')}</p>}
-              </div>
-            </div>
-            <ProofArea skill={skill} items={Array.isArray(evidenceMap[skill]) ? evidenceMap[skill] : []} t={t} digits={digits} onAdd={addProof} onRemove={removeProof} />
+              <ProofArea skill={skill} items={Array.isArray(evidenceMap[skill]) ? evidenceMap[skill] : []} t={t} digits={digits} onAdd={addProof} onRemove={removeProof} />
             </div>
           ))}
         </div>
-
-        <div className="bg-white border border-[#E3E6E1] rounded-[20px] p-6 sm:p-6">
-          <h3 className="font-semibold text-xl mb-5">{t('pp_how_title')}</h3>
-          <ol className="relative border-l-2 border-[#E3E6E1] ml-3 space-y-5">
-            {LEVEL_ORDER.map((lv, i) => (
-              <li key={lv} className="pl-6 relative">
-                <span className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-white border-2 border-[#003D14]"></span>
-                <div className="flex flex-wrap items-center gap-3 mb-1"><span className="text-sm font-semibold text-[#70776F]">{digits(i + 1)}</span><LevelBadge level={lv} t={t} /></div>
-                <p className="text-base text-[#475249]">{t('pp_desc_' + lv)}</p>
-              </li>
-            ))}
+        <div className="vouch-passport-proof-explainer">
+          <h3>{t('pp_how_title')}</h3>
+          <p>{lang === 'ne' ? 'आफ्नो सीप प्रमाणित गर्दै पाँच तह पार गर्नुहोस्।' : 'Each skill grows through five steps as you prove it.'}</p>
+          <ol className="vouch-passport-proof-steps">
+            {LEVEL_ORDER.map((lv, index) => <li key={lv}>
+              <span aria-hidden="true" className="vouch-proof-dot"/>
+              <strong>{t('pp_lvl_' + lv)}</strong><p>{t('pp_desc_' + lv)}</p>
+            </li>)}
           </ol>
         </div>
-      </div>
+      </section>
 
-      {/* Section 4: completed work */}
-      <div id="passport-work" className="scroll-mt-28">
-        <h2 className="font-semibold text-[22px] mb-4">{t('pp_work_title')}</h2>
-        {confirmedList.length === 0 && waiting.length === 0 && (
-          <div className="bg-white border border-[#E3E6E1] rounded-[20px] p-6 text-center flex flex-col items-center gap-5">
-            <CheckSquare size={40} className="text-[#D6E2D8]" />
-            <p className="text-lg text-[#475249] max-w-md">{t('pp_work_empty')}</p>
-            <button onClick={() => navTo('firstwork')} className="bg-[#003D14] text-white px-8 rounded-full font-semibold text-base hover:bg-[#0E5C2A] min-h-[52px]">{t('pp_find_job')}</button>
-          </div>
-        )}
-        {waiting.length > 0 && (
-          <div className="mb-6">
-            <h3 className="font-semibold text-lg mb-3">{t('pp_applied_head')}</h3>
-            <div className="space-y-4">
-              {waiting.map(a => {
-                const j = allJobs.find(x => x.id === a.jobId);
-                if (!j) return null;
-                return (
-                  <div key={a.jobId} className="bg-white border border-[#E3E6E1] rounded-[20px] p-5 sm:p-6">
-                    <div className="font-semibold text-lg mb-1">{j.title}</div>
-                    <div className="text-base text-[#475249] mb-1">{j.clientName}</div>
-                    <div className="text-base font-semibold mb-3">NPR {hideMoney ? MASK : fmtMoney(a.npr || a.price * 133)}</div>
-                    <span className="bg-[#E7F0E9] border border-[#E3E6E1] px-4 py-2 rounded-[12px] text-[#141614] font-semibold text-sm inline-flex items-center gap-2 mb-4"><CheckCircle2 size={16} /> {t('applied_status')}</span>
-                    {allowDemoConfirm && <button onClick={() => confirmJob(j.id)} className="w-full border-2 border-dashed border-[#D6E2D8] text-[#475249] rounded-full px-5 font-semibold text-base hover:border-[#70776F] min-h-[48px] bg-white">{t('pp_demo_confirm')}</button>}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-        {confirmedList.length > 0 && (
-          <div>
-            <h3 className="font-semibold text-lg mb-3">{t('pp_done_head')}</h3>
-            <div className="space-y-4">
-              {confirmedList.map(j => (
-                <div key={j.id} className="bg-white border border-[#E3E6E1] rounded-[20px] p-5 sm:p-6">
-                  <div className="font-semibold text-lg mb-1">{j.title}</div>
-                  <div className="text-base text-[#475249] mb-3">{j.clientName}</div>
-                  <div className="mb-3"><LevelBadge level="client" t={t} /></div>
-                  <div className="text-base font-semibold">{fmt(t('pp_earned_line'), { n: hideMoney ? MASK : fmtMoney(j.budgetUSD * 133) })}</div>
-                  <div className="text-sm text-[#70776F] mt-1">{t('pp_confirmed_demo')}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
+      <section id="passport-work" data-passport-pane="work" hidden={activeTab !== 'work'} className="vouch-passport-pane space-y-5">
+        <h2 className="vouch-passport-section-heading">{t('pp_work_title')}</h2>
+        {confirmedList.length === 0 && waiting.length === 0 && <div className="vouch-passport-completed-empty">
+          <CheckSquare size={36} aria-hidden="true" />
+          <p>{t('pp_work_empty')}</p>
+          <button type="button" onClick={() => navTo('firstwork')} className="vouch-passport-primary">{t('pp_find_job')} <span aria-hidden="true">→</span></button>
+        </div>}
+        {waiting.length > 0 && <div className="space-y-4">
+          <h3 className="font-semibold text-lg">{t('pp_applied_head')}</h3>
+          {waiting.map(a => { const j = allJobs.find(x => x.id === a.jobId); if (!j) return null; return (
+            <div key={a.jobId} className="vouch-passport-work-card space-y-2">
+              <strong>{j.title}</strong><p>{j.clientName}</p>
+              <p>NPR {hideMoney ? MASK : fmtMoney(a.npr || a.price * 133)}</p>
+              <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 bg-[#E7F0E9]"><CheckCircle2 size={16}/>{t('applied_status')}</span>
+              {allowDemoConfirm && <button type="button" onClick={() => confirmJob(j.id)} className="vouch-passport-outline">{t('pp_demo_confirm')} <span aria-hidden="true">→</span></button>}
+            </div>); })}
+        </div>}
+        {confirmedList.length > 0 && <div className="space-y-4">
+          <h3 className="font-semibold text-lg">{t('pp_done_head')}</h3>
+          {confirmedList.map(j => <div key={j.id} className="vouch-passport-work-card space-y-2">
+            <strong>{j.title}</strong><p>{j.clientName}</p><LevelBadge level="client" t={t}/>
+            <p className="font-semibold">{fmt(t('pp_earned_line'), {n:hideMoney ? MASK : fmtMoney(j.budgetUSD * 133)})}</p>
+            <p className="text-sm">{t('pp_confirmed_demo')}</p>
+          </div>)}
+        </div>}
+      </section>
 
-      {/* Evidence Vault link card */}
-      <button onClick={() => navTo('vault')} className="w-full text-left bg-white border border-[#E3E6E1] rounded-[20px] p-5 sm:p-6 hover:border-[#DDD8CE] flex items-center gap-4 min-h-[64px]">
-        <Lock size={28} className="shrink-0 text-[#003D14]" />
-        <span className="flex-1 min-w-0">
-          <span className="block font-semibold text-xl text-[#141614]">{t('ev_title')}</span>
-          <span className="block text-base text-[#475249]">{fmt(t('ev_count'), { n: digits(Array.isArray(evidence) ? evidence.length : 0) })}</span>
-        </span>
-        <ArrowRight size={22} className="shrink-0 text-[#70776F]" />
-      </button>
-
-      {/* SkillBridge link card */}
-      <button onClick={() => navTo('skillbridge')} className="w-full text-left bg-white border border-[#E3E6E1] rounded-[20px] p-5 sm:p-6 hover:border-[#DDD8CE] flex items-center gap-4 min-h-[64px]">
-        <TrendingUp size={28} className="shrink-0 text-[#003D14]" />
-        <span className="flex-1 min-w-0">
-          <span className="block font-semibold text-xl text-[#141614]">{t('sb_title')}</span>
-          <span className="block text-base text-[#475249]">{t('sb_card_line')}</span>
-        </span>
-        <ArrowRight size={22} className="shrink-0 text-[#70776F]" />
-      </button>
-
-      {/* Section 5: getting paid + safety rules */}
-      <div id="passport-payment" className="vouch-page-group scroll-mt-28">
-        <PaymentSettings lang={lang} showToast={showToast} />
-      <div className="bg-white border border-[#E3E6E1] rounded-[20px] p-6 sm:p-6">
-        <h2 className="font-semibold text-[22px] mb-5">{t('pp_pay_title')}</h2>
-        <div className="space-y-3 mb-5">
-          {[0, 1, 2, 3].map(i => {
-            const on = !!(payChecklist && payChecklist[i]);
-            return (
-              <button key={i} onClick={() => togglePay(i)} className={`w-full flex items-start gap-3 p-4 rounded-[14px] border text-left min-h-[48px] transition-colors ${on ? 'border-[#003D14] bg-[#FAF0EE]' : 'border-[#E3E6E1] bg-white hover:border-[#DDD8CE]'}`} role="checkbox" aria-checked={on}>
-                {on ? <CheckSquare size={24} className="shrink-0 text-[#003D14]" /> : <Square size={24} className="shrink-0 text-[#70776F]" />}
-                <span className="text-base font-medium">{t('pp_pay_' + (i + 1))}</span>
-              </button>
-            );
-          })}
+      <section id="passport-settings" data-passport-pane="settings" hidden={activeTab !== 'settings'} className="vouch-passport-pane space-y-5">
+        <h2 className="vouch-passport-section-heading">{lang === 'ne' ? 'सेटिङ र गोपनीयता' : 'Settings & privacy'}</h2>
+        <button type="button" onClick={() => navTo('vault')} className="vouch-passport-link-card">
+          <Lock size={22} aria-hidden="true"/><span><strong>{t('ev_title')}</strong><small>{fmt(t('ev_count'), {n:digits(Array.isArray(evidence) ? evidence.length : 0)})}</small></span><span aria-hidden="true">→</span>
+        </button>
+        <button type="button" onClick={() => navTo('skillbridge')} className="vouch-passport-link-card">
+          <TrendingUp size={22} aria-hidden="true"/><span><strong>{t('sb_title')}</strong><small>{t('sb_card_line')}</small></span><span aria-hidden="true">→</span>
+        </button>
+        <PaymentSettings lang={lang} showToast={showToast}/>
+        <div className="vouch-passport-settings-card space-y-4">
+          <h3>{t('pp_pay_title')}</h3>
+          <div className="space-y-3">{[0,1,2,3].map(i => {
+            const on = !!(payChecklist && payChecklist[i]); return <button key={i} type="button" role="checkbox" aria-checked={on} onClick={() => togglePay(i)} className="vouch-passport-checkline">
+              {on ? <CheckSquare size={20}/> : <Square size={20}/>}<span>{t('pp_pay_' + (i+1))}</span>
+            </button>; })}</div>
+          <Disclaimer t={t} k="disc_pay"/>
+          <NetPayCalculator t={t}/>
+          <h3>{t('pp_rules_title')}</h3>
+          <div className="space-y-3">{RULE_KEYS.map(k => <RuleToggle key={k} label={t('rule_' + k)} on={!!rules[k]} onClick={() => toggleRule(k)} />)}</div>
         </div>
-        <Disclaimer t={t} k="disc_pay" className="mt-0" />
-        <NetPayCalculator t={t} />
-        <h3 className="font-semibold text-xl mb-4">{t('pp_rules_title')}</h3>
-        <div className="space-y-3">
-          {RULE_KEYS.map(k => <RuleToggle key={k} label={t('rule_' + k)} on={!!rules[k]} onClick={() => toggleRule(k)} />)}
-        </div>
-      </div>
-
-      </div>
-      {/* Section 6: privacy and ease */}
-      <div id="passport-privacy" className="scroll-mt-28"><PrivacySection t={t} settings={settings} setSettings={setSettings} onSharedEnabled={onSharedEnabled} /></div>
+        <PrivacySection t={t} settings={settings} setSettings={setSettings} onSharedEnabled={onSharedEnabled}/>
+      </section>
 
       {/* Share modal */}
       {shareOpen && (
