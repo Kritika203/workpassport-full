@@ -77,7 +77,7 @@ page.on('response',r=>{if(r.status()>=500) crashes.push('HTTP '+r.status()+' '+r
 await run('Browser loads landing page',async()=>{
   const r=await page.goto(WEB,{waitUntil:'domcontentloaded',timeout:100000});
   assert.equal(r.status(),200);
-  await page.getByRole('heading',{name:/Your first opportunity/i}).waitFor({timeout:30000});
+  await page.getByRole('heading',{name:/Your first opportunity\. On clearer terms\./i}).waitFor({timeout:30000});
   await page.locator('.vouch-hero-preview').waitFor({state:'visible'});
   await page.screenshot({path:'smoke-artifacts/landing-desktop.png',fullPage:false});
 });
@@ -146,7 +146,7 @@ await run('Employer deliverable formats use grouped selector',async()=>{
 await run('Employer logout returns to Vouch public page',async()=>{
   await page.locator('.vouch-shell-user-button').click();
   await page.getByRole('menuitem',{name:/Log out/i}).click();
-  await page.getByRole('heading',{name:/Your first opportunity/i}).waitFor();
+  await page.getByRole('heading',{name:/Your first opportunity\. On clearer terms\./i}).waitFor();
 });
 await run('Maya demo authenticates against live backend',async()=>{
   await page.getByRole('button',{name:/Continue Demo \(Maya\)/i}).first().click();
@@ -202,7 +202,7 @@ await run('Mobile landing fits 390px screen and menu opens',async()=>{
   const mobile=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   const mp=await mobile.newPage();
   await mp.goto(WEB,{waitUntil:'domcontentloaded',timeout:100000});
-  await mp.getByRole('heading',{name:/Your first opportunity/i}).waitFor();
+  await mp.getByRole('heading',{name:/Your first opportunity\. On clearer terms\./i}).waitFor();
   const size=await mp.evaluate(()=>({w:document.documentElement.clientWidth,sw:document.documentElement.scrollWidth}));
   assert.ok(size.sw<=size.w+8,JSON.stringify(size));
   const menu=mp.locator('.vouch-mobile-menu');
