@@ -1,44 +1,44 @@
-// Sign up and sign in forms for Vouch accounts.
-
+// Account access: one centered, accessible form for workers and employers.
 import { useState } from 'react';
-import { ArrowLeft, ShieldCheck } from 'lucide-react';
 import { api, storeApiSession } from '../api/client.js';
 import { PasswordInput } from './PasswordInput.jsx';
+import './VouchAuth.css';
 
-const INPUT = 'w-full border border-[#e0e5db] rounded-[10px] bg-white px-4 py-3 min-h-[48px] outline-none focus:border-[#59684a]';
 const COPY = {
   en: {
-    back: 'Back', create: 'Create your Vouch account', login: 'Welcome back',
-    createSub: 'Create an account to save your skills, jobs and applications.',
-    loginSub: 'Sign in to pick up where you left off.',
-    username: 'Username', email: 'Email address', name: 'Full name',
+    back: 'Back to home', create: 'Create your WorkPassport', login: 'Welcome back',
+    createSub: 'Save your skills, applications and work in one place.',
+    loginSub: 'Sign in to continue where you left off.',
+    name: 'Full name', username: 'Username', email: 'Email address',
     password: 'Password', confirm: 'Confirm password', account: 'I want to',
     freelancer: 'Find freelance work', client: 'Hire freelancers',
-    createButton: 'Create account', loginButton: 'Log in',
-    busy: 'Please wait…', switchToLogin: 'Already have an account? Log in',
-    switchToCreate: 'New to Vouch? Create an account',
-    mismatch: 'Your passwords do not match.',
-    length: 'Choose a password with at least 8 characters.',
-    safe: 'Use a password you have not used elsewhere.',
+    createButton: 'Create account', loginButton: 'Log in', busy: 'Please wait…',
+    switchToLogin: 'Already have an account?', switchToCreate: 'New to Vouch?',
+    createLink: 'Create an account', loginLink: 'Log in',
+    mismatch: 'Passwords do not match. Please check your confirmation.',
+    length: 'Use a password with at least 8 characters.',
+    safe: 'Choose a password you do not use elsewhere.',
     forgot: 'Forgot password?', forgotTitle: 'Reset your password',
     forgotSub: 'Enter your email address and we will send reset instructions.',
     sendReset: 'Send reset link', resetSent: 'If an account uses that email, a reset link will be sent.',
+    passwordHelp: 'At least 8 characters',
   },
   ne: {
-    back: 'पछाडि', create: 'आफ्नो Vouch बनाउनुहोस्', login: 'फेरि स्वागत छ',
-    createSub: 'आफ्ना सीप, काम र आवेदन सुरक्षित राख्न खाता बनाउनुहोस्।',
+    back: 'गृहपृष्ठमा फर्कनुहोस्', create: 'आफ्नो WorkPassport बनाउनुहोस्', login: 'फेरि स्वागत छ',
+    createSub: 'आफ्ना सीप, आवेदन र काम एकै ठाउँमा राख्नुहोस्।',
     loginSub: 'आफ्नो काम जारी राख्न लग इन गर्नुहोस्।',
-    username: 'प्रयोगकर्ता नाम', email: 'इमेल ठेगाना', name: 'पूरा नाम',
+    name: 'पूरा नाम', username: 'प्रयोगकर्ता नाम', email: 'इमेल ठेगाना',
     password: 'पासवर्ड', confirm: 'पासवर्ड फेरि लेख्नुहोस्', account: 'म चाहन्छु',
     freelancer: 'फ्रिलान्स काम खोज्न', client: 'फ्रिलान्सरलाई काम दिन',
-    createButton: 'खाता बनाउनुहोस्', loginButton: 'लग इन गर्नुहोस्',
-    busy: 'कृपया पर्खनुहोस्…', switchToLogin: 'पहिल्यै खाता छ? लग इन गर्नुहोस्',
-    switchToCreate: 'Vouch मा नयाँ हुनुहुन्छ? खाता बनाउनुहोस्',
+    createButton: 'खाता बनाउनुहोस्', loginButton: 'लग इन गर्नुहोस्', busy: 'कृपया पर्खनुहोस्…',
+    switchToLogin: 'पहिल्यै खाता छ?', switchToCreate: 'Vouch मा नयाँ हुनुहुन्छ?',
+    createLink: 'खाता बनाउनुहोस्', loginLink: 'लग इन गर्नुहोस्',
     mismatch: 'दुवै पासवर्ड मिलेनन्।', length: 'कम्तीमा ८ अक्षरको पासवर्ड राख्नुहोस्।',
     safe: 'अरू ठाउँमा प्रयोग नगरेको पासवर्ड राख्नुहोस्।',
     forgot: 'पासवर्ड बिर्सनुभयो?', forgotTitle: 'पासवर्ड परिवर्तन गर्नुहोस्',
     forgotSub: 'इमेल ठेगाना लेख्नुहोस्। हामी पासवर्ड परिवर्तन गर्ने लिंक पठाउनेछौँ।',
     sendReset: 'लिंक पठाउनुहोस्', resetSent: 'यो इमेलको खाता भए लिंक पठाइनेछ।',
+    passwordHelp: 'कम्तीमा ८ अक्षर',
   },
 };
 
@@ -46,29 +46,26 @@ export function ConnectedAuth({ initialMode = 'register', lang = 'en', onBack, o
   const [mode, setMode] = useState(initialMode);
   const [form, setForm] = useState({ username: '', email: '', password: '', confirm: '', display_name: '', role: 'freelancer' });
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
-  const text = COPY[lang] || COPY.en;
-  const change = (key, value) => setForm(current => ({ ...current, [key]: value }));
-
-  const submit = async (event) => {
+  const t = COPY[lang] || COPY.en;
+  const change = (key, value) => {
+    setForm(current => ({ ...current, [key]: value }));
+    setFieldErrors(current => ({ ...current, [key]: '' }));
+  };
+  const switchMode = next => { setMode(next); setError(''); setFieldErrors({}); setNotice(''); };
+  const submit = async event => {
     event.preventDefault();
     if (busy) return;
-    setError('');
-    setNotice('');
-    if (mode === 'register' && form.password !== form.confirm) {
-      setError(text.mismatch);
-      return;
-    }
-    if (mode === 'register' && form.password.length < 8) {
-      setError(text.length);
-      return;
-    }
+    setError(''); setFieldErrors({}); setNotice('');
+    if (mode === 'register' && form.password.length < 8) { setFieldErrors({ password: t.length }); return; }
+    if (mode === 'register' && form.password !== form.confirm) { setFieldErrors({ confirm: t.mismatch }); return; }
     setBusy(true);
     try {
       if (mode === 'forgot') {
         await api('/api/auth/password-reset/request/', { method: 'POST', body: { email: form.email.trim() } });
-        setNotice(text.resetSent);
+        setNotice(t.resetSent);
         return;
       }
       if (mode === 'register') {
@@ -76,59 +73,66 @@ export function ConnectedAuth({ initialMode = 'register', lang = 'en', onBack, o
           method: 'POST',
           body: {
             username: form.username.trim(), email: form.email.trim(),
-            password: form.password, display_name: form.display_name.trim(), role: form.role,
+            display_name: form.display_name.trim(), role: form.role, password: form.password,
           },
         });
       }
-      const tokens = await api('/api/auth/login/', {
-        method: 'POST', body: { username: form.username.trim(), password: form.password },
-      });
+      const tokens = await api('/api/auth/login/', { method: 'POST', body: { username: form.username.trim(), password: form.password } });
       if (mode === 'register' && lang === 'ne') {
-        // Keep the language they selected during signup.
         try { await api('/api/auth/me/', { method: 'PATCH', body: { preferred_language: 'ne' } }, tokens); }
-        catch { /* Account can still be opened if saving the language fails. */ }
+        catch { /* The account still opens if language preference saving fails. */ }
       }
       storeApiSession(tokens);
       onAuthenticated(tokens, { isNew: mode === 'register', role: form.role });
     } catch (err) {
-      setError(err.message || 'Could not complete your request. Please try again.');
-    } finally {
-      setBusy(false);
-    }
+      const data = err?.data;
+      if (mode === 'register' && err?.status === 400 && data && typeof data === 'object') {
+        const fields = {};
+        const others = [];
+        Object.entries(data).forEach(([name, val]) => {
+          const text = (Array.isArray(val) ? val : [val]).filter(x => typeof x === 'string').join(' ');
+          if (!text || name === 'status') return;
+          if (['username','display_name','email','password','role'].includes(name)) fields[name] = text;
+          else others.push(text);
+        });
+        setFieldErrors(fields);
+        if (others.length || !Object.keys(fields).length) setError(others.join(' ') || err.message);
+      } else setError(err.message || 'Could not complete your request. Please try again.');
+    } finally { setBusy(false); }
   };
-
-  return (
-    <div className="vouch-auth">
-      <header className="vouch-auth-header"><strong className="vouch-brand">vouch<span>.</span></strong><button type="button" onClick={onBack} className="vouch-header-text">← {text.back}</button></header>
-      <div className="vouch-auth-wrap">
-        <div className="vouch-auth-card">
-          <h1 className="vouch-auth-title mb-2">{mode === 'forgot' ? text.forgotTitle : mode === 'login' ? text.login : text.create}</h1>
-          <p className="text-[#4A4744] mb-6">{mode === 'forgot' ? text.forgotSub : mode === 'login' ? text.loginSub : text.createSub}</p>
-          <form onSubmit={submit} className="space-y-4">
-            {mode === 'register' && <>
-              <label className="block font-medium">{text.name}<input className={`${INPUT} mt-1`} type="text" autoComplete="name" required maxLength={120} value={form.display_name} onChange={e => change('display_name', e.target.value)}/></label>
-              <label className="block font-medium">{text.email}<input className={`${INPUT} mt-1`} type="email" autoComplete="email" required value={form.email} onChange={e => change('email', e.target.value)}/></label>
-            </>}
-            {mode === 'forgot' && <label className="block font-medium">{text.email}<input className={`${INPUT} mt-1`} type="email" autoComplete="email" required value={form.email} onChange={e => change('email', e.target.value)}/></label>}
-            {mode !== 'forgot' && <label className="block font-medium">{text.username}<input className={`${INPUT} mt-1`} autoComplete="username" required maxLength={150} value={form.username} onChange={e => change('username', e.target.value)}/></label>}
-            {mode === 'register' && <label className="block font-medium">{text.account}
-              <select className={`${INPUT} mt-1`} value={form.role} onChange={e => change('role', e.target.value)}>
-                <option value="freelancer">{text.freelancer}</option><option value="client">{text.client}</option>
-              </select>
-            </label>}
-            {mode !== 'forgot' && <PasswordInput lang={lang} label={text.password} inputClassName={INPUT} autoComplete={mode === 'register' ? 'new-password' : 'current-password'} minLength={mode === 'register' ? 8 : undefined} value={form.password} onChange={e => change('password', e.target.value)} />}
-            {mode === 'register' && <>
-              <PasswordInput lang={lang} label={text.confirm} inputClassName={INPUT} autoComplete="new-password" value={form.confirm} onChange={e => change('confirm', e.target.value)} />
-              <p className="text-sm text-[#6E6963]">{text.safe}</p>
-            </>}
-            {notice && <div role="status" className="bg-[#F5F5EF] text-[#36463F] px-4 py-3 rounded-xl">{notice}</div>}
-            {error && <div role="alert" className="bg-[#FAF0EE] text-[#AE332A] px-4 py-3 rounded-xl">{error}</div>}
-            <button type="submit" disabled={busy} className="w-full bg-[#59684a] hover:bg-[#415947] text-white rounded-full min-h-[52px] font-semibold disabled:opacity-50">{busy ? text.busy : mode === 'forgot' ? text.sendReset : mode === 'login' ? text.loginButton : text.createButton}</button>
-          </form>
-          {mode === 'login' && <button type="button" className="mt-3 block underline text-[#AE332A] min-h-[44px]" onClick={() => { setMode('forgot'); setError(''); setNotice(''); }}>{text.forgot}</button>}
-          <button type="button" className="mt-5 underline text-[#AE332A] min-h-[44px]" onClick={() => {setMode(mode === 'login' ? 'register' : 'login');setError('');setNotice('');}}>{mode === 'login' ? text.switchToCreate : text.switchToLogin}</button>
-        </div>
-      </div>
+  const fieldError = key => fieldErrors[key] && <p className="vouch-auth-error" role="alert" id={`vouch-auth-${key}-error`}>{fieldErrors[key]}</p>;
+  const inputProps = key => fieldErrors[key] ? { 'aria-invalid': true, 'aria-describedby': `vouch-auth-${key}-error` } : {};
+  const registering = mode === 'register';
+  return <main className="vouch-auth vouch-auth-refined" lang={lang}>
+    <header className="vouch-auth-header vouch-auth-topbar">
+      <span className="vouch-brand" aria-label="Vouch">vouch<span>.</span></span>
+      <button type="button" onClick={onBack} className="vouch-auth-back">← {t.back}</button>
+    </header>
+    <div className="vouch-auth-wrap">
+      <section className="vouch-auth-card" aria-labelledby="vouch-auth-heading">
+        <p className="vouch-auth-eyebrow">{registering ? 'WORK · SAFETY · COMMUNITY' : 'WORKPASSPORT'}</p>
+        <h1 id="vouch-auth-heading" className="vouch-auth-title">{mode === 'forgot' ? t.forgotTitle : mode === 'login' ? t.login : t.create}</h1>
+        <p className="vouch-auth-intro">{mode === 'forgot' ? t.forgotSub : mode === 'login' ? t.loginSub : t.createSub}</p>
+        <form onSubmit={submit} className="vouch-auth-form" noValidate={false}>
+          {registering && <>
+            <div className="vouch-auth-identity-grid"><label className="vouch-auth-field">{t.name}<input {...inputProps('display_name')} className="vouch-auth-input" type="text" autoComplete="name" required maxLength={120} value={form.display_name} onChange={e => change('display_name', e.target.value)}/>{fieldError('display_name')}</label>
+            <label className="vouch-auth-field">{t.username}<input {...inputProps('username')} className="vouch-auth-input" type="text" autoComplete="username" required maxLength={150} value={form.username} onChange={e => change('username', e.target.value)}/>{fieldError('username')}</label></div>
+            <label className="vouch-auth-field">{t.email}<input {...inputProps('email')} className="vouch-auth-input" type="email" autoComplete="email" required value={form.email} onChange={e => change('email', e.target.value)}/>{fieldError('email')}</label>
+            <fieldset className="vouch-auth-roles"><legend>{t.account}</legend><div>
+              <label className={form.role === 'freelancer' ? 'is-selected' : ''}><input type="radio" name="vouch-role" value="freelancer" checked={form.role === 'freelancer'} onChange={() => change('role','freelancer')}/>{t.freelancer}</label>
+              <label className={form.role === 'client' ? 'is-selected' : ''}><input type="radio" name="vouch-role" value="client" checked={form.role === 'client'} onChange={() => change('role','client')}/>{t.client}</label>
+            </div>{fieldError('role')}</fieldset>
+          </>}
+          {mode === 'login' && <label className="vouch-auth-field">{t.username}<input {...inputProps('username')} className="vouch-auth-input" autoComplete="username" required value={form.username} onChange={e=>change('username',e.target.value)} /></label>}
+          {mode === 'forgot' && <label className="vouch-auth-field">{t.email}<input className="vouch-auth-input" type="email" autoComplete="email" required value={form.email} onChange={e=>change('email',e.target.value)} /></label>}
+          {mode !== 'forgot' && <div className="vouch-auth-password"><PasswordInput lang={lang} label={t.password} inputClassName="vouch-auth-input" autoComplete={registering?'new-password':'current-password'} minLength={registering?8:undefined} value={form.password} onChange={e=>change('password',e.target.value)}/>{fieldError('password')}{registering && <span className="vouch-auth-hint">{t.passwordHelp}</span>}{mode === 'login' && <button type="button" className="vouch-auth-text-link vouch-auth-forgot" onClick={()=>switchMode('forgot')}>{t.forgot}</button>}</div>}
+          {registering && <div className="vouch-auth-password"><PasswordInput lang={lang} label={t.confirm} inputClassName="vouch-auth-input" autoComplete="new-password" value={form.confirm} onChange={e=>change('confirm',e.target.value)}/>{fieldError('confirm')}</div>}
+          {notice && <p role="status" className="vouch-auth-notice">{notice}</p>}
+          {error && <p role="alert" className="vouch-auth-error">{error}</p>}
+          <button type="submit" disabled={busy} className="vouch-auth-submit">{busy ? t.busy : mode === 'forgot' ? t.sendReset : mode === 'login' ? t.loginButton : t.createButton}</button>
+        </form>
+        <p className="vouch-auth-switch">{registering ? t.switchToLogin : mode === 'login' ? t.switchToCreate : ''} <button type="button" className="vouch-auth-text-link" onClick={()=>switchMode(mode==='login'?'register':'login')}>{registering||mode==='forgot'?t.loginLink:t.createLink}</button></p>
+      </section>
     </div>
-  );
+  </main>;
 }

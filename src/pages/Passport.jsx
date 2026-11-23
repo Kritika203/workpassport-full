@@ -140,11 +140,18 @@ export function PassportPage({ allowDemoConfirm = true, allJobs = DUMMY_JOBS, t,
 
   return (
     <div className="max-w-[900px] mx-auto space-y-8">
-      <CVImport user={user} onSave={setUser} lang={lang} />
-      <PaymentSettings lang={lang} showToast={showToast} />
       {printDoc}
+      <div className="vouch-page-intro"><p className="vouch-page-kicker">WORKPASSPORT</p><h1>{lang === 'ne' ? 'मेरो WorkPassport' : 'My WorkPassport'}</h1><p>{lang === 'ne' ? 'तपाईंको प्रोफाइल, सीपको प्रमाण र गरेको काम एकै ठाउँमा।' : 'Your profile, proof of skills and completed work, organised in one place.'}</p></div>
+      <nav className="vouch-page-jump" aria-label="WorkPassport sections">
+        <a href="#passport-overview">{lang === 'ne' ? 'परिचय' : 'Overview'}</a>
+        <a href="#passport-profile">{lang === 'ne' ? 'प्रोफाइल' : 'Profile & CV'}</a>
+        <a href="#passport-skills">{lang === 'ne' ? 'सीप' : 'Skills & proof'}</a>
+        <a href="#passport-work">{lang === 'ne' ? 'काम' : 'Work history'}</a>
+        <a href="#passport-payment">{lang === 'ne' ? 'भुक्तानी' : 'Payments & safety'}</a>
+        <a href="#passport-privacy">{lang === 'ne' ? 'गोपनीयता' : 'Privacy'}</a>
+      </nav>
       {/* Section 1: header */}
-      <div className="bg-white border border-[#e5e7dd] rounded-[20px] p-6 sm:p-6">
+      <div id="passport-overview" className="scroll-mt-28 bg-white border border-[#e5e7dd] rounded-[20px] p-6 sm:p-6">
         <div className="flex items-center gap-4 mb-6">
           <div className="w-16 h-16 rounded-full bg-[#F0EEE9] border border-[#e5e7dd] flex items-center justify-center font-semibold text-xl text-[#1C1B1A] shrink-0">{initialsOf(user.name)}</div>
           <div className="min-w-0">
@@ -178,10 +185,10 @@ export function PassportPage({ allowDemoConfirm = true, allJobs = DUMMY_JOBS, t,
       </div>
 
       {/* Section 1b: richer profile fields */}
-      <ProfileDetails t={t} lang={lang} user={user} setUser={setUser} showToast={showToast} />
+      <div id="passport-profile" className="vouch-page-group scroll-mt-28"><CVImport user={user} onSave={setUser} lang={lang} /><ProfileDetails t={t} lang={lang} user={user} setUser={setUser} showToast={showToast} /></div>
 
       {/* Section 2: skills */}
-      <div>
+      <div id="passport-skills" className="scroll-mt-28">
         <h2 className="font-semibold text-[22px] mb-4">{t('pp_skills_title')}</h2>
         <div className="bg-white border border-[#e5e7dd] rounded-[20px] divide-y divide-[#EAE7E1] mb-6">
           {levels.map(({ skill, level }) => (
@@ -219,7 +226,7 @@ export function PassportPage({ allowDemoConfirm = true, allJobs = DUMMY_JOBS, t,
       </div>
 
       {/* Section 4: completed work */}
-      <div>
+      <div id="passport-work" className="scroll-mt-28">
         <h2 className="font-semibold text-[22px] mb-4">{t('pp_work_title')}</h2>
         {confirmedList.length === 0 && waiting.length === 0 && (
           <div className="bg-white border border-[#e5e7dd] rounded-[20px] p-6 text-center flex flex-col items-center gap-5">
@@ -287,6 +294,8 @@ export function PassportPage({ allowDemoConfirm = true, allJobs = DUMMY_JOBS, t,
       </button>
 
       {/* Section 5: getting paid + safety rules */}
+      <div id="passport-payment" className="vouch-page-group scroll-mt-28">
+        <PaymentSettings lang={lang} showToast={showToast} />
       <div className="bg-white border border-[#e5e7dd] rounded-[20px] p-6 sm:p-6">
         <h2 className="font-semibold text-[22px] mb-5">{t('pp_pay_title')}</h2>
         <div className="space-y-3 mb-5">
@@ -308,8 +317,9 @@ export function PassportPage({ allowDemoConfirm = true, allJobs = DUMMY_JOBS, t,
         </div>
       </div>
 
+      </div>
       {/* Section 6: privacy and ease */}
-      <PrivacySection t={t} settings={settings} setSettings={setSettings} onSharedEnabled={onSharedEnabled} />
+      <div id="passport-privacy" className="scroll-mt-28"><PrivacySection t={t} settings={settings} setSettings={setSettings} onSharedEnabled={onSharedEnabled} /></div>
 
       {/* Share modal */}
       {shareOpen && (

@@ -1,0 +1,44 @@
+/* Shared editorial UI direction: reference-inspired hierarchy without copying page layouts. */
+:root{--v-page-cream:#f9fbf7;--v-page-sage:#deebdf;--v-page-deep:#23553b;--v-page-line:#dfe8df;--v-page-ink:#243e2d;--v-page-muted:#65736b}
+html{background:var(--v-page-cream)}
+body{background:var(--v-page-cream)}
+.vouch-public{background:radial-gradient(ellipse 75% 50% at 87% 4%,rgba(208,236,221,.57),transparent 70%),radial-gradient(ellipse 52% 42% at 3% 47%,rgba(226,239,216,.42),transparent 72%),var(--v-page-cream);min-height:100dvh}
+.vouch-public>.vouch-header,.vouch-public .vouch-header{background:rgba(239,247,237,.28);border-color:rgba(58,103,70,.12);backdrop-filter:blur(10px)}
+.vouch-public .vouch-hero{background:transparent}
+.vouch-public .vouch-header-inner{max-width:1230px}
+.vouch-public .vouch-nav a{color:#31513a}
+.vouch-public .vouch-hero-preview,.vouch-public .vouch-cont-checker{box-shadow:0 10px 32px rgba(34,75,49,.055)}
+.wp-app{background:radial-gradient(ellipse 78% 43% at 95% 0%,rgba(212,235,218,.72),transparent 77%),radial-gradient(ellipse 62% 44% at 1% 82%,rgba(222,235,220,.5),transparent 82%),#f9fbf8!important;min-height:100dvh;color:#2e4235!important}
+.wp-app>nav.vouch-shell{background:rgba(245,250,245,.66)!important;backdrop-filter:blur(14px);border-color:rgba(67,110,77,.13)!important}
+.wp-app .vouch-shell-inner{max-width:1280px;min-height:72px}
+.wp-app .vouch-shell-logo{font-family:'DM Sans',system-ui,sans-serif;font-size:20px;letter-spacing:-.05em;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;color:#224b34}
+.wp-app .vouch-shell-logo span{color:#254b37}
+.wp-app .vouch-shell-links button{min-height:46px;padding-block:13px 10px}
+.wp-app main{background:transparent}
+.wp-app :is(input,textarea,select):focus-visible{outline:2px solid #57866a;outline-offset:2px}
+.wp-app :is(button,a):focus-visible{outline:2px solid #49765a;outline-offset:2px}
+.wp-app :where(.bg-white.border){border-color:#dde8df}
+.wp-app :where(.bg-white.border.rounded-\[20px\]){border-radius:22px}
+.wp-app :where(.bg-white.border):not([role='alert']){box-shadow:0 5px 18px rgba(32,82,47,.035)}
+.wp-app :where(.bg-white.border):hover{border-color:#c9ddcd}
+.wp-app h1,.wp-app h2,.wp-app h3{color:#254634}
+.wp-app h1{letter-spacing:-.02em}
+.wp-app :is(.text-\[\#AE332A\]){color:#a42e31}
+.vouch-page-intro{padding:8px 2px 0}.vouch-page-intro h1{font:600 clamp(35px,4vw,44px)/1.08 'Cormorant Garamond',Georgia,serif!important;color:#214b34!important}.vouch-page-intro>p:last-child{color:#647167;font-size:14px;line-height:1.55;margin-top:8px}.vouch-page-kicker{font-size:11px;letter-spacing:.16em;font-weight:750;color:#65806a}
+.vouch-page-jump{display:flex;align-items:center;gap:5px;overflow-x:auto;scrollbar-width:thin;border-bottom:1px solid #d9e4db;padding:0 0 9px;scroll-margin-top:100px}
+.vouch-page-jump a{display:inline-flex;align-items:center;min-height:40px;padding:9px 14px;text-decoration:none;white-space:nowrap;border-radius:99px;color:#4e6554;font-size:13px;font-weight:650;border:1px solid transparent}
+.vouch-page-jump a:hover,.vouch-page-jump a:focus-visible{background:#eaf4e9;color:#214f37;border-color:#cde1d0}
+.vouch-page-group{display:grid;gap:22px}
+.wp-app .vouch-shield-page{max-width:940px;margin:0 auto}.wp-app .vouch-shield-page .vouch-page-jump{max-width:800px;width:100%;margin:0 auto}
+.wp-app .vouch-shield-page>div[class*="max-w"]{max-width:800px}
+.wp-app .vouch-shield-page [id='safety-section']{background:#f1f6ef;border-color:#d9e7d9}
+.wp-app .vouch-extension-page{max-width:880px}
+.wp-app .vouch-extension-page>div:first-of-type h1{font:600 clamp(32px,4vw,42px)/1.1 'Cormorant Garamond',Georgia,serif}
+.wp-app .vouch-extension-page>div[id]{scroll-margin-top:115px}
+.wp-app .vouch-extension-page>div[id] .bg-white.border{border-color:#dce7dc}
+.wp-app .vouch-extension-page .grid.sm\:grid-cols-3>div{background:#fff;border-radius:20px}
+.wp-app .vouch-moderation-note{background:rgba(247,249,244,.65);border-color:#e5ebe4;color:#546759}
+@media(max-width:800px){.wp-app .vouch-shell-inner{min-height:64px}.vouch-page-jump a{font-size:12px;padding-inline:11px}}
+@media(prefers-reduced-motion:reduce){.vouch-public .vouch-header,.wp-app>.vouch-shell{backdrop-filter:none!important}}
+html.vouch-low-data .vouch-public,html.vouch-low-data .wp-app{background:#fff!important}
+html.vouch-low-data .wp-app>nav.vouch-shell{background:#fff!important;backdrop-filter:none!important}

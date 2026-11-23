@@ -50,6 +50,7 @@ import { ClientInbox } from './connected/ClientInbox.jsx';
 import { ConnectedInstitutionInsight } from './connected/ConnectedInstitutionInsight.jsx';
 import { PublicPassport } from './connected/PublicPassport.jsx';
 import { PasswordReset } from './connected/PasswordReset.jsx';
+import './EditorialRefinement.css';
 
 
 

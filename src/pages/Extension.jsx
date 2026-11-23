@@ -132,7 +132,12 @@ export function ExtensionPage({ t, lang, navTo, connected = false }) {
   );
 
   return (
-    <div className="max-w-[800px] mx-auto space-y-8">
+    <div className="max-w-[850px] mx-auto space-y-8 vouch-extension-page">
+      <nav className="vouch-page-jump" aria-label="Extension sections">
+        <a href="#extension-how">{lang === 'ne' ? 'कसरी काम गर्छ' : 'How it works'}</a>
+        <a href="#extension-demo">{lang === 'ne' ? 'डेमो हेर्नुहोस्' : 'Try a check'}</a>
+        <a href="#extension-install">{lang === 'ne' ? 'जडान / इन्स्टल' : 'Connect & install'}</a>
+      </nav>
       {/* A1 header */}
       <div>
         <h1 className="text-[28px] sm:text-[30px] font-semibold mb-3">{t('ex_title')}</h1>
@@ -140,7 +145,7 @@ export function ExtensionPage({ t, lang, navTo, connected = false }) {
       </div>
 
       {/* A2 how it works */}
-      <div>
+      <div id="extension-how" className="scroll-mt-28">
         <h2 className="font-semibold text-[22px] mb-4">{t('ex_how_title')}</h2>
         <div className="grid gap-4 sm:grid-cols-3">
           {[1, 2, 3].map(n => (
@@ -153,7 +158,7 @@ export function ExtensionPage({ t, lang, navTo, connected = false }) {
       </div>
 
       {/* A3 practice simulation */}
-      <div>
+      <div id="extension-demo" className="scroll-mt-28">
         <h2 className="font-semibold text-[22px] mb-2">{t('ex_try_title')}</h2>
         <p className="text-base text-[#4A4744] mb-4">{t('ex_try_line')}</p>
 
@@ -230,7 +235,7 @@ export function ExtensionPage({ t, lang, navTo, connected = false }) {
       </div>
 
       {/* Account pairing is optional and cannot access a user's password. */}
-      <ExtensionPairing connected={connected} lang={lang} />
+      <div id="extension-install" className="scroll-mt-28"><ExtensionPairing connected={connected} lang={lang} /></div>
 
       {/* A4 install steps */}
       <Card title={t('ex_inst_title')}>

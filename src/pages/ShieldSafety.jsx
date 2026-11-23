@@ -109,8 +109,13 @@ export function ShieldSafetyPage({ t, lang, user, navTo, showToast, history, set
   if (emergency) return <EmergencyView t={t} trusted={trusted} userName={user?.name || ''} showToast={showToast} onBack={() => setEmergency(false)} onHide={onQuickHide} />;
 
   return (
-    <div className="space-y-10">
-      <div className="max-w-[800px] mx-auto space-y-8">
+    <div className="space-y-10 vouch-shield-page">
+      <nav className="vouch-page-jump" aria-label={lang === 'ne' ? 'WorkShield खण्डहरू' : 'WorkShield sections'}>
+        <a href="#workshield-check">{lang === 'ne' ? 'काम र सन्देश जाँच्नुहोस्' : 'Check a job or message'}</a>
+        <a href="#workshield-saved">{lang === 'ne' ? 'सुरक्षित जाँचहरू' : 'Saved checks'}</a>
+        <a href="#safety-section">{lang === 'ne' ? 'सुरक्षा र सहयोग' : 'Safety & support'}</a>
+      </nav>
+      <div id="workshield-check" className="max-w-[800px] mx-auto space-y-8 scroll-mt-28">
         <div ref={topRef} className="scroll-mt-[128px] md:scroll-mt-24">
           <h1 className="text-[28px] sm:text-[30px] font-semibold mb-3">{t('sh_title')}</h1>
           <p className="text-lg text-[#4A4744] mb-6">{t('ws_one_intro')}</p>
@@ -262,7 +267,7 @@ export function ShieldSafetyPage({ t, lang, user, navTo, showToast, history, set
 
         <div>
           <div className="flex items-center justify-between gap-3 mb-4">
-            <h2 className="font-semibold text-[22px]">{t('sh_hist_title')}</h2>
+            <h2 id="workshield-saved" className="font-semibold text-[22px] scroll-mt-28">{t('sh_hist_title')}</h2>
             {history.length > 0 && <button onClick={clearHistory} className="text-base font-semibold text-[#4A4744] underline underline-offset-4 min-h-[44px] px-2">{t('sh_clear')}</button>}
           </div>
           {history.length === 0 ? (

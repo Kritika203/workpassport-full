@@ -1,6 +1,6 @@
 import { Bell, ChevronDown, Menu, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { NotificationBell } from './Header.jsx';
+import { NotificationBell, PassportShieldIcon } from './Header.jsx';
 import './ShellHeader.css';
 
 /** Compact, accessible navigation shared by workers and employers. */
@@ -52,7 +52,7 @@ export function ShellHeader({ mode = 'worker', lang = 'en', setLang, currentView
   const toggle = id => setOpen(prev => prev === id ? '' : id);
   return <nav className="vouch-shell" aria-label={isClient ? 'Employer navigation' : 'Vouch navigation'} ref={root}>
     <div className="vouch-shell-inner">
-      <button type="button" className="vouch-shell-logo" onClick={() => navigate(isClient ? 'client' : 'firstwork')} aria-label="Vouch home">vouch<span>.</span></button>
+      <button type="button" className="vouch-shell-logo" onClick={() => navigate(isClient ? 'client' : 'firstwork')} aria-label="WorkPassport home"><PassportShieldIcon color="#28563e" size={24}/><span>WorkPassport</span></button>
       <div className="vouch-shell-links">
         {links.map(item => <button key={item.view} type="button" onClick={() => pick(item)} className={item.active ? 'is-current' : ''} aria-current={item.active ? 'page' : undefined}>{item.label}</button>)}
       </div>
