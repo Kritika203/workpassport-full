@@ -5,7 +5,7 @@ on:
       - audit-live-vouch-2026-11-23
 jobs:
   live-smoke:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 18
     steps:
       - uses: actions/checkout@v4
