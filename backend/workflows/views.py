@@ -324,6 +324,22 @@ class MilestoneFiles(APIView):
             raise ValidationError({'file': 'Invalid attachment encoding.'})
         if not raw or len(raw) > 2_000_000:
             raise ValidationError({'file': 'Maximum attachment size is 2 MB.'})
+        # Spec layer: when the job defines deliverable specs for this
+        # milestone, the upload must match one of them (format and size).
+        # The 2 MB transport cap above still applies on top.
+        specs = [d for d in (app.job.deliverables or [])
+                 if isinstance(d, dict) and isinstance(d.get('name'), str)
+                 and (d.get('milestone') in (None, 0) or d.get('milestone') == milestone.position + 1)]
+        if specs:
+            uploadable = {'jpg': 'jpg', 'png': 'png', 'pdf': 'pdf'}
+            matching = [d for d in specs if uploadable.get(kind) in (d.get('formats') or [])]
+            if not matching:
+                allowed = sorted({f.upper() for d in specs for f in (d.get('formats') or [])})
+                raise ValidationError({'file': 'This milestone asks for: ' + ', '.join(allowed) +
+                                               '. Other formats can be shared as project links if the spec allows links.'})
+            cap_bytes = int(max(float(d.get("max_mb") or 0) for d in matching) * 1_000_000)
+            if len(raw) > cap_bytes:
+                raise ValidationError({'file': 'This file is larger than the size the client specified for this deliverable.'})
         if kind == 'pdf':
             if not raw.startswith(b'%PDF-'):
                 raise ValidationError({'file': 'Invalid PDF content.'})
@@ -410,18 +426,39 @@ class MilestoneState(APIView):
                 raise ValidationError({'delivery': 'Update your submission before resubmitting.'})
             milestone.submitted_at = timezone.now()
             milestone.revision_note = ''
+        if state in ('revision_requested', 'released_demo'):
+            checks = request.data.get('checks')
+            if checks is not None:
+                if (not isinstance(checks, list) or len(checks) > 15
+                        or any(not isinstance(c, str) or len(c) > 120 for c in checks)):
+                    raise ValidationError({'checks': 'Provide the ticked spec names (up to 15).'})
+                milestone.review_checks = checks
         if state == 'revision_requested':
             note = request.data.get('note', '')
-            if not isinstance(note, str) or not 5 <= len(note.strip()) <= 1000:
-                raise ValidationError({'note': 'Tell the freelancer what to revise (5 to 1,000 characters).'})
-            milestone.revision_note = note.strip()
+            if not isinstance(note, str) or len(note.strip()) > 1000:
+                raise ValidationError({'note': 'Tell the freelancer what to revise (up to 1,000 characters).'})
+            note = note.strip()
+            # Unticked spec items become the revision request, ahead of the
+            # client's own words, so the freelancer sees exactly what to fix.
+            checks = request.data.get('checks')
+            if isinstance(checks, list):
+                specs = [d for d in (app.job.deliverables or [])
+                         if isinstance(d, dict) and isinstance(d.get('name'), str)
+                         and (d.get('milestone') in (None, 0) or d.get('milestone') == milestone.position + 1)]
+                unticked = [d['name'] for d in specs if d['name'] not in checks]
+                if unticked:
+                    prefix = 'Missing or incomplete: ' + ', '.join(unticked) + '. '
+                    note = (prefix + note)[:1000].strip()
+            if len(note) < 5:
+                raise ValidationError({'note': 'Tell the freelancer what to revise (5 to 1,000 characters), or untick a spec item.'})
+            milestone.revision_note = note
             milestone.reviewed_at = timezone.now()
         if state == 'released_demo':
             if not milestone.has_delivery:
                 raise ValidationError({'delivery': 'Cannot approve a milestone without submitted work.'})
             milestone.reviewed_at = timezone.now()
         milestone.state = state
-        milestone.save(update_fields=['state', 'submitted_at', 'revision_note', 'reviewed_at'])
+        milestone.save(update_fields=['state', 'submitted_at', 'revision_note', 'reviewed_at', 'review_checks'])
         other = app.job.owner if request.user.id == app.user_id else app.user
         InboxNotification.objects.create(owner=other, kind='milestone', message='A WorkPassport milestone was updated.')
         return Response(MilestoneSerializer(milestone).data)

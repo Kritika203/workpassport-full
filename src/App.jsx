@@ -3,6 +3,7 @@
 import { Briefcase, CheckCircle2, EyeOff, Lock, ShieldCheck } from 'lucide-react';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { ChatMissing } from './components/chat/ChatMissing.jsx';
+import { HelpMe } from './components/common/HelpMe.jsx';
 import { Disclaimer } from './components/common/Disclaimer.jsx';
 import { Toast } from './components/common/Feedback.jsx';
 import { LangToggle, NavLink, NotificationBell, PassportShieldIcon, UserDropdown } from './components/layout/Header.jsx';
@@ -18,6 +19,7 @@ import { ChatView } from './pages/Chat.jsx';
 import { ClientView } from './pages/Client.jsx';
 import { ClientAgreement } from './pages/ClientAgreement.jsx';
 import { ClientApplicants } from './pages/ClientApplicants.jsx';
+import { ClientExplore } from './pages/ClientExplore.jsx';
 import { EvidenceVaultPage } from './pages/EvidenceVault.jsx';
 import { ExtensionPage } from './pages/Extension.jsx';
 import { FirstWorkFeed } from './pages/FirstWork.jsx';
@@ -26,6 +28,7 @@ import { JobDetail } from './pages/JobDetail.jsx';
 import { SetupFlow } from './pages/Onboarding.jsx';
 import { MyOpportunities } from './pages/Opportunities.jsx';
 import { PassportPage } from './pages/Passport.jsx';
+import { PaymentsPage } from './pages/Payments.jsx';
 import { ShieldSafetyPage } from './pages/ShieldSafety.jsx';
 import { SkillBridgePage } from './pages/SkillBridge.jsx';
 import { WorkroomView } from './pages/Workroom.jsx';
@@ -40,6 +43,8 @@ import { toUiJob } from './api/jobs.js';
 import { flow, flowList, toContribution } from './api/flows.js';
 import { ConnectedConversation } from './connected/ConnectedConversation.jsx';
 import { ConnectedWorkroom } from './connected/ConnectedWorkroom.jsx';
+import { VouchLanding } from './components/landing/VouchLanding.jsx';
+import { VouchCommunity, JobFeedback } from './pages/VouchCommunity.jsx';
 import { ClientInbox } from './connected/ClientInbox.jsx';
 import { ConnectedInstitutionInsight } from './connected/ConnectedInstitutionInsight.jsx';
 import { PublicPassport } from './connected/PublicPassport.jsx';
@@ -54,7 +59,7 @@ export default function App() {
   }
   const publicToken = query.get('passport');
   if (publicToken) return <PublicPassport token={publicToken} />;
-  return <MainApp />;
+  return <><MainApp /><HelpMe /></>;
 }
 
 // Registered employers can explore published jobs without becoming freelancers.
@@ -81,15 +86,15 @@ function ClientFirstWorkBrowse({ jobs, lang }) {
         <span className="sr-only">{ne ? 'काम खोज्नुहोस्' : 'Search jobs'}</span>
         <input type="search" value={search} onChange={event => setSearch(event.target.value)}
           placeholder={ne ? 'काम वा सीप खोज्नुहोस्' : 'Search jobs or skills'}
-          className="w-full bg-white border border-[#EAE7E1] rounded-[14px] px-4 py-3 min-h-[48px] outline-none focus:border-[#C73E33]" />
+          className="w-full bg-white border border-[#e5e7dd] rounded-[14px] px-4 py-3 min-h-[48px] outline-none focus:border-[#59684a]" />
       </label>
       <p className="text-sm text-[#6E6963]">{results.length} {ne ? 'कामहरू' : 'published jobs'}</p>
       {results.length === 0 ? (
-        <div className="rounded-[18px] border border-[#EAE7E1] bg-white p-6 text-[#6E6963]">
+        <div className="rounded-[18px] border border-[#e5e7dd] bg-white p-6 text-[#6E6963]">
           {ne ? 'मिल्दो काम भेटिएन।' : 'No matching jobs found.'}
         </div>
       ) : results.map(job => (
-        <article key={job.id} className="rounded-[20px] border border-[#EAE7E1] bg-white p-5 sm:p-6 space-y-3">
+        <article key={job.id} className="rounded-[20px] border border-[#e5e7dd] bg-white p-5 sm:p-6 space-y-3">
           <div className="flex flex-wrap justify-between gap-2">
             <h2 className="text-lg font-semibold">{job.title}</h2>
             {job.isDemo && <span className="rounded-full bg-[#F0EEE9] px-3 py-1 text-xs font-semibold">{ne ? 'अभ्यास काम' : 'Practice job'}</span>}
@@ -107,11 +112,11 @@ function ClientFirstWorkBrowse({ jobs, lang }) {
             {expanded === job.id ? (ne ? 'कम देखाउनुहोस्' : 'Show less') : (ne ? 'कामको विवरण हेर्नुहोस्' : 'View job details')}
           </button>
           {expanded === job.id && (
-            <div className="border-t border-[#EAE7E1] pt-3 space-y-2 text-sm text-[#4A4744]">
+            <div className="border-t border-[#e5e7dd] pt-3 space-y-2 text-sm text-[#4A4744]">
               {Number.isFinite(Number(job.budgetUSD)) && <p>{ne ? 'बजेट' : 'Budget'}: USD {Number(job.budgetUSD).toLocaleString()}</p>}
               {job.deadlineDays && <p>{ne ? 'समयसीमा' : 'Deadline'}: {job.deadlineDays} {ne ? 'दिन' : 'days'}</p>}
               {Array.isArray(job.deliverables) && job.deliverables.length > 0 &&
-                <p>{ne ? 'अपेक्षित परिणाम' : 'Deliverables'}: {job.deliverables.join(', ')}</p>}
+                <p>{ne ? 'अपेक्षित परिणाम' : 'Deliverables'}: {job.deliverables.map(d => (typeof d === 'string' ? d : d.name)).join(', ')}</p>}
               <p className="text-[#6E6963]">{ne ? 'आवेदन दिनको लागि छुट्टै फ्रीलान्सर खाता आवश्यक छ।'
                 : 'Applying requires a separate freelancer account.'}</p>
             </div>
@@ -431,10 +436,10 @@ function Experience({ account, backendJobs = [], onOpenAccount, onDemo, onLogout
     }).catch(error => { setClientInboxError(error.message || 'Could not load applications.'); reportApiError(error); });
   };
   useEffect(() => { if (account?.role === 'client') fetchClientApplications(); }, [account?.id]);
-  const updateClientApplication = async (id, decision) => {
+  const updateClientApplication = async (id, decision, reason = '') => {
     if (account?.role !== 'client') return;
     const updated = await api(`/api/client/applications/${id}/`, {
-      method: 'PATCH', body: { status: decision },
+      method: 'PATCH', body: { status: decision, ...(reason && reason.trim() ? { decision_reason: reason.trim() } : {}) },
     }, readApiSession());
     setRealClientApplications(previous => previous.map(item => item.id === id ? updated : item));
   };
@@ -442,10 +447,11 @@ function Experience({ account, backendJobs = [], onOpenAccount, onDemo, onLogout
 
   useEffect(() => {
     const root = document.documentElement;
-    if (simpleOn) { root.style.fontSize = '112.5%'; root.classList.add('wp-simple-on'); }
-    else { root.style.fontSize = ''; root.classList.remove('wp-simple-on'); }
-    return () => { root.style.fontSize = ''; root.classList.remove('wp-simple-on'); };
-  }, [simpleOn]);
+    if (simpleOn || settings.lowdata) { root.style.fontSize = '112.5%'; root.classList.add('wp-simple-on'); }
+    else { root.style.fontSize = ''; root.classList.remove('wp-simple-on'); root.classList.remove('vouch-low-data'); }
+    root.classList.toggle('vouch-low-data', Boolean(settings.lowdata));
+    return () => { root.style.fontSize = ''; root.classList.remove('wp-simple-on'); root.classList.remove('vouch-low-data'); };
+  }, [simpleOn, settings.lowdata]);
 
   useEffect(() => {
     if (clientMode && currentView === 'welcome') setCurrentView('client');
@@ -469,12 +475,12 @@ function Experience({ account, backendJobs = [], onOpenAccount, onDemo, onLogout
     // The unlinked demo uses device storage. Do not tell users the wrong thing.
     if (account && ['sf_private', 'sf_proof_private', 'sh_private'].includes(key)) {
       const accountCopy = {
-        en: { sf_private: 'Checks run through your private WorkPassport account. Text is not saved unless you choose Save.',
-          sf_proof_private: 'Saved evidence is private to your WorkPassport account.',
-          sh_private: 'Your check is sent securely to WorkPassport. It is not saved unless you choose Save.' },
-        ne: { sf_private: 'जाँच तपाईंको निजी WorkPassport खाताबाट हुन्छ। तपाईंले सेभ नगरेसम्म पाठ सेभ हुँदैन।',
-          sf_proof_private: 'सेभ गरिएको प्रमाण तपाईंको WorkPassport खातामा निजी रहन्छ।',
-          sh_private: 'जाँच गर्न पाठ WorkPassport मा सुरक्षित रूपमा पठाइन्छ। तपाईंले सेभ नगरेसम्म सुरक्षित गरिँदैन।' },
+        en: { sf_private: 'Checks run through your private Vouch account. Text is not saved unless you choose Save.',
+          sf_proof_private: 'Saved evidence is private to your Vouch account.',
+          sh_private: 'Your check is sent securely to Vouch. It is not saved unless you choose Save.' },
+        ne: { sf_private: 'जाँच तपाईंको निजी Vouch खाताबाट हुन्छ। तपाईंले सेभ नगरेसम्म पाठ सेभ हुँदैन।',
+          sf_proof_private: 'सेभ गरिएको प्रमाण तपाईंको Vouch खातामा निजी रहन्छ।',
+          sh_private: 'जाँच गर्न पाठ Vouch मा सुरक्षित रूपमा पठाइन्छ। तपाईंले सेभ नगरेसम्म सुरक्षित गरिँदैन।' },
       };
       return (accountCopy[lang] || accountCopy.en)[key];
     }
@@ -538,13 +544,13 @@ function Experience({ account, backendJobs = [], onOpenAccount, onDemo, onLogout
   };
 
   const successOverlay = currentView === 'setup_success' ? (
-           <div className="fixed inset-0 bg-[#FBFAF8] z-50 flex flex-col items-center justify-center p-6 text-center">
-              <CheckCircle2 size={64} strokeWidth={1.5} className="text-[#C73E33] mx-auto mb-6" />
+           <div className="fixed inset-0 bg-[#fcfbf8] z-50 flex flex-col items-center justify-center p-6 text-center">
+              <CheckCircle2 size={64} strokeWidth={1.5} className="text-[#59684a] mx-auto mb-6" />
               <h1 className="text-[28px] sm:text-[30px] font-semibold mb-4">{t('setup_success_title')}, {userProfile?.name?.split(' ')[0]}!</h1>
               <p className="text-lg text-[#4A4744] mb-10 max-w-md">{t('setup_success_sub')}</p>
               
               <div className="w-full max-w-sm flex flex-col gap-4">
-                <button onClick={() => navTo('firstwork')} className="w-full bg-[#C73E33] text-white py-3.5 rounded-full font-semibold text-lg hover:bg-[#AE332A] transition-colors min-h-[52px]">
+                <button onClick={() => navTo('firstwork')} className="w-full bg-[#59684a] text-white py-3.5 rounded-full font-semibold text-lg hover:bg-[#415947] transition-colors min-h-[52px]">
                   {t('btn_find_job')}
                 </button>
                 <button onClick={() => navTo('passport')} className="w-full bg-white text-[#1C1B1A] border border-[#E3E0D9] py-3.5 rounded-full font-semibold text-lg hover:bg-[#F6F4EF] transition-colors min-h-[52px]">
@@ -555,60 +561,8 @@ function Experience({ account, backendJobs = [], onOpenAccount, onDemo, onLogout
   ) : null;
 
   if (!isLoggedIn && !clientMode) {
-    return (
-      <div className={`min-h-screen bg-[#FBFAF8] font-sans text-[#1C1B1A] flex flex-col items-center justify-center px-5 py-12 ${lang === 'ne' ? 'leading-relaxed' : ''}`}>
-        <div className="w-full max-w-[400px] relative">
-          <div className="flex justify-center mb-12"><LangToggle lang={lang} setLang={setLang} /></div>
-
-          {currentView === 'welcome' ? (
-            <div className="flex flex-col items-center text-center">
-              <div className="flex flex-col items-center gap-3 mb-10">
-                <span className="text-xl font-semibold tracking-tight text-[#1C1B1A]">WorkPassport</span>
-              </div>
-              <h1 className="text-[30px] font-semibold tracking-[-0.02em] leading-[1.25] mb-5 text-[#1C1B1A]">{t('welcome_title')}</h1>
-              <p className="text-base text-[#4A4744] mb-10 leading-[1.6]">{t('welcome_sub')}</p>
-
-              <div className="w-full flex flex-col gap-3 mb-6">
-                <button onClick={() => onOpenAccount?.('register')} className="w-full h-[52px] px-6 rounded-full bg-[#C73E33] text-white text-base font-medium hover:bg-[#AE332A] transition-colors flex items-center justify-center">
-                  {t('btn_new')}
-                </button>
-                <button onClick={() => onOpenAccount?.('login')} className="w-full h-[52px] px-6 rounded-full bg-white text-[#1C1B1A] border border-[#E3E0D9] text-base font-medium hover:bg-[#F6F4EF] transition-colors flex items-center justify-center">
-                  {t('btn_login')}
-                </button>
-              </div>
-
-              {entryError && <p role="alert" className="text-[#AE332A] mb-4">{entryError}</p>}
-              <button onClick={() => onDemo?.()} className="text-sm text-[#8A8580] underline underline-offset-4 hover:text-[#1C1B1A] mb-14 min-h-[44px] flex items-center justify-center px-4">
-                {t('btn_demo')}
-              </button>
-
-              <div className="w-full bg-white border border-[#EAE7E1] rounded-[20px] p-5 text-left mb-8">
-                <div className="flex items-start gap-3 mb-4">
-                  <Briefcase size={22} className="shrink-0 mt-0.5 text-[#C73E33]" />
-                  <div>
-                    <div className="font-semibold text-base text-[#1C1B1A]">{t('cm_welcome_q')}</div>
-                    <div className="text-sm text-[#6E6963] mt-0.5 leading-[1.5]">{t('cm_welcome_line')}</div>
-                  </div>
-                </div>
-                <button onClick={enterClientMode} className="w-full h-[52px] px-6 rounded-full bg-white text-[#1C1B1A] border border-[#E3E0D9] text-base font-medium hover:bg-[#F6F4EF] transition-colors flex items-center justify-center">
-                  {t('cm_enter')}
-                </button>
-              </div>
-
-              <div className="flex items-start gap-2.5 text-[13px] leading-[1.6] text-[#8A8580] text-left">
-                <Lock size={15} className="mt-[3px] shrink-0" />
-                <span>{t('privacy_note')}</span>
-              </div>
-            </div>
-
-                    ) : null}
-        </div>
-        
-        {successOverlay}
-
-        {toast && <Toast msg={toast} />}
-      </div>
-    );
+    return <VouchLanding lang={lang} onLanguage={setLang} onLogin={() => onOpenAccount?.('login')}
+      onSignup={() => onOpenAccount?.('register')} onDemo={onDemo} onClient={enterClientMode} entryError={entryError}/>;
   }
 
   if (quickHidden) {
@@ -620,21 +574,24 @@ function Experience({ account, backendJobs = [], onOpenAccount, onDemo, onLogout
 
   if (clientMode) {
     return (
-      <div className={`wp-app min-h-screen flex flex-col bg-[#FBFAF8] font-sans text-base text-[#1C1B1A] ${lang === 'ne' ? 'leading-relaxed' : ''}`}>
-        <nav className="bg-[#FBFAF8]/90 backdrop-blur border-b border-[#EAE7E1] sticky top-0 z-40">
+      <div className={`wp-app min-h-screen flex flex-col bg-[#fcfbf8] font-sans text-base text-[#1C1B1A] ${lang === 'ne' ? 'leading-relaxed' : ''}`}>
+        <nav className="bg-[#fcfbf8]/90 backdrop-blur border-b border-[#e5e7dd] sticky top-0 z-40">
           <div className="max-w-[1200px] mx-auto px-4 h-16 flex items-center justify-between">
             <button onClick={() => navTo('client')} className="flex items-center gap-2 min-h-[48px]">
-              <PassportShieldIcon color="#C73E33" size={26} />
-              <span className="font-semibold text-lg tracking-tight hidden sm:block">WorkPassport</span>
+              <span className="vouch-brand">vouch<span>.</span></span>
             </button>
             <div className="flex items-center gap-2 sm:gap-4">
-              <LangToggle lang={lang} setLang={setLang} compact />
-              <div className="w-10 h-10 rounded-full bg-[#F0EEE9] border border-[#EAE7E1] flex items-center justify-center font-semibold text-sm" title={activeClientProfile.name}>{clientInitials}</div>
+              <button type="button" aria-pressed={settings.lowdata} className="vouch-lowdata-toggle" onClick={() => setSettings({ ...settings, lowdata: !settings.lowdata })}>{settings.lowdata ? 'Standard view' : 'Low data / bigger text'}</button>
+            <LangToggle lang={lang} setLang={setLang} compact />
+              <div className="w-10 h-10 rounded-full bg-[#F0EEE9] border border-[#e5e7dd] flex items-center justify-center font-semibold text-sm" title={activeClientProfile.name}>{clientInitials}</div>
             </div>
           </div>
-          <div className="border-t border-[#EAE7E1] overflow-x-auto">
+          <div className="border-t border-[#e5e7dd] overflow-x-auto">
             <div className="flex gap-6 px-4 w-max min-w-full max-w-[1200px] mx-auto">
               <NavLink label={t('cm_home')} active={['client', 'client-applicants', 'client-agreement'].includes(currentView)} onClick={() => navTo('client')} />
+              <NavLink label={lang === 'ne' ? 'फ्रीलान्सर खोज्नुहोस्' : 'Explore'} active={currentView === 'client-explore'} onClick={() => navTo('client-explore')} />
+              <NavLink label={lang === 'ne' ? 'भुक्तानी' : 'Payments'} active={currentView === 'payments'} onClick={() => navTo('payments')} />
+              <NavLink label={lang === 'ne' ? 'समुदाय' : 'Community'} active={currentView === 'community'} onClick={() => navTo('community')} />
               {account && <NavLink label={lang === 'ne' ? 'सन्देश र वर्करुम' : 'Messages and workrooms'} active={['client-inbox', 'client-conversation', 'client-workroom'].includes(currentView)} onClick={() => { fetchClientApplications(); navTo('client-inbox'); }} />}
               <NavLink label={t('cm_post')} active={false} onClick={() => navTo('client', { scrollTo: 'form', n: Date.now() })} />
               <NavLink label={account ? t('nav_firstwork') : t('cm_switch_maya')} active={currentView === 'client-firstwork'} onClick={exitClientToMaya} />
@@ -644,7 +601,7 @@ function Experience({ account, backendJobs = [], onOpenAccount, onDemo, onLogout
         </nav>
 
         <main className="flex-1 max-w-[1200px] mx-auto w-full p-4 sm:p-6 pb-28">
-          {currentView === 'client-firstwork' && account?.role === 'client' ? (
+          {currentView === 'community' ? (<VouchCommunity lang={lang} viewer="client" name={activeClientProfile.name} onJobBoard={() => navTo('client-firstwork')} />) : currentView === 'job-feedback' ? (<JobFeedback lang={lang} job={clientJobs.find(j => j.id === viewParams.id) || allJobs.find(j => j.id === viewParams.id)} name={activeClientProfile.name} canReview={false} onBack={() => navTo('client')}/>) : currentView === 'client-firstwork' && account?.role === 'client' ? (
             <ClientFirstWorkBrowse jobs={jobsForAccount} lang={lang} />
           ) : currentView === 'client-inbox' ? (
             <ClientInbox lang={lang} error={clientInboxError} applications={realClientApplications} onUpdateStatus={updateClientApplication} onOpenChat={id => navTo('client-conversation', { appId: id })} onOpenWorkroom={id => navTo('client-workroom', { appId: id })} />
@@ -662,16 +619,20 @@ function Experience({ account, backendJobs = [], onOpenAccount, onDemo, onLogout
               onUpdateStatus={updateClientApplication}
               onOpenChat={id => navTo('client-conversation', { appId: id })}
               onOpenWorkroom={id => navTo('client-workroom', { appId: id })} />
+          ) : currentView === 'client-explore' ? (
+            <ClientExplore t={t} lang={lang} navTo={navTo} showToast={showToast} connected={!!account} clientJobs={clientJobs} />
+          ) : currentView === 'payments' ? (
+            <PaymentsPage lang={lang} workrooms={workrooms} allJobs={allJobs} />
           ) : currentView === 'client-applicants' ? (
             <ClientApplicants t={t} lang={lang} navTo={navTo} job={clientJobs.find(j => j.id === viewParams.id)} isDemo={!account} applicants={DEMO_APPLICANTS} />
           ) : currentView === 'client-agreement' ? (
             <ClientAgreement t={t} lang={lang} navTo={navTo} job={clientJobs.find(j => j.id === viewParams.id)} applicant={DEMO_APPLICANTS.find(x => x.id === viewParams.applicantId)} onConfirm={confirmAgreement} />
           ) : (
-            <ClientView onPost={account?.role === 'client' ? submitClientJob : null} applications={realClientApplications} t={t} lang={lang} navTo={navTo} showToast={showToast} clientJobs={clientJobs} setClientJobs={setClientJobs} scrollTo={viewParams.scrollTo} clientMode clientProfile={activeClientProfile} />
+            <ClientView onPost={account?.role === 'client' ? submitClientJob : null} applications={realClientApplications} t={t} lang={lang} navTo={navTo} showToast={showToast} clientJobs={clientJobs} setClientJobs={setClientJobs} scrollTo={viewParams.scrollTo} clientMode clientProfile={activeClientProfile} workrooms={workrooms} />
           )}
         </main>
 
-        <footer className="border-t border-[#EAE7E1] py-10 px-4">
+        <footer className="border-t border-[#e5e7dd] py-10 px-4">
           <div className="max-w-[1200px] mx-auto flex flex-col items-center gap-3 text-center">
             <div className="max-w-2xl text-left"><Disclaimer t={t} k="disc_footer" /></div>
             <div className="text-[13px] text-[#8A8580]">{t('footer_text')}</div>
@@ -684,23 +645,25 @@ function Experience({ account, backendJobs = [], onOpenAccount, onDemo, onLogout
   }
 
   return (
-    <div className={`wp-app ${simpleOn ? 'wp-simple' : ''} min-h-screen flex flex-col bg-[#FBFAF8] font-sans text-base text-[#1C1B1A] ${lang === 'ne' ? 'leading-relaxed' : ''}`}>
+    <div className={`wp-app ${simpleOn ? 'wp-simple' : ''} min-h-screen flex flex-col bg-[#fcfbf8] font-sans text-base text-[#1C1B1A] ${lang === 'ne' ? 'leading-relaxed' : ''}`}>
       {/* Navbar */}
-      <nav className="bg-[#FBFAF8]/90 backdrop-blur border-b border-[#EAE7E1] sticky top-0 z-40">
+      <nav className="bg-[#fcfbf8]/90 backdrop-blur border-b border-[#e5e7dd] sticky top-0 z-40">
         <div className="max-w-[1200px] mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-8">
             <button onClick={() => navTo('firstwork')} className="flex items-center gap-2 min-h-[48px]">
-              <PassportShieldIcon color="#C73E33" size={26} />
-              <span className="font-semibold text-lg tracking-tight hidden sm:block">WorkPassport</span>
+              <span className="vouch-brand">vouch<span>.</span></span>
             </button>
             <div className="hidden md:flex gap-6">
               <NavLink label={t('nav_firstwork')} active={['firstwork', 'job-detail', 'apply', 'opportunities', 'chat', 'workroom', 'client', 'client-applicants', 'client-agreement', 'bring', 'bring-queue', 'institution-insight'].includes(currentView)} onClick={() => navTo('firstwork')} />
               <NavLink label={t('nav_passport')} active={currentView === 'passport'} onClick={() => navTo('passport')} />
+              <NavLink label={lang === 'ne' ? 'भुक्तानी' : 'Payments'} active={currentView === 'payments'} onClick={() => navTo('payments')} />
+              <NavLink label={lang === 'ne' ? 'समुदाय' : 'Community'} active={currentView === 'community'} onClick={() => navTo('community')} />
               <NavLink label={t('nav_shield_safety')} active={currentView === 'shield'} onClick={() => navTo('shield')} />
               <NavLink label={t('nav_ext')} active={currentView === 'ext'} onClick={() => navTo('ext')} />
             </div>
           </div>
           <div className="flex items-center gap-2 sm:gap-4">
+            <button type="button" aria-pressed={settings.lowdata} className="vouch-lowdata-toggle" onClick={() => setSettings({ ...settings, lowdata: !settings.lowdata })}>{settings.lowdata ? 'Standard view' : 'Low data / bigger text'}</button>
             <LangToggle lang={lang} setLang={setLang} compact />
             <NotificationBell t={t} priv={sharedOn} connected={!!account} />
             {sharedOn && (
@@ -711,12 +674,14 @@ function Experience({ account, backendJobs = [], onOpenAccount, onDemo, onLogout
             <UserDropdown user={userProfile} onLogout={handleLogout} t={t} navTo={navTo} lang={lang} setLang={setLang} showLock={sharedOn} onLock={() => setUnlocked(false)} />
           </div>
         </div>
-        <div className="md:hidden border-t border-[#EAE7E1] overflow-x-auto">
+        <div className="md:hidden border-t border-[#e5e7dd] overflow-x-auto">
           <div className="flex gap-6 px-4 w-max min-w-full">
             <NavLink label={t('nav_firstwork')} active={['firstwork', 'job-detail', 'apply', 'opportunities', 'chat', 'workroom', 'client', 'client-applicants', 'client-agreement', 'bring', 'bring-queue', 'institution-insight'].includes(currentView)} onClick={() => navTo('firstwork')} />
             <NavLink label={t('nav_passport')} active={currentView === 'passport'} onClick={() => navTo('passport')} />
+            <NavLink label={lang === 'ne' ? 'भुक्तानी' : 'Payments'} active={currentView === 'payments'} onClick={() => navTo('payments')} />
             <NavLink label={t('nav_shield_safety')} active={currentView === 'shield'} onClick={() => navTo('shield')} />
             <NavLink label={t('nav_ext')} active={currentView === 'ext'} onClick={() => navTo('ext')} />
+              <NavLink label={lang === 'ne' ? 'समुदाय' : 'Community'} active={currentView === 'community'} onClick={() => navTo('community')} />
           </div>
         </div>
       </nav>
@@ -731,12 +696,15 @@ function Experience({ account, backendJobs = [], onOpenAccount, onDemo, onLogout
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-[1200px] mx-auto w-full p-4 sm:p-6 pb-28">
-        {currentView === 'account-setup' && <div className="max-w-[560px] mx-auto bg-white border border-[#EAE7E1] rounded-[20px] p-6"><SetupFlow t={t} lang={lang} initialName={userProfile?.name || ''} onBack={() => { setUserProfile({ ...userProfile, onboarded: true }); navTo('firstwork'); }} onComplete={profile => { setUserProfile({ ...userProfile, ...profile, onboarded: true }); navTo('setup_success'); }} /></div>}
+        {currentView === 'account-setup' && <div className="max-w-[560px] mx-auto bg-white border border-[#e5e7dd] rounded-[20px] p-6"><SetupFlow t={t} lang={lang} initialName={userProfile?.name || ''} onBack={() => { setUserProfile({ ...userProfile, onboarded: true }); navTo('firstwork'); }} onComplete={profile => { setUserProfile({ ...userProfile, ...profile, onboarded: true }); navTo('setup_success'); }} /></div>}
         {currentView === 'firstwork' && <FirstWorkFeed allJobs={allJobs} t={t} navTo={navTo} user={userProfile} savedJobs={savedJobs} setSavedJobs={setSavedJobs} lang={lang} lowdata={settings.lowdata} onSwitchClient={() => { if (account?.role === 'client') enterClientMode(); else if (account) showToast('To post a job, please use a client account.'); else { setUnlocked(false); setIsLoggedIn(false); navTo('welcome'); } }} />}
-        {currentView === 'job-detail' && <JobDetail onReport={account ? submitSafetyReport : null} t={t} navTo={navTo} job={allJobs.find(j => j.id === viewParams.id)} user={userProfile} skillLevels={skillLevels} savedJobs={savedJobs} setSavedJobs={setSavedJobs} lang={lang} showToast={showToast} hasDraft={simpleOn && !!applyDraft && applyDraft.jobId === viewParams.id} />}
-        {currentView === 'apply' && <ApplyWizard key={viewParams.id} onSubmit={account ? submitApplication : null} onDraftProposal={draftProposal} t={t} navTo={navTo} job={allJobs.find(j => j.id === viewParams.id)} user={userProfile} setAppliedJobs={setAppliedJobs} lang={lang} simple={simpleOn} applyDraft={applyDraft} setApplyDraft={setApplyDraft} />}
+        {currentView === 'community' && <VouchCommunity lang={lang} name={userProfile?.name || 'Vouch member'} viewer="worker" onJobBoard={() => navTo('firstwork')} />}
+        {currentView === 'job-feedback' && <JobFeedback job={allJobs.find(j => j.id === viewParams.id) || clientJobs.find(j => j.id === viewParams.id)} lang={lang} name={userProfile?.name || 'Vouch member'} canReview={confirmedJobs.includes(viewParams.id)} onBack={() => navTo('job-detail', { id: viewParams.id })} />}
+        {currentView === 'job-detail' && <JobDetail onReport={account ? submitSafetyReport : null} t={t} navTo={navTo} job={allJobs.find(j => j.id === viewParams.id)} user={userProfile} skillLevels={skillLevels} savedJobs={savedJobs} setSavedJobs={setSavedJobs} lang={lang} showToast={showToast} hasDraft={simpleOn && !!applyDraft && applyDraft.jobId === viewParams.id} onSeeFeedback={() => navTo('job-feedback', { id: viewParams.id })} />}
+        {currentView === 'apply' && <ApplyWizard key={viewParams.id} onSubmit={submitApplication} onDraftProposal={draftProposal} t={t} navTo={navTo} job={allJobs.find(j => j.id === viewParams.id)} user={userProfile} setAppliedJobs={setAppliedJobs} lang={lang} simple={simpleOn} applyDraft={applyDraft} setApplyDraft={setApplyDraft} />}
         {currentView === 'opportunities' && <MyOpportunities allJobs={allJobs} key={viewParams.tab || 'saved'} initialTab={viewParams.tab} t={t} navTo={navTo} savedJobs={savedJobs} setSavedJobs={setSavedJobs} appliedJobs={appliedJobs} confirmedJobs={confirmedJobs} hideMoney={sharedOn} draftJobId={simpleOn && applyDraft ? applyDraft.jobId : null} connected={!!account} lang={lang} />}
         {currentView === 'passport' && <PassportPage allowDemoConfirm={!account} allJobs={allJobs} t={t} lang={lang} user={userProfile} setUser={setUserProfile} navTo={navTo} showToast={showToast} skillLevels={skillLevels} setSkillLevels={setSkillLevels} confirmedJobs={confirmedJobs} setConfirmedJobs={setConfirmedJobs} payChecklist={payChecklist} setPayChecklist={setPayChecklist} appliedJobs={appliedJobs} skillEvidence={skillEvidence} setSkillEvidence={setSkillEvidence} hideMoney={sharedOn} settings={settings} setSettings={setSettings} onSharedEnabled={() => setUnlocked(true)} evidence={evidence} onCreateShare={createPublicShare} />}
+        {currentView === 'payments' && <PaymentsPage lang={lang} workrooms={workrooms} allJobs={allJobs} />}
         {currentView === 'shield' && <ShieldSafetyPage onAnalyze={analyzeOnBackend} onSaveShield={saveShieldCheck} onClearShield={clearShieldChecks} t={t} lang={lang} user={userProfile} navTo={navTo} showToast={showToast} history={shieldHistory} setHistory={setShieldHistory} evidence={evidence} setEvidence={setEvidence} scrollKey={viewParams.n} scrollTo={viewParams.scrollTo} allJobs={allJobs} appliedJobs={appliedJobs} trusted={trusted} setTrusted={setTrusted} checkin={checkin} setCheckin={setCheckin} quiet={quiet} setQuiet={setQuiet} onQuickHide={() => setQuickHidden(true)} />}
         {currentView === 'ext' && <ExtensionPage t={t} lang={lang} navTo={navTo} connected={!!account} />}
         {currentView === 'skillbridge' && <SkillBridgePage allJobs={allJobs} t={t} lang={lang} user={userProfile} navTo={navTo} insights={approvedInsights} connected={!!account} />}
@@ -751,13 +719,13 @@ function Experience({ account, backendJobs = [], onOpenAccount, onDemo, onLogout
           : <ChatMissing t={t} navTo={navTo} />)}
         {currentView === 'workroom' && (appliedJobs.some(a => a.jobId === viewParams.id) && allJobs.find(j => j.id === viewParams.id)
           ? (account && allJobs.find(j => j.id === viewParams.id)?.ownerId
-            ? <ConnectedWorkroom lang={lang} key={viewParams.id} applicationId={appliedJobs.find(a => a.jobId === viewParams.id)?.apiApplicationId} myId={account.id} onBack={() => navTo('opportunities', { tab: 'applied' })} />
-            : <WorkroomView key={viewParams.id} t={t} lang={lang} job={allJobs.find(j => j.id === viewParams.id)} navTo={navTo} showToast={showToast} workrooms={workrooms} setWorkrooms={setWorkrooms} confirmedJobs={confirmedJobs} setConfirmedJobs={setConfirmedJobs} hideMoney={sharedOn} />)
+            ? <ConnectedWorkroom lang={lang} key={viewParams.id} applicationId={appliedJobs.find(a => a.jobId === viewParams.id)?.apiApplicationId} onReview={() => { setConfirmedJobs(prev => prev.includes(viewParams.id) ? prev : [...prev, viewParams.id]); navTo('job-feedback', { id: viewParams.id }); }} myId={account.id} onBack={() => navTo('opportunities', { tab: 'applied' })} />
+            : <WorkroomView key={viewParams.id} onReview={() => navTo('job-feedback', { id: viewParams.id })} t={t} lang={lang} job={allJobs.find(j => j.id === viewParams.id)} navTo={navTo} showToast={showToast} workrooms={workrooms} setWorkrooms={setWorkrooms} confirmedJobs={confirmedJobs} setConfirmedJobs={setConfirmedJobs} hideMoney={sharedOn} />)
           : <ChatMissing t={t} navTo={navTo} />)}
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-[#EAE7E1] py-10 px-4">
+      <footer className="border-t border-[#e5e7dd] py-10 px-4">
         <div className="max-w-[1200px] mx-auto flex flex-col items-center gap-3 text-center">
           <div className="max-w-2xl text-left"><Disclaimer t={t} k="disc_footer" /></div>
           <div className="text-[13px] text-[#8A8580]">{t('footer_text')}</div>
@@ -795,11 +763,11 @@ function InstallBanner({ t }) {
     setDeferred(null);
   };
   return (
-    <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-sm z-50 bg-white border border-[#EAE7E1] rounded-[20px] shadow-lg p-5">
+    <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-sm z-50 bg-white border border-[#e5e7dd] rounded-[20px] shadow-lg p-5">
       <div className="font-semibold text-lg mb-1">{t('pwa_title')}</div>
       <p className="text-base text-[#4A4744] mb-4">{t('pwa_desc')}</p>
       <div className="flex gap-3">
-        <button onClick={install} className="flex-1 py-3 bg-[#C73E33] text-white font-semibold text-base rounded-full hover:bg-[#AE332A] min-h-[48px]">{t('pwa_btn')}</button>
+        <button onClick={install} className="flex-1 py-3 bg-[#59684a] text-white font-semibold text-base rounded-full hover:bg-[#415947] min-h-[48px]">{t('pwa_btn')}</button>
         <button onClick={() => setDismissed(true)} className="flex-1 py-3 border border-[#E3E0D9] font-semibold text-base rounded-full hover:bg-[#F6F4EF] min-h-[48px] bg-white">{t('pwa_later')}</button>
       </div>
     </div>

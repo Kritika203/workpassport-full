@@ -72,6 +72,9 @@ def format_reply(result):
     if result.get('verdict') == 'danger':
         lines.append('⚠️ यो सन्देशमा खतराका संकेत छन्।')
         lines.append('This message has danger signs:')
+    elif result.get('verdict') == 'unknown':
+        lines.append('⚪ यो जाँच्न पुग्ने जानकारी छैन।')
+        lines.append('There is not enough information here to judge this message. Send the full job post.')
     elif result.get('verdict') == 'warning' or safety:
         lines.append('🟡 सावधान हुनुहोस्। केही कुरा ठिक देखिँदैन।')
         lines.append('Be careful. Some things do not look right:')

@@ -85,6 +85,8 @@ class Milestone(models.Model):
     submitted_at = models.DateTimeField(null=True, blank=True)
     revision_note = models.TextField(blank=True)
     reviewed_at = models.DateTimeField(null=True, blank=True)
+    # Names of deliverable specs the client ticked at review time.
+    review_checks = models.JSONField(default=list, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     @property
@@ -206,3 +208,108 @@ class ExternalSavedJob(models.Model):
 
     class Meta:
         ordering = ['-created_at', '-id']
+
+def private_receipt_upload_path(instance, _filename):
+    # No user-selected path or extension is trusted for the storage key.
+    return f'private_receipts/{instance.payment_id}/{uuid.uuid4().hex}.{instance.kind}'
+
+
+def private_dispute_upload_path(instance, _filename):
+    return f'private_disputes/{instance.payment_id}/{uuid.uuid4().hex}.{instance.evidence_kind}'
+
+
+class PaymentMethod(models.Model):
+    """A freelancer's own receiving details. Never shown publicly; the
+    necessary fields are revealed only to the employer inside a payment."""
+    KINDS = [('esewa', 'eSewa'), ('khalti', 'Khalti'), ('bank', 'Bank transfer')]
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='payment_methods')
+    kind = models.CharField(max_length=10, choices=KINDS)
+    holder_name = models.CharField(max_length=120)
+    mobile = models.CharField(max_length=20, blank=True)
+    bank_name = models.CharField(max_length=120, blank=True)
+    account_number = models.CharField(max_length=40, blank=True)
+    branch = models.CharField(max_length=120, blank=True)
+    is_preferred = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-is_preferred', 'id']
+
+    def snapshot(self):
+        """Only the fields the employer needs to pay, frozen onto the record."""
+        snap = {'kind': self.kind, 'holder_name': self.holder_name}
+        if self.kind in ('esewa', 'khalti'):
+            snap['mobile'] = self.mobile
+        else:
+            snap.update({'bank_name': self.bank_name, 'account_number': self.account_number,
+                         'branch': self.branch})
+        return snap
+
+
+class PaymentRecord(models.Model):
+    """One payment attempt for one milestone. WorkPassport never holds money:
+    this record coordinates a direct transfer made outside the platform."""
+    STATUSES = [('awaiting_payment', 'Awaiting Payment'),
+                ('sent', 'Employer Marked as Sent'),
+                ('confirmed', 'Receipt Confirmed by Freelancer'),
+                ('disputed', 'Disputed'),
+                ('cancelled', 'Cancelled')]
+    ACTIVE = ('awaiting_payment', 'sent', 'confirmed')
+    milestone = models.ForeignKey(Milestone, on_delete=models.CASCADE, related_name='payments')
+    workroom = models.ForeignKey(Workroom, on_delete=models.CASCADE, related_name='payments')
+    employer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='payments_made')
+    freelancer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='payments_received')
+    method = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True, blank=True, related_name='payments')
+    method_snapshot = models.JSONField(default=dict)
+    attempt = models.PositiveSmallIntegerField(default=1)
+    agreed_amount_usd = models.DecimalField(max_digits=10, decimal_places=2)
+    reported_amount_usd = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    currency = models.CharField(max_length=3, default='USD')
+    status = models.CharField(max_length=20, choices=STATUSES, default='awaiting_payment')
+    transaction_ref = models.CharField(max_length=120, blank=True)
+    paid_date = models.DateField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at', '-id']
+
+
+class PaymentReceipt(models.Model):
+    payment = models.OneToOneField(PaymentRecord, on_delete=models.CASCADE, related_name='receipt')
+    original_name = models.CharField(max_length=120)
+    kind = models.CharField(max_length=4, choices=[('jpg', 'JPEG'), ('png', 'PNG'), ('pdf', 'PDF')])
+    file = models.FileField(upload_to=private_receipt_upload_path)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class PaymentDispute(models.Model):
+    REASONS = [('not_received', 'Payment not received'),
+               ('wrong_amount', 'Incorrect amount'),
+               ('invalid_reference', 'Invalid transaction reference'),
+               ('suspicious_receipt', 'Suspicious receipt'),
+               ('other', 'Other payment problem')]
+    payment = models.ForeignKey(PaymentRecord, on_delete=models.CASCADE, related_name='disputes')
+    reporter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='payment_disputes')
+    reason = models.CharField(max_length=20, choices=REASONS)
+    note = models.TextField()
+    evidence_name = models.CharField(max_length=120, blank=True)
+    evidence_kind = models.CharField(max_length=4, blank=True)
+    evidence_file = models.FileField(upload_to=private_dispute_upload_path, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at', '-id']
+
+
+class PaymentEvent(models.Model):
+    """Auditable history: who did what to this payment, and when."""
+    payment = models.ForeignKey(PaymentRecord, on_delete=models.CASCADE, related_name='events')
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='payment_events')
+    action = models.CharField(max_length=20)
+    note = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at', 'id']

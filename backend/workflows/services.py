@@ -65,8 +65,15 @@ def analyze(text, structural=True):
     # Model suggestions cannot cancel rule warnings or certify safety.
     if ml.get('level') == 'high' and not red:
         yellow.append('model_review')
+    # Low-information rule (mirrors the extension): with nothing recognisable
+    # in the text and no danger signs, the verdict is 'unknown', never a vague
+    # warning and never a clean pass.
+    recognisable = bool(amounts) or has(WORK) or has(PAY) or has(METHOD) or has(DEADLINE)
+    verdict = 'danger' if red else ('warning' if yellow else 'ok')
+    if not recognisable and not red:
+        verdict = 'unknown'
     return {'findings': {'red': red, 'yellow': yellow, 'green': green},
-            'verdict': 'danger' if red else ('warning' if yellow else 'ok'),
+            'verdict': verdict,
             'ai_assessment': ml,
             'safety_categories': safety, 'scope': {'flagged': bool(scope), 'matched': scope},
             'disclaimer': 'Automated warnings are not a guarantee that a job is safe.'}

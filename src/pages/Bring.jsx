@@ -72,10 +72,10 @@ export function BringView({ t, lang, navTo, onSubmit, canReview = true }) {
       <div className="max-w-2xl mx-auto space-y-6">
         <div className={`${CL_CARD} space-y-5`}>
           <div className="flex items-start gap-3">
-            <CheckCircle2 size={24} className="shrink-0 mt-0.5 text-[#C73E33]" />
+            <CheckCircle2 size={24} className="shrink-0 mt-0.5 text-[#59684a]" />
             <p className="text-base text-[#1C1B1A]">{t('br_thanks')}</p>
           </div>
-          <button type="button" onClick={() => navTo('firstwork')} className="w-full sm:w-auto bg-[#C73E33] text-white px-8 rounded-full font-semibold text-base hover:bg-[#AE332A] min-h-[48px]">
+          <button type="button" onClick={() => navTo('firstwork')} className="w-full sm:w-auto bg-[#59684a] text-white px-8 rounded-full font-semibold text-base hover:bg-[#415947] min-h-[48px]">
             {t('back_to_jobs')}
           </button>
         </div>
@@ -83,7 +83,7 @@ export function BringView({ t, lang, navTo, onSubmit, canReview = true }) {
     );
   }
 
-  const pill = (on) => `min-h-[48px] px-5 py-2 rounded-full border text-base font-semibold text-left ${on ? 'bg-[#FAF0EE] border-[#C73E33] text-[#AE332A]' : 'bg-white border-[#EAE7E1] text-[#4A4744] hover:bg-[#F6F4EF]'}`;
+  const pill = (on) => `min-h-[48px] px-5 py-2 rounded-full border text-base font-semibold text-left ${on ? 'bg-[#FAF0EE] border-[#59684a] text-[#AE332A]' : 'bg-white border-[#e5e7dd] text-[#4A4744] hover:bg-[#F6F4EF]'}`;
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -96,8 +96,8 @@ export function BringView({ t, lang, navTo, onSubmit, canReview = true }) {
         {canReview && <button type="button" onClick={() => navTo('bring-queue')} className="inline-flex items-center gap-2 text-base font-semibold text-[#1C1B1A] underline underline-offset-4 min-h-[44px]">
           <ClipboardList size={20} className="shrink-0" /> {t('br_queue_link')}
         </button>}
-        <button type="button" onClick={() => navTo('institution-insight')} className="mt-3 w-full text-left bg-white border border-[#EAE7E1] rounded-[20px] p-4 hover:bg-[#F6F4EF] min-h-[44px] flex items-start gap-3">
-          <TrendingUp size={22} className="shrink-0 mt-0.5 text-[#C73E33]" />
+        <button type="button" onClick={() => navTo('institution-insight')} className="mt-3 w-full text-left bg-white border border-[#e5e7dd] rounded-[20px] p-4 hover:bg-[#F6F4EF] min-h-[44px] flex items-start gap-3">
+          <TrendingUp size={22} className="shrink-0 mt-0.5 text-[#59684a]" />
           <span>
             <span className="block text-base font-semibold text-[#1C1B1A]">{t('ii_entry')}</span>
             <span className="block text-base text-[#4A4744]">{t('ii_entry_sub')}</span>
@@ -179,7 +179,7 @@ export function BringView({ t, lang, navTo, onSubmit, canReview = true }) {
                 const on = skills.includes(sk);
                 return (
                   <button key={sk} type="button" aria-pressed={on} onClick={() => setSkills(prev => prev.includes(sk) ? prev.filter(x => x !== sk) : [...prev, sk])}
-                    className={`min-h-[44px] px-4 rounded-full border text-base font-medium ${on ? 'bg-[#FAF0EE] border-[#C73E33] text-[#AE332A]' : 'bg-white border-[#EAE7E1] text-[#4A4744] hover:bg-[#F6F4EF]'}`}>
+                    className={`min-h-[44px] px-4 rounded-full border text-base font-medium ${on ? 'bg-[#FAF0EE] border-[#59684a] text-[#AE332A]' : 'bg-white border-[#e5e7dd] text-[#4A4744] hover:bg-[#F6F4EF]'}`}>
                     {sk}
                   </button>
                 );
@@ -234,7 +234,7 @@ export function BringView({ t, lang, navTo, onSubmit, canReview = true }) {
           <p className="text-base text-[#1C1B1A]">{type === 'insight' ? t('br_error_ins') : t('br_error_opp')}</p>
         </div>
       )}
-      <button type="button" onClick={submit} className="w-full bg-[#C73E33] text-white py-3.5 rounded-full font-semibold text-lg hover:bg-[#AE332A] min-h-[52px]">
+      <button type="button" onClick={submit} className="w-full bg-[#59684a] text-white py-3.5 rounded-full font-semibold text-lg hover:bg-[#415947] min-h-[52px]">
         {t('br_submit')}
       </button>
     </div>

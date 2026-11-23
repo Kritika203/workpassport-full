@@ -70,10 +70,11 @@ class MilestoneSerializer(serializers.ModelSerializer):
         model = Milestone
         fields = ['id', 'title', 'amount_usd', 'state', 'position', 'created_at',
                   'delivery_note', 'delivery_links', 'delivery_updated_at',
-                  'submitted_at', 'revision_note', 'reviewed_at', 'has_delivery', 'files']
+                  'submitted_at', 'revision_note', 'reviewed_at', 'has_delivery', 'files',
+                  'review_checks']
         read_only_fields = ['id', 'state', 'created_at', 'delivery_note', 'delivery_links',
                             'delivery_updated_at', 'submitted_at', 'revision_note',
-                            'reviewed_at', 'has_delivery', 'files']
+                            'reviewed_at', 'has_delivery', 'files', 'review_checks']
 
     def validate_amount_usd(self, value):
         if value <= 0:
@@ -83,6 +84,20 @@ class MilestoneSerializer(serializers.ModelSerializer):
 
 class WorkroomSerializer(serializers.ModelSerializer):
     milestones = MilestoneSerializer(many=True, read_only=True)
+    deliverable_specs = serializers.SerializerMethodField()
+    payments = serializers.SerializerMethodField()
+
+    def get_payments(self, obj):
+        # Latest DirectPay record per milestone, keyed by milestone id.
+        from .payment_views import PaymentRecordSerializer
+        latest = {}
+        for record in obj.payments.all().order_by('created_at', 'id'):
+            latest[record.milestone_id] = record
+        return {str(mid): PaymentRecordSerializer(record, context=self.context).data for mid, record in latest.items()}
+
+    def get_deliverable_specs(self, obj):
+        items = obj.application.job.deliverables or []
+        return [d for d in items if isinstance(d, dict) and isinstance(d.get('name'), str)]
     application_id = serializers.IntegerField(read_only=True)
     is_demo = serializers.BooleanField(source='application.job.is_demo', read_only=True)
     agreed_amount_usd = serializers.DecimalField(source='application.proposed_rate_usd', max_digits=10, decimal_places=2, read_only=True)
@@ -105,7 +120,8 @@ class WorkroomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Workroom
         fields = ['id', 'application_id', 'scope', 'created_at', 'milestones', 'is_demo',
-                  'agreed_amount_usd', 'total_allocated_usd', 'total_released_usd', 'is_complete']
+                  'agreed_amount_usd', 'total_allocated_usd', 'total_released_usd', 'is_complete',
+                  'deliverable_specs', 'payments']
         read_only_fields = ['id', 'created_at', 'milestones', 'application_id']
 
 

@@ -38,13 +38,13 @@ export function InstitutionInsight({ allJobs, t, lang, navTo }) {
       </div>
 
       <div className={CL_CARD}>
-        <div className="grid grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,1fr)] gap-3 pb-3 border-b border-[#EAE7E1] text-sm font-semibold text-[#6E6963]">
+        <div className="grid grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,1fr)] gap-3 pb-3 border-b border-[#e5e7dd] text-sm font-semibold text-[#6E6963]">
           <div>{t('ii_col_skill')}</div>
           <div>{t('ii_col_have')}</div>
           <div>{t('ii_col_demand')}</div>
         </div>
         {rows.map(r => (
-          <div key={r.skill} className="grid grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,1fr)] gap-3 py-3 border-b border-[#EAE7E1] last:border-b-0 items-center">
+          <div key={r.skill} className="grid grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,1fr)] gap-3 py-3 border-b border-[#e5e7dd] last:border-b-0 items-center">
             <div className="text-base font-semibold text-[#1C1B1A] break-words">{r.skill}</div>
             <div className="text-base text-[#1C1B1A]">{fmt(t('ii_have_of'), { have: digits(r.have), cohort: digits(cohort) })}</div>
             <div className="text-base text-[#1C1B1A]">{digits(r.demand)}</div>
@@ -55,7 +55,7 @@ export function InstitutionInsight({ allJobs, t, lang, navTo }) {
       {gap && (
         <div className={CL_CARD}>
           <h2 className="text-xl font-semibold mb-2">{t('ii_gap_title')}</h2>
-          <div className="text-lg font-semibold text-[#C73E33] mb-2">{gap.skill}</div>
+          <div className="text-lg font-semibold text-[#59684a] mb-2">{gap.skill}</div>
           <p className="text-base text-[#4A4744]">
             {fmt(t(gap.have > 0 ? 'ii_gap_have' : 'ii_gap_none'), { skill: gap.skill, demand: digits(gap.demand), total: digits(total), have: digits(gap.have), cohort: digits(cohort) })}
           </p>

@@ -26,7 +26,7 @@ const evBody = (e, t, masked) => masked ? VAULT_MASK + '\n' + t('ev_hidden') : (
 export const evToday = (lang) => new Date().toLocaleDateString(lang === 'ne' ? 'ne-NP' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 
 export function buildEvidenceText({ t, lang, name, items, masked }) {
-  const lines = ['WorkPassport', t('ev_rep_title'), fmt(t('pdf_made_on'), { date: evToday(lang) }), '', fmt(t('ev_intro'), { name }), ''];
+  const lines = ['Vouch', t('ev_rep_title'), fmt(t('pdf_made_on'), { date: evToday(lang) }), '', fmt(t('ev_intro'), { name }), ''];
   items.forEach((e, i) => {
     lines.push(fmt(t('ev_item'), { n: evDigits(lang, i + 1) }));
     lines.push(evDateTime(e.date, lang));

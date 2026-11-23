@@ -57,16 +57,25 @@ export function analyzeText(text, structural = true) {
   if (!vague) green.push("clearwork");
   if (has(SHIELD_RULES.payMethod) || (amounts.length > 0 && low.includes("paid"))) green.push("paymethod");
   if (has(SHIELD_RULES.deadline)) green.push("deadline");
+  // Low-information rule: if nothing recognisable is present (no amount, no
+  // describable work, no pay words, no pay method, no deadline) and there are
+  // no danger signs, the honest answer is "not enough information", never a
+  // vague warning and never a clean pass.
+  const recognisable = amounts.length > 0 || !vague || has(SHIELD_RULES.payWords)
+    || has(SHIELD_RULES.payMethod) || has(SHIELD_RULES.deadline);
+  if (!recognisable && red.length === 0) return { red, yellow: [], green: [], unknown: true };
   return { red, yellow, green };
 }
 
 export function verdictOf(f) {
+  if (f.unknown) return "unknown";
   return f.red.length >= 1 ? "danger" : f.yellow.length >= 1 ? "warning" : "ok";
 }
 
 export function analyzeJob(job) {
-  const text = job.title + " " + job.description + " " + (job.deliverables || []).join(" ");
+  const text = job.title + " " + job.description + " " + (job.deliverables || []).map(d => (typeof d === "string" ? d : (d.name || "") + " " + (d.description || ""))).join(" ");
   const f = analyzeText(text, false);
+  if (f.unknown) return f;
   f.yellow = f.yellow.filter(id => id !== "nopay" && id !== "vague");
   if (!f.green.includes("clearwork")) f.green.unshift("clearwork");
   const clientVerified = job.clientVerified !== undefined ? job.clientVerified : job.paymentVerified;

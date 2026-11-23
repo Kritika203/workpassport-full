@@ -2,6 +2,8 @@
 
 import { ArrowRight, Check, CheckCircle2, CheckSquare, ChevronLeft, Download, Lock, MapPin, ShieldCheck, Square, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
+import { CVImport } from '../components/passport/CVImport.jsx';
+import { PaymentSettings } from '../components/payments/PaymentSettings.jsx';
 import { Disclaimer } from '../components/common/Disclaimer.jsx';
 import { LevelBadge, RuleToggle } from '../components/passport/Badges.jsx';
 import { ProfileDetails, ProfileFieldsList } from '../components/passport/ProfileFields.jsx';
@@ -90,11 +92,11 @@ export function PassportPage({ allowDemoConfirm = true, allJobs = DUMMY_JOBS, t,
 
         <h2 className="font-semibold text-[22px] mb-4">{t('pp_work_title')}</h2>
         {confirmedList.length === 0 ? (
-          <div className="bg-white border border-[#EAE7E1] rounded-[20px] p-6 text-lg text-[#4A4744] mb-10">{t('pp_public_empty')}</div>
+          <div className="bg-white border border-[#e5e7dd] rounded-[20px] p-6 text-lg text-[#4A4744] mb-10">{t('pp_public_empty')}</div>
         ) : (
           <div className="space-y-4 mb-10">
             {confirmedList.map(j => (
-              <div key={j.id} className="bg-white border border-[#EAE7E1] rounded-[20px] p-6">
+              <div key={j.id} className="bg-white border border-[#e5e7dd] rounded-[20px] p-6">
                 <div className="font-semibold text-xl mb-1">{j.title}</div>
                 <div className="text-base text-[#4A4744] mb-3">{j.clientName}</div>
                 <LevelBadge level="client" t={t} />
@@ -104,7 +106,7 @@ export function PassportPage({ allowDemoConfirm = true, allJobs = DUMMY_JOBS, t,
         )}
 
         <h2 className="font-semibold text-[22px] mb-4">{t('pp_skills_title')}</h2>
-        <div className="bg-white border border-[#EAE7E1] rounded-[20px] divide-y divide-[#EAE7E1] mb-10">
+        <div className="bg-white border border-[#e5e7dd] rounded-[20px] divide-y divide-[#EAE7E1] mb-10">
           {levels.map(({ skill, level }) => (
             <div key={skill} className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <span className="font-semibold text-lg">{skill}</span>
@@ -118,8 +120,8 @@ export function PassportPage({ allowDemoConfirm = true, allJobs = DUMMY_JOBS, t,
         </div>
 
         <h2 className="font-semibold text-[22px] mb-4">{t('pp_about')}</h2>
-        <div className="bg-white border border-[#EAE7E1] rounded-[20px] p-6 flex items-center gap-4 mb-8">
-          <div className="w-16 h-16 rounded-full bg-[#F0EEE9] border border-[#EAE7E1] flex items-center justify-center font-semibold text-xl text-[#1C1B1A] shrink-0">{initialsOf(user.name)}</div>
+        <div className="bg-white border border-[#e5e7dd] rounded-[20px] p-6 flex items-center gap-4 mb-8">
+          <div className="w-16 h-16 rounded-full bg-[#F0EEE9] border border-[#e5e7dd] flex items-center justify-center font-semibold text-xl text-[#1C1B1A] shrink-0">{initialsOf(user.name)}</div>
           <div>
             <div className="font-semibold text-xl">{user.name}</div>
             <div className="text-base text-[#4A4744]">{user.district}</div>
@@ -127,7 +129,7 @@ export function PassportPage({ allowDemoConfirm = true, allJobs = DUMMY_JOBS, t,
           </div>
         </div>
         {profileHasDetails(user) && (
-          <div className="bg-white border border-[#EAE7E1] rounded-[20px] p-6 mb-8">
+          <div className="bg-white border border-[#e5e7dd] rounded-[20px] p-6 mb-8">
             <ProfileFieldsList t={t} user={user} />
           </div>
         )}
@@ -138,11 +140,13 @@ export function PassportPage({ allowDemoConfirm = true, allJobs = DUMMY_JOBS, t,
 
   return (
     <div className="max-w-[900px] mx-auto space-y-8">
+      <CVImport user={user} onSave={setUser} lang={lang} />
+      <PaymentSettings lang={lang} showToast={showToast} />
       {printDoc}
       {/* Section 1: header */}
-      <div className="bg-white border border-[#EAE7E1] rounded-[20px] p-6 sm:p-6">
+      <div className="bg-white border border-[#e5e7dd] rounded-[20px] p-6 sm:p-6">
         <div className="flex items-center gap-4 mb-6">
-          <div className="w-16 h-16 rounded-full bg-[#F0EEE9] border border-[#EAE7E1] flex items-center justify-center font-semibold text-xl text-[#1C1B1A] shrink-0">{initialsOf(user.name)}</div>
+          <div className="w-16 h-16 rounded-full bg-[#F0EEE9] border border-[#e5e7dd] flex items-center justify-center font-semibold text-xl text-[#1C1B1A] shrink-0">{initialsOf(user.name)}</div>
           <div className="min-w-0">
             <h1 className="text-[28px] sm:text-[30px] font-semibold truncate">{user.name}</h1>
             <div className="text-base text-[#4A4744] flex flex-wrap items-center gap-x-3 gap-y-1"><span className="flex items-center gap-1.5"><MapPin size={20} /> {user.district}</span><span className="bg-[#F0EEE9] px-3 py-0.5 rounded-full text-sm font-semibold">{t('pp_beginner')}</span></div>
@@ -153,13 +157,13 @@ export function PassportPage({ allowDemoConfirm = true, allJobs = DUMMY_JOBS, t,
 
         <div className="mb-6">
           <div className="flex justify-between items-baseline mb-2"><span className="font-semibold text-base">{t('pp_progress')}</span><span className="font-semibold text-base">{digits(progress)}%</span></div>
-          <div className="h-2 bg-[#F0EEE9] rounded-full overflow-hidden"><div className="h-full bg-[#C73E33] rounded-full transition-all" style={{ width: `${progress}%` }}></div></div>
+          <div className="h-2 bg-[#F0EEE9] rounded-full overflow-hidden"><div className="h-full bg-[#59684a] rounded-full transition-all" style={{ width: `${progress}%` }}></div></div>
           <p className="text-base text-[#4A4744] mt-3">{enc}</p>
         </div>
 
         <div className="grid grid-cols-3 gap-3 mb-6">
           {[[t('pp_stat_skills'), digits(provenCount)], [t('pp_stat_jobs'), digits(confirmedList.length)], [t('pp_stat_earned'), hideMoney ? MASK : `NPR ${fmtMoney(earned)}`]].map(([label, val]) => (
-            <div key={label} className="bg-[#F6F4EF] border border-[#EAE7E1] rounded-[14px] p-3 sm:p-4">
+            <div key={label} className="bg-[#F6F4EF] border border-[#e5e7dd] rounded-[14px] p-3 sm:p-4">
               <div className="font-semibold text-lg sm:text-2xl break-words">{val}</div>
               <div className="text-sm text-[#4A4744] mt-1">{label}</div>
             </div>
@@ -167,7 +171,7 @@ export function PassportPage({ allowDemoConfirm = true, allJobs = DUMMY_JOBS, t,
         </div>
 
         <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
-          <button onClick={openShare} className="flex-1 bg-[#C73E33] text-white py-3.5 rounded-full font-semibold text-base hover:bg-[#AE332A] min-h-[52px] px-5">{t('pp_share')}</button>
+          <button onClick={openShare} className="flex-1 bg-[#59684a] text-white py-3.5 rounded-full font-semibold text-base hover:bg-[#415947] min-h-[52px] px-5">{t('pp_share')}</button>
           <button onClick={() => { setView('public'); window.scrollTo(0, 0); }} className="flex-1 bg-white border border-[#E3E0D9] text-[#1C1B1A] py-3.5 rounded-full font-semibold text-base hover:bg-[#F6F4EF] min-h-[52px] px-5">{t('pp_see_clients')}</button>
           <button onClick={() => printDocument('passport')} className="flex-1 bg-white border border-[#E3E0D9] text-[#1C1B1A] py-3.5 rounded-full font-semibold text-base hover:bg-[#F6F4EF] min-h-[52px] px-5 inline-flex items-center justify-center gap-2"><Download size={20} /> {t('pdf_btn')}</button>
         </div>
@@ -179,7 +183,7 @@ export function PassportPage({ allowDemoConfirm = true, allJobs = DUMMY_JOBS, t,
       {/* Section 2: skills */}
       <div>
         <h2 className="font-semibold text-[22px] mb-4">{t('pp_skills_title')}</h2>
-        <div className="bg-white border border-[#EAE7E1] rounded-[20px] divide-y divide-[#EAE7E1] mb-6">
+        <div className="bg-white border border-[#e5e7dd] rounded-[20px] divide-y divide-[#EAE7E1] mb-6">
           {levels.map(({ skill, level }) => (
             <div key={skill} className="p-5 sm:p-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -200,12 +204,12 @@ export function PassportPage({ allowDemoConfirm = true, allJobs = DUMMY_JOBS, t,
           ))}
         </div>
 
-        <div className="bg-white border border-[#EAE7E1] rounded-[20px] p-6 sm:p-6">
+        <div className="bg-white border border-[#e5e7dd] rounded-[20px] p-6 sm:p-6">
           <h3 className="font-semibold text-xl mb-5">{t('pp_how_title')}</h3>
-          <ol className="relative border-l-2 border-[#EAE7E1] ml-3 space-y-5">
+          <ol className="relative border-l-2 border-[#e5e7dd] ml-3 space-y-5">
             {LEVEL_ORDER.map((lv, i) => (
               <li key={lv} className="pl-6 relative">
-                <span className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-white border-2 border-[#C73E33]"></span>
+                <span className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-white border-2 border-[#59684a]"></span>
                 <div className="flex flex-wrap items-center gap-3 mb-1"><span className="text-sm font-semibold text-[#8A8580]">{digits(i + 1)}</span><LevelBadge level={lv} t={t} /></div>
                 <p className="text-base text-[#4A4744]">{t('pp_desc_' + lv)}</p>
               </li>
@@ -218,10 +222,10 @@ export function PassportPage({ allowDemoConfirm = true, allJobs = DUMMY_JOBS, t,
       <div>
         <h2 className="font-semibold text-[22px] mb-4">{t('pp_work_title')}</h2>
         {confirmedList.length === 0 && waiting.length === 0 && (
-          <div className="bg-white border border-[#EAE7E1] rounded-[20px] p-6 text-center flex flex-col items-center gap-5">
+          <div className="bg-white border border-[#e5e7dd] rounded-[20px] p-6 text-center flex flex-col items-center gap-5">
             <CheckSquare size={40} className="text-[#D8D4CC]" />
             <p className="text-lg text-[#4A4744] max-w-md">{t('pp_work_empty')}</p>
-            <button onClick={() => navTo('firstwork')} className="bg-[#C73E33] text-white px-8 rounded-full font-semibold text-base hover:bg-[#AE332A] min-h-[52px]">{t('pp_find_job')}</button>
+            <button onClick={() => navTo('firstwork')} className="bg-[#59684a] text-white px-8 rounded-full font-semibold text-base hover:bg-[#415947] min-h-[52px]">{t('pp_find_job')}</button>
           </div>
         )}
         {waiting.length > 0 && (
@@ -232,11 +236,11 @@ export function PassportPage({ allowDemoConfirm = true, allJobs = DUMMY_JOBS, t,
                 const j = allJobs.find(x => x.id === a.jobId);
                 if (!j) return null;
                 return (
-                  <div key={a.jobId} className="bg-white border border-[#EAE7E1] rounded-[20px] p-5 sm:p-6">
+                  <div key={a.jobId} className="bg-white border border-[#e5e7dd] rounded-[20px] p-5 sm:p-6">
                     <div className="font-semibold text-lg mb-1">{j.title}</div>
                     <div className="text-base text-[#4A4744] mb-1">{j.clientName}</div>
                     <div className="text-base font-semibold mb-3">NPR {hideMoney ? MASK : fmtMoney(a.npr || a.price * 133)}</div>
-                    <span className="bg-[#F0EEE9] border border-[#EAE7E1] px-4 py-2 rounded-[12px] text-[#1C1B1A] font-semibold text-sm inline-flex items-center gap-2 mb-4"><CheckCircle2 size={16} /> {t('applied_status')}</span>
+                    <span className="bg-[#F0EEE9] border border-[#e5e7dd] px-4 py-2 rounded-[12px] text-[#1C1B1A] font-semibold text-sm inline-flex items-center gap-2 mb-4"><CheckCircle2 size={16} /> {t('applied_status')}</span>
                     {allowDemoConfirm && <button onClick={() => confirmJob(j.id)} className="w-full border-2 border-dashed border-[#D8D4CC] text-[#4A4744] rounded-full px-5 font-semibold text-base hover:border-[#8A8580] min-h-[48px] bg-white">{t('pp_demo_confirm')}</button>}
                   </div>
                 );
@@ -249,7 +253,7 @@ export function PassportPage({ allowDemoConfirm = true, allJobs = DUMMY_JOBS, t,
             <h3 className="font-semibold text-lg mb-3">{t('pp_done_head')}</h3>
             <div className="space-y-4">
               {confirmedList.map(j => (
-                <div key={j.id} className="bg-white border border-[#EAE7E1] rounded-[20px] p-5 sm:p-6">
+                <div key={j.id} className="bg-white border border-[#e5e7dd] rounded-[20px] p-5 sm:p-6">
                   <div className="font-semibold text-lg mb-1">{j.title}</div>
                   <div className="text-base text-[#4A4744] mb-3">{j.clientName}</div>
                   <div className="mb-3"><LevelBadge level="client" t={t} /></div>
@@ -263,8 +267,8 @@ export function PassportPage({ allowDemoConfirm = true, allJobs = DUMMY_JOBS, t,
       </div>
 
       {/* Evidence Vault link card */}
-      <button onClick={() => navTo('vault')} className="w-full text-left bg-white border border-[#EAE7E1] rounded-[20px] p-5 sm:p-6 hover:border-[#DDD8CE] flex items-center gap-4 min-h-[64px]">
-        <Lock size={28} className="shrink-0 text-[#C73E33]" />
+      <button onClick={() => navTo('vault')} className="w-full text-left bg-white border border-[#e5e7dd] rounded-[20px] p-5 sm:p-6 hover:border-[#DDD8CE] flex items-center gap-4 min-h-[64px]">
+        <Lock size={28} className="shrink-0 text-[#59684a]" />
         <span className="flex-1 min-w-0">
           <span className="block font-semibold text-xl text-[#1C1B1A]">{t('ev_title')}</span>
           <span className="block text-base text-[#4A4744]">{fmt(t('ev_count'), { n: digits(Array.isArray(evidence) ? evidence.length : 0) })}</span>
@@ -273,8 +277,8 @@ export function PassportPage({ allowDemoConfirm = true, allJobs = DUMMY_JOBS, t,
       </button>
 
       {/* SkillBridge link card */}
-      <button onClick={() => navTo('skillbridge')} className="w-full text-left bg-white border border-[#EAE7E1] rounded-[20px] p-5 sm:p-6 hover:border-[#DDD8CE] flex items-center gap-4 min-h-[64px]">
-        <TrendingUp size={28} className="shrink-0 text-[#C73E33]" />
+      <button onClick={() => navTo('skillbridge')} className="w-full text-left bg-white border border-[#e5e7dd] rounded-[20px] p-5 sm:p-6 hover:border-[#DDD8CE] flex items-center gap-4 min-h-[64px]">
+        <TrendingUp size={28} className="shrink-0 text-[#59684a]" />
         <span className="flex-1 min-w-0">
           <span className="block font-semibold text-xl text-[#1C1B1A]">{t('sb_title')}</span>
           <span className="block text-base text-[#4A4744]">{t('sb_card_line')}</span>
@@ -283,14 +287,14 @@ export function PassportPage({ allowDemoConfirm = true, allJobs = DUMMY_JOBS, t,
       </button>
 
       {/* Section 5: getting paid + safety rules */}
-      <div className="bg-white border border-[#EAE7E1] rounded-[20px] p-6 sm:p-6">
+      <div className="bg-white border border-[#e5e7dd] rounded-[20px] p-6 sm:p-6">
         <h2 className="font-semibold text-[22px] mb-5">{t('pp_pay_title')}</h2>
         <div className="space-y-3 mb-5">
           {[0, 1, 2, 3].map(i => {
             const on = !!(payChecklist && payChecklist[i]);
             return (
-              <button key={i} onClick={() => togglePay(i)} className={`w-full flex items-start gap-3 p-4 rounded-[14px] border text-left min-h-[48px] transition-colors ${on ? 'border-[#C73E33] bg-[#FAF0EE]' : 'border-[#EAE7E1] bg-white hover:border-[#DDD8CE]'}`} role="checkbox" aria-checked={on}>
-                {on ? <CheckSquare size={24} className="shrink-0 text-[#C73E33]" /> : <Square size={24} className="shrink-0 text-[#8A8580]" />}
+              <button key={i} onClick={() => togglePay(i)} className={`w-full flex items-start gap-3 p-4 rounded-[14px] border text-left min-h-[48px] transition-colors ${on ? 'border-[#59684a] bg-[#FAF0EE]' : 'border-[#e5e7dd] bg-white hover:border-[#DDD8CE]'}`} role="checkbox" aria-checked={on}>
+                {on ? <CheckSquare size={24} className="shrink-0 text-[#59684a]" /> : <Square size={24} className="shrink-0 text-[#8A8580]" />}
                 <span className="text-base font-medium">{t('pp_pay_' + (i + 1))}</span>
               </button>
             );
@@ -310,12 +314,12 @@ export function PassportPage({ allowDemoConfirm = true, allJobs = DUMMY_JOBS, t,
       {/* Share modal */}
       {shareOpen && (
         <div className="fixed inset-0 z-50 bg-[#1C1B1A]/40 flex items-center justify-center p-4" onClick={() => setShareOpen(false)}>
-          <div className="bg-white rounded-[20px] border border-[#EAE7E1] p-6 sm:p-6 w-full max-w-md" onClick={e => e.stopPropagation()}>
+          <div className="bg-white rounded-[20px] border border-[#e5e7dd] p-6 sm:p-6 w-full max-w-md" onClick={e => e.stopPropagation()}>
             <h3 className="font-semibold text-2xl mb-3">{t('pp_share')}</h3>
             <p className="text-base text-[#4A4744] mb-5">{t('pp_share_desc')}</p>
-            <div className="bg-[#F6F4EF] border border-[#EAE7E1] rounded-[14px] px-4 py-3 text-base font-semibold break-all mb-5">{link}</div>
+            <div className="bg-[#F6F4EF] border border-[#e5e7dd] rounded-[14px] px-4 py-3 text-base font-semibold break-all mb-5">{link}</div>
             <div className="space-y-3">
-              <button onClick={copyLink} className="w-full py-3.5 bg-[#C73E33] text-white font-semibold text-base rounded-full hover:bg-[#AE332A] min-h-[52px]">{t('pp_copy_link')}</button>
+              <button onClick={copyLink} className="w-full py-3.5 bg-[#59684a] text-white font-semibold text-base rounded-full hover:bg-[#415947] min-h-[52px]">{t('pp_copy_link')}</button>
               <a href={`https://wa.me/?text=${encodeURIComponent(remoteShare || 'https://' + link)}`} target="_blank" rel="noopener noreferrer" className="w-full py-3.5 border border-[#E3E0D9] bg-white text-[#1C1B1A] font-semibold text-base rounded-full hover:bg-[#F6F4EF] min-h-[52px] flex items-center justify-center">{t('pp_whatsapp')}</a>
               <button onClick={() => setShareOpen(false)} className="w-full py-3 text-[#4A4744] font-semibold text-base rounded-full hover:bg-[#F6F4EF] min-h-[48px]">{t('pp_close')}</button>
             </div>

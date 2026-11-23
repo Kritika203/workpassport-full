@@ -58,7 +58,7 @@ export function ChatView({ t, lang, job, user, navTo, showToast, chats, updateCh
     setEvidence(prev => [{ text: lines, categories: [], date: new Date().toISOString(), source: 'chat', jobTitle: job.title, clientName: job.clientName }, ...(Array.isArray(prev) ? prev : [])].slice(0, 20));
     setClientAction(job.id, { blocked: true });
     const date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-    setEndReport(`Report about ${job.clientName} (job: ${job.title}). I am reporting this client from my WorkPassport chat. The full chat is saved in my Evidence Vault. Date: ${date}.`);
+    setEndReport(`Report about ${job.clientName} (job: ${job.title}). I am reporting this client from my Vouch chat. The full chat is saved in my Evidence Vault. Date: ${date}.`);
     setEndOpen(false);
     showToast(t('sp_es_toast'));
     window.scrollTo({ top: 0 });
@@ -102,13 +102,13 @@ export function ChatView({ t, lang, job, user, navTo, showToast, chats, updateCh
   const openChecker = (text = "", auto = false) => setChecker({ text, auto, n: Date.now() });
   const CheckBtn = ({ withLabel, className = "" }) => (
     <button type="button" onClick={() => openChecker()} aria-label={t('chat_check')} className={`shrink-0 flex items-center justify-center gap-2 rounded-full font-semibold text-base border border-[#E3E0D9] bg-white text-[#1C1B1A] hover:border-[#DDD8CE] min-h-[48px] ${withLabel ? 'px-4' : 'w-12'} ${className}`}>
-      <Shield size={20} className="text-[#C73E33]" />{withLabel && <span>{t('chat_check')}</span>}
+      <Shield size={20} className="text-[#59684a]" />{withLabel && <span>{t('chat_check')}</span>}
     </button>
   );
 
   return (
     <div className="max-w-[800px] mx-auto">
-      <div className="bg-white border border-[#EAE7E1] rounded-[20px] p-4 sm:p-5 mb-5">
+      <div className="bg-white border border-[#e5e7dd] rounded-[20px] p-4 sm:p-5 mb-5">
       <div className="flex items-center gap-3">
         <button onClick={() => navTo('opportunities', { tab: 'applied' })} aria-label={t('back')} className="shrink-0 flex items-center gap-1 text-base font-semibold text-[#4A4744] hover:text-[#1C1B1A] min-h-[48px] -ml-1 pr-1"><ChevronLeft size={20} /><span className="hidden sm:inline">{t('back')}</span></button>
         <div className="shrink-0 w-11 h-11 rounded-full bg-[#FAF0EE] text-[#AE332A] font-semibold text-base flex items-center justify-center">{initialsOf((job.clientName || '').replace(/[()]/g, ''))}</div>
@@ -118,13 +118,13 @@ export function ChatView({ t, lang, job, user, navTo, showToast, chats, updateCh
         </div>
         <CheckBtn withLabel />
       </div>
-        <div className="mt-3 pt-3 border-t border-[#EAE7E1] flex flex-wrap items-center justify-between gap-2 relative" ref={menuRef}>
-        {hasClientMsg && !blocked && <button type="button" onClick={() => setEndOpen(true)} className="inline-flex items-center justify-center gap-2 rounded-full border border-[#E3E0D9] bg-white text-[#1C1B1A] font-semibold text-base hover:bg-[#F6F4EF] min-h-[48px] px-4 text-left"><Ban size={18} className="shrink-0 text-[#C73E33]" /> <span>{t('sp_es_btn')}</span></button>}
+        <div className="mt-3 pt-3 border-t border-[#e5e7dd] flex flex-wrap items-center justify-between gap-2 relative" ref={menuRef}>
+        {hasClientMsg && !blocked && <button type="button" onClick={() => setEndOpen(true)} className="inline-flex items-center justify-center gap-2 rounded-full border border-[#E3E0D9] bg-white text-[#1C1B1A] font-semibold text-base hover:bg-[#F6F4EF] min-h-[48px] px-4 text-left"><Ban size={18} className="shrink-0 text-[#59684a]" /> <span>{t('sp_es_btn')}</span></button>}
           <button type="button" onClick={() => setMenuOpen(o => !o)} aria-haspopup="menu" aria-expanded={menuOpen} className="ml-auto flex items-center gap-2 rounded-full font-semibold text-base text-[#1C1B1A] border border-[#E3E0D9] bg-white hover:border-[#DDD8CE] min-h-[48px] px-4"><MoreVertical size={20} /> <span>{t('ca_options')}</span></button>
           {menuOpen && (
-            <div role="menu" className="absolute right-0 top-full mt-2 w-[min(280px,calc(100vw-32px))] bg-white border border-[#EAE7E1] rounded-[16px] shadow-[0_8px_24px_rgba(28,27,26,0.08)] overflow-hidden z-40 text-left">
-              <button role="menuitem" onClick={() => { setMenuOpen(false); toggleMute(); }} className="w-full text-left px-5 py-3 min-h-[48px] text-base text-[#1C1B1A] hover:bg-[#F6F4EF] border-b border-[#EAE7E1] flex items-center gap-3"><BellOff size={20} className="shrink-0" /> {muted ? t('ca_unmute') : t('ca_mute')}</button>
-              <button role="menuitem" onClick={() => { setMenuOpen(false); toggleBlock(); }} className="w-full text-left px-5 py-3 min-h-[48px] text-base text-[#1C1B1A] hover:bg-[#F6F4EF] border-b border-[#EAE7E1] flex items-center gap-3"><Ban size={20} className="shrink-0" /> {blocked ? t('ca_unblock') : t('ca_block')}</button>
+            <div role="menu" className="absolute right-0 top-full mt-2 w-[min(280px,calc(100vw-32px))] bg-white border border-[#e5e7dd] rounded-[16px] shadow-[0_8px_24px_rgba(28,27,26,0.08)] overflow-hidden z-40 text-left">
+              <button role="menuitem" onClick={() => { setMenuOpen(false); toggleMute(); }} className="w-full text-left px-5 py-3 min-h-[48px] text-base text-[#1C1B1A] hover:bg-[#F6F4EF] border-b border-[#e5e7dd] flex items-center gap-3"><BellOff size={20} className="shrink-0" /> {muted ? t('ca_unmute') : t('ca_mute')}</button>
+              <button role="menuitem" onClick={() => { setMenuOpen(false); toggleBlock(); }} className="w-full text-left px-5 py-3 min-h-[48px] text-base text-[#1C1B1A] hover:bg-[#F6F4EF] border-b border-[#e5e7dd] flex items-center gap-3"><Ban size={20} className="shrink-0" /> {blocked ? t('ca_unblock') : t('ca_block')}</button>
               <button role="menuitem" onClick={() => { setMenuOpen(false); setReportOpen(true); }} className="w-full text-left px-5 py-3 min-h-[48px] text-base text-[#1C1B1A] hover:bg-[#F6F4EF] flex items-center gap-3"><Flag size={20} className="shrink-0" /> {t('ca_report')}{report ? ' ✓' : ''}</button>
             </div>
           )}
@@ -135,15 +135,15 @@ export function ChatView({ t, lang, job, user, navTo, showToast, chats, updateCh
       {endReport && (
         <div className="bg-[#FAF0EE] border border-[#F3E1DD] rounded-[20px] p-5 mb-5">
           <h2 className="font-semibold text-lg mb-3">{t('sp_es_rep_title')}</h2>
-          <p className="text-base text-[#1C1B1A] bg-white border border-[#EAE7E1] rounded-[14px] p-4 mb-4 break-words">{endReport}</p>
-          <button type="button" onClick={async () => { await copyToClipboard(endReport); showToast(t('sh_copied')); }} className="inline-flex items-center justify-center gap-2 bg-[#C73E33] text-white rounded-full font-semibold text-base hover:bg-[#AE332A] min-h-[48px] px-6">{t('sh_copy')}</button>
+          <p className="text-base text-[#1C1B1A] bg-white border border-[#e5e7dd] rounded-[14px] p-4 mb-4 break-words">{endReport}</p>
+          <button type="button" onClick={async () => { await copyToClipboard(endReport); showToast(t('sh_copied')); }} className="inline-flex items-center justify-center gap-2 bg-[#59684a] text-white rounded-full font-semibold text-base hover:bg-[#415947] min-h-[48px] px-6">{t('sh_copy')}</button>
         </div>
       )}
 
       <div role="log" aria-label={t('chat_thread_label')} className="space-y-4 pb-4">
         {thread.map((m, i) => m.from === 'client' ? (
           <div key={i} className="flex flex-col items-start">
-            <div className="max-w-[85%] bg-white border border-[#EAE7E1] rounded-[20px] rounded-bl-[6px] px-4 py-3 text-base text-[#1C1B1A] break-words">{m.text}</div>
+            <div className="max-w-[85%] bg-white border border-[#e5e7dd] rounded-[20px] rounded-bl-[6px] px-4 py-3 text-base text-[#1C1B1A] break-words">{m.text}</div>
             <button onClick={() => openChecker(m.text, true)} className="flex items-center gap-1.5 text-sm font-semibold text-[#6E6963] hover:text-[#1C1B1A] min-h-[44px] px-1"><Shield size={14} /> {t('chat_check_msg')}</button>
           </div>
         ) : (
@@ -151,30 +151,30 @@ export function ChatView({ t, lang, job, user, navTo, showToast, chats, updateCh
             <div className="max-w-[85%] bg-[#FAF0EE] border border-[#F3E1DD] rounded-[20px] rounded-br-[6px] px-4 py-3 text-base text-[#1C1B1A] break-words">{m.text}</div>
           </div>
         ))}
-        {muted && <p className="flex items-start justify-center gap-2 text-center text-base text-[#6E6963] bg-[#F6F4EF] border border-[#EAE7E1] rounded-[14px] px-4 py-3"><BellOff size={18} className="shrink-0 mt-0.5" /> <span>{t('ca_muted_note')}</span></p>}
+        {muted && <p className="flex items-start justify-center gap-2 text-center text-base text-[#6E6963] bg-[#F6F4EF] border border-[#e5e7dd] rounded-[14px] px-4 py-3"><BellOff size={18} className="shrink-0 mt-0.5" /> <span>{t('ca_muted_note')}</span></p>}
         <div ref={endRef} />
       </div>
 
       {blocked ? (
-        <div className="sticky bottom-0 z-30 bg-[#FBFAF8] pt-3 pb-3 border-t border-[#EAE7E1]">
-          <div className="bg-white border border-[#EAE7E1] rounded-[20px] p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+        <div className="sticky bottom-0 z-30 bg-[#fcfbf8] pt-3 pb-3 border-t border-[#e5e7dd]">
+          <div className="bg-white border border-[#e5e7dd] rounded-[20px] p-4 flex flex-col sm:flex-row sm:items-center gap-3">
             <p className="flex-1 flex items-start gap-3 text-base text-[#1C1B1A]"><Ban size={20} className="shrink-0 mt-0.5 text-[#6E6963]" /> <span>{t('ca_blocked_bar')}</span></p>
             <button type="button" onClick={toggleBlock} className="shrink-0 border border-[#E3E0D9] bg-white text-[#1C1B1A] rounded-full font-semibold text-base hover:border-[#DDD8CE] min-h-[48px] px-6">{t('ca_unblock')}</button>
           </div>
         </div>
       ) : (
-        <div className="sticky bottom-0 z-30 bg-[#FBFAF8] pt-3 pb-3 border-t border-[#EAE7E1]">
+        <div className="sticky bottom-0 z-30 bg-[#fcfbf8] pt-3 pb-3 border-t border-[#e5e7dd]">
           {quietNow && (
-            <div className="bg-white border border-[#EAE7E1] rounded-[20px] p-4 mb-3">
-              <h2 className="font-semibold text-base mb-2 flex items-start gap-2"><Moon size={18} className="shrink-0 mt-0.5 text-[#C73E33]" /> <span>{t('sp_qh_card_title')}</span></h2>
+            <div className="bg-white border border-[#e5e7dd] rounded-[20px] p-4 mb-3">
+              <h2 className="font-semibold text-base mb-2 flex items-start gap-2"><Moon size={18} className="shrink-0 mt-0.5 text-[#59684a]" /> <span>{t('sp_qh_card_title')}</span></h2>
               <p className="text-base text-[#4A4744] mb-3">{t('sp_qh_draft')}</p>
               <button type="button" onClick={async () => { await copyToClipboard(t('sp_qh_draft')); showToast(t('sh_copied')); }} className="border border-[#E3E0D9] bg-white text-[#1C1B1A] rounded-full font-semibold text-base hover:bg-[#F6F4EF] min-h-[44px] px-5">{t('sh_copy')}</button>
             </div>
           )}
           <form onSubmit={send} className="flex items-center gap-2">
             <CheckBtn />
-            <input value={draft} onChange={e => changeDraft(e.target.value)} placeholder={t('chat_write')} aria-label={t('chat_write')} className="flex-1 min-w-0 min-h-[48px] border border-[#EAE7E1] bg-white rounded-full px-4 text-base outline-none focus:border-[#C73E33] focus:ring-2 focus:ring-[#C73E33]/30" />
-            <button type="submit" className="shrink-0 flex items-center justify-center gap-2 bg-[#C73E33] text-white rounded-full font-semibold text-base hover:bg-[#AE332A] min-h-[48px] px-4 sm:px-6"><Send size={18} /> {t('chat_send')}</button>
+            <input value={draft} onChange={e => changeDraft(e.target.value)} placeholder={t('chat_write')} aria-label={t('chat_write')} className="flex-1 min-w-0 min-h-[48px] border border-[#e5e7dd] bg-white rounded-full px-4 text-base outline-none focus:border-[#59684a] focus:ring-2 focus:ring-[#59684a]/30" />
+            <button type="submit" className="shrink-0 flex items-center justify-center gap-2 bg-[#59684a] text-white rounded-full font-semibold text-base hover:bg-[#415947] min-h-[48px] px-4 sm:px-6"><Send size={18} /> {t('chat_send')}</button>
           </form>
           {savedDraft && <p className="text-sm text-[#6E6963] mt-2 px-2">{t('pv_draft_saved')}</p>}
         </div>

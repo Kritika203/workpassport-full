@@ -1,5 +1,6 @@
 // Client confirms a demo agreement.
 
+import { deliverableDetail } from '../utils/deliverables.js';
 import { ChevronLeft, Info } from 'lucide-react';
 import { CL_CARD } from '../components/client/ClientControls.jsx';
 import { Disclaimer } from '../components/common/Disclaimer.jsx';
@@ -28,7 +29,7 @@ export function ClientAgreement({ t, lang, navTo, job, applicant, onConfirm }) {
         <div>
           <div className={labelCls}>{t('wr_deliver')}</div>
           <ul className="list-disc pl-5 text-base text-[#1C1B1A] space-y-1">
-            {job.deliverables.map((d, i) => <li key={i}>{d}</li>)}
+            {job.deliverables.map((d, i) => <li key={i}>{deliverableDetail(d)}</li>)}
           </ul>
         </div>
         <div><div className={labelCls}>{t('ag_price')}</div><div className="text-base font-semibold text-[#1C1B1A]">${fmtMoney(applicant.asks)} (NPR {fmtMoney(applicant.asks * 133)})</div></div>
@@ -40,7 +41,7 @@ export function ClientAgreement({ t, lang, navTo, job, applicant, onConfirm }) {
         <h2 className="text-xl font-semibold mb-4">{t('wr_milestones')}</h2>
         <div className="space-y-3">
           {milestones.map(m => (
-            <div key={m.id} className="border border-[#EAE7E1] rounded-[14px] p-4">
+            <div key={m.id} className="border border-[#e5e7dd] rounded-[14px] p-4">
               <div className="text-base font-semibold text-[#1C1B1A] break-words">{m.title}</div>
               <div className="text-sm text-[#6E6963]">${fmtMoney(m.amountUSD)} · NPR {fmtMoney(m.amountUSD * 133)}</div>
             </div>
@@ -53,7 +54,7 @@ export function ClientAgreement({ t, lang, navTo, job, applicant, onConfirm }) {
         <p className="text-base text-[#1C1B1A]">{t('wr_sim_note')}</p>
       </div>
       <Disclaimer t={t} k="disc_agree" />
-      <button onClick={() => onConfirm(job.id, applicant)} className="w-full bg-[#C73E33] text-white py-3.5 rounded-full font-semibold text-lg hover:bg-[#AE332A] min-h-[52px]">
+      <button onClick={() => onConfirm(job.id, applicant)} className="w-full bg-[#59684a] text-white py-3.5 rounded-full font-semibold text-lg hover:bg-[#415947] min-h-[52px]">
         {t('ag_confirm')}
       </button>
     </div>

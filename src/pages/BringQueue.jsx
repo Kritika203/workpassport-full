@@ -55,7 +55,7 @@ export function BringQueue({ t, lang, navTo, submissions, onDecide }) {
                 <p className="text-base text-[#1C1B1A] break-words">{x.text}</p>
               )}
               <div className="flex flex-col sm:flex-row gap-3 pt-1">
-                <button type="button" onClick={() => onDecide(x.id, 'approve')} className="bg-[#C73E33] text-white px-6 rounded-full font-semibold text-base hover:bg-[#AE332A] min-h-[48px] py-2">
+                <button type="button" onClick={() => onDecide(x.id, 'approve')} className="bg-[#59684a] text-white px-6 rounded-full font-semibold text-base hover:bg-[#415947] min-h-[48px] py-2">
                   {t('br_approve')}
                 </button>
                 <button type="button" onClick={() => onDecide(x.id, 'reject')} className="bg-white border border-[#E3E0D9] text-[#1C1B1A] px-6 rounded-full font-semibold text-base hover:bg-[#F6F4EF] min-h-[48px] py-2">

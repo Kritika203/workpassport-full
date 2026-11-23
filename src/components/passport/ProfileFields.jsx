@@ -14,7 +14,7 @@ export function ProfileFieldsList({ t, user }) {
   const training = Array.isArray(user.training) ? user.training.filter(x => x && x.title) : [];
   const chipRow = (arr) => (
     <div className="flex flex-wrap gap-2">
-      {arr.map(x => <span key={x} className="bg-white border border-[#EAE7E1] text-[#4A4744] font-medium text-sm px-3 py-1.5 rounded-full">{x}</span>)}
+      {arr.map(x => <span key={x} className="bg-white border border-[#e5e7dd] text-[#4A4744] font-medium text-sm px-3 py-1.5 rounded-full">{x}</span>)}
     </div>
   );
   const row = (label, content) => (
@@ -68,11 +68,11 @@ export function ProfileDetails({ t, lang = 'en', user, setUser, showToast }) {
     showToast(t('pf_saved_toast'));
   };
   const chipBtn = (label, on, toggle) => (
-    <button key={label} type="button" aria-pressed={on} onClick={toggle} className={`min-h-[44px] px-4 rounded-full border text-base font-medium ${on ? 'bg-[#FAF0EE] border-[#C73E33] text-[#AE332A]' : 'bg-white border-[#EAE7E1] text-[#4A4744] hover:bg-[#F6F4EF]'}`}>{label}</button>
+    <button key={label} type="button" aria-pressed={on} onClick={toggle} className={`min-h-[44px] px-4 rounded-full border text-base font-medium ${on ? 'bg-[#FAF0EE] border-[#59684a] text-[#AE332A]' : 'bg-white border-[#e5e7dd] text-[#4A4744] hover:bg-[#F6F4EF]'}`}>{label}</button>
   );
   const labelCls = "block text-base font-semibold text-[#1C1B1A] mb-2";
   return (
-    <div className="bg-white border border-[#EAE7E1] rounded-[20px] p-6 sm:p-6">
+    <div className="bg-white border border-[#e5e7dd] rounded-[20px] p-6 sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
         <h2 className="font-semibold text-[22px]">{t('pf_head')}</h2>
         {!editing && (
@@ -128,7 +128,7 @@ export function ProfileDetails({ t, lang = 'en', user, setUser, showToast }) {
                   <input type="text" aria-label={t('pf_tr_where')} placeholder={t('pf_tr_where')} value={tr.where} onChange={e => setTraining(prev => prev.map((x, k) => k === i ? { ...x, where: e.target.value } : x))} className={`${PROOF_INPUT} flex-1`} />
                   <input type="text" aria-label={t('pf_tr_year')} placeholder={t('pf_tr_year')} value={tr.year} onChange={e => setTraining(prev => prev.map((x, k) => k === i ? { ...x, year: e.target.value } : x))} className={`${PROOF_INPUT} sm:w-28`} />
                   {training.length > 1 && (
-                    <button type="button" aria-label="Remove" onClick={() => setTraining(prev => prev.filter((_, k) => k !== i))} className="min-h-[48px] min-w-[48px] flex items-center justify-center rounded-full border border-[#EAE7E1] bg-white hover:bg-[#F6F4EF]"><Trash2 size={18} /></button>
+                    <button type="button" aria-label="Remove" onClick={() => setTraining(prev => prev.filter((_, k) => k !== i))} className="min-h-[48px] min-w-[48px] flex items-center justify-center rounded-full border border-[#e5e7dd] bg-white hover:bg-[#F6F4EF]"><Trash2 size={18} /></button>
                   )}
                 </div>
               ))}
@@ -138,7 +138,7 @@ export function ProfileDetails({ t, lang = 'en', user, setUser, showToast }) {
             </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-3">
-            <button onClick={save} className="flex-1 bg-[#C73E33] text-white rounded-full font-semibold text-base hover:bg-[#AE332A] min-h-[48px] px-5">{t('save')}</button>
+            <button onClick={save} className="flex-1 bg-[#59684a] text-white rounded-full font-semibold text-base hover:bg-[#415947] min-h-[48px] px-5">{t('save')}</button>
             <button onClick={() => setEditing(false)} className="flex-1 border border-[#E3E0D9] bg-white text-[#1C1B1A] rounded-full font-semibold text-base hover:border-[#DDD8CE] min-h-[48px] px-5">{t('cancel')}</button>
           </div>
         </div>

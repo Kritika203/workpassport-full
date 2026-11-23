@@ -32,7 +32,7 @@ function messageFromError(data, status) {
       return `${field}: ${Array.isArray(info) ? info.join(', ') : String(info)}`;
     }
   }
-  return status === 0 ? 'Could not connect to WorkPassport. Please try again.' : `Request failed (${status}).`;
+  return status === 0 ? 'Could not connect to Vouch. Please try again.' : `Request failed (${status}).`;
 }
 
 async function send(path, { method = 'GET', body, access } = {}) {
@@ -47,7 +47,7 @@ async function send(path, { method = 'GET', body, access } = {}) {
       ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
     });
   } catch {
-    const err = new Error('Could not connect to WorkPassport. Please check your connection and try again.');
+    const err = new Error('Could not connect to Vouch. Please check your connection and try again.');
     err.status = 0;
     throw err;
   }

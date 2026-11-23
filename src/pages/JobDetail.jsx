@@ -1,16 +1,19 @@
 // Details and checks for one job.
 
+import { deliverableDetail, isSpec } from '../utils/deliverables.js';
+import { downloadSkillReport } from '../services/skillReport.js';
 import { AlertTriangle, Bookmark, Check, CheckCircle2, CheckSquare, ChevronLeft, ClipboardList, Flag, HeartHandshake, MapPin, ShieldCheck, User, Volume2 } from 'lucide-react';
 import { useState } from 'react';
 import { Disclaimer } from '../components/common/Disclaimer.jsx';
 import { NetPayPreview } from '../components/payment/Payment.jsx';
 import { SafeTalkCard } from '../components/safety/SafetyTools.jsx';
+import { analyzeJob, verdictOf } from '../services/safety.js';
 import { fmt, fmtMoney } from '../utils/format.js';
 import { getLevel } from '../utils/profile.js';
 
 
 
-export function JobDetail({ job, t, navTo, user, savedJobs, setSavedJobs, lang, showToast, hasDraft = false, skillLevels = {}, onReport = null }) {
+export function JobDetail({ job, t, navTo, user, savedJobs, setSavedJobs, lang, showToast, hasDraft = false, skillLevels = {}, onReport = null, onSeeFeedback = null }) {
   const isEn = lang === 'en';
   const saved = savedJobs.includes(job.id);
   const digits = (n) => lang === 'ne' ? String(n).replace(/\d/g, d => '०१२३४५६७८९'[d]) : String(n);
@@ -36,7 +39,7 @@ export function JobDetail({ job, t, navTo, user, savedJobs, setSavedJobs, lang, 
   };
 
   return (
-    <div className="max-w-[850px] mx-auto bg-white border border-[#EAE7E1] rounded-[20px] overflow-hidden relative">
+    <div className="max-w-[850px] mx-auto bg-white border border-[#e5e7dd] rounded-[20px] overflow-hidden relative">
       <div className="p-5 sm:p-6 pb-32">
         <button onClick={() => navTo('firstwork')} className="flex items-center gap-2 text-base font-semibold text-[#4A4744] hover:text-[#1C1B1A] mb-8 min-h-[48px] px-2 -ml-2">
           <ChevronLeft size={20} /> {t('back_to_jobs')}
@@ -49,8 +52,8 @@ export function JobDetail({ job, t, navTo, user, savedJobs, setSavedJobs, lang, 
               <div className="mb-4"><span className="bg-[#F0EEE9] text-[#1C1B1A] px-3 py-1 rounded-full text-[13px] font-semibold inline-flex items-center gap-1.5"><HeartHandshake size={16} /> {t('br_chip')}</span></div>
             )}
             <div className="flex flex-wrap items-center gap-4 text-base text-[#4A4744] font-medium">
-              <span className="flex items-center gap-2 bg-[#F6F4EF] px-3 py-1.5 rounded-[12px] border border-[#EAE7E1]"><User size={20} className="text-[#8A8580]"/> {job.clientName}</span>
-              <span className="flex items-center gap-2 bg-[#F6F4EF] px-3 py-1.5 rounded-[12px] border border-[#EAE7E1]"><MapPin size={20} className="text-[#8A8580]"/> {job.clientCountry}</span>
+              <span className="flex items-center gap-2 bg-[#F6F4EF] px-3 py-1.5 rounded-[12px] border border-[#e5e7dd]"><User size={20} className="text-[#8A8580]"/> {job.clientName}</span>
+              <span className="flex items-center gap-2 bg-[#F6F4EF] px-3 py-1.5 rounded-[12px] border border-[#e5e7dd]"><MapPin size={20} className="text-[#8A8580]"/> {job.clientCountry}</span>
               <span className="text-[#8A8580] px-2">{job.postedHoursAgo}h ago</span>
               <span className="text-[#8A8580] px-2">• {job.applicants} {t('applied_count')}</span>
             </div>
@@ -58,16 +61,16 @@ export function JobDetail({ job, t, navTo, user, savedJobs, setSavedJobs, lang, 
           </div>
           
           <div className="flex gap-3 w-full md:w-auto mt-4 md:mt-0">
-             <button onClick={handleListen} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 border border-[#EAE7E1] rounded-full hover:border-[#DDD8CE] text-[#1C1B1A] font-semibold min-h-[48px]">
+             <button onClick={handleListen} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 border border-[#e5e7dd] rounded-full hover:border-[#DDD8CE] text-[#1C1B1A] font-semibold min-h-[48px]">
               <Volume2 size={20} /> <span className="md:hidden lg:inline">{t('listen')}</span>
             </button>
-            <button onClick={() => setReportOpen(true)} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 border border-[#EAE7E1] rounded-full hover:border-[#DDD8CE] text-[#1C1B1A] font-semibold min-h-[48px]">
+            <button onClick={() => setReportOpen(true)} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 border border-[#e5e7dd] rounded-full hover:border-[#DDD8CE] text-[#1C1B1A] font-semibold min-h-[48px]">
               <Flag size={20} /> <span className="md:hidden lg:inline">{t('report')}</span>
             </button>
           </div>
         </div>
 
-        <div className="bg-[#F6F4EF] border border-[#EAE7E1] rounded-[14px] p-6 sm:p-6 mb-10 text-center sm:text-left flex flex-col sm:flex-row justify-between items-center gap-6">
+        <div className="bg-[#F6F4EF] border border-[#e5e7dd] rounded-[14px] p-6 sm:p-6 mb-10 text-center sm:text-left flex flex-col sm:flex-row justify-between items-center gap-6">
           <div>
             <div className="text-4xl font-semibold mb-1">${job.budgetUSD} <span className="text-2xl font-medium text-[#4A4744]">{job.budgetType === 'fixed' ? 'fixed' : '/ hr'}</span></div>
             <div className="text-xl font-medium text-[#4A4744]">≈ NPR {fmtMoney(job.budgetUSD * 133)}</div>
@@ -78,8 +81,8 @@ export function JobDetail({ job, t, navTo, user, savedJobs, setSavedJobs, lang, 
         <div className="mb-10 -mt-4"><NetPayPreview usd={job.budgetUSD} t={t} /></div>
 
         {/* Card 1: Client Trust Card. Checked facts are kept apart from automatic warnings. */}
-        <div className="bg-white border border-[#EAE7E1] rounded-[20px] p-6 mb-6">
-          <h3 className="font-semibold text-xl mb-5 flex items-center gap-3"><ShieldCheck size={24} className="text-[#C73E33] shrink-0" /> {t('tc_title')}</h3>
+        <div className="bg-white border border-[#e5e7dd] rounded-[20px] p-6 mb-6">
+          <h3 className="font-semibold text-xl mb-5 flex items-center gap-3"><ShieldCheck size={24} className="text-[#59684a] shrink-0" /> {t('tc_title')}</h3>
           <div className="mb-5">
             <h4 className="text-sm font-semibold text-[#6E6963] mb-3">{t('tc_facts')}</h4>
             <ul className="space-y-3 text-base text-[#1C1B1A]">
@@ -117,9 +120,10 @@ export function JobDetail({ job, t, navTo, user, savedJobs, setSavedJobs, lang, 
           <Disclaimer t={t} k="disc_trust" className="mt-4" />
         </div>
 
-        {/* Card 2: Skill Match against her own WorkPassport */}
-        <div className="bg-white border border-[#EAE7E1] rounded-[20px] p-6 mb-6">
-          <h3 className="font-semibold text-xl mb-4 flex items-center gap-3"><CheckSquare size={24} className="text-[#C73E33] shrink-0" /> {t('sm_title')}</h3>
+        <section className="bg-[#f4f6ee] border border-[#e1e5dc] rounded-[16px] p-5 mb-6"><h3 className="text-xl font-semibold">Worked here before?</h3><p className="text-sm text-[#62695d] mt-1">Read job-specific worker experiences before applying. Reviews in this preview are local demo data.</p><button type="button" className="vouch-link mt-2" onClick={onSeeFeedback}>See feedback for this job →</button></section>
+        {/* Card 2: Skill Match against her own Vouch */}
+        <div className="bg-white border border-[#e5e7dd] rounded-[20px] p-6 mb-6">
+          <h3 className="font-semibold text-xl mb-4 flex items-center gap-3"><CheckSquare size={24} className="text-[#59684a] shrink-0" /> {t('sm_title')}</h3>
           <p className="text-base text-[#1C1B1A] font-medium mb-4">
             {haveCount === job.skillsRequired.length ? t('sm_all') : fmt(t('sm_some'), { x: digits(haveCount), y: digits(job.skillsRequired.length) })}
           </p>
@@ -142,12 +146,13 @@ export function JobDetail({ job, t, navTo, user, savedJobs, setSavedJobs, lang, 
             })}
           </ul>
           {haveCount < job.skillsRequired.length && <p className="text-base text-[#4A4744] mt-4">{t('sm_apply')}</p>}
+          <button type="button" className="mt-5 mr-4 px-5 py-3 rounded-full bg-[#59684a] text-white font-semibold hover:bg-[#415947]" onClick={() => downloadSkillReport(job, user)}>Download skill roadmap (PDF)</button>
           <button onClick={() => navTo('skillbridge')} className="mt-3 text-base font-semibold text-[#4A4744] underline underline-offset-4 min-h-[44px] text-left">{t('sb_link')}</button>
         </div>
 
         {/* Card 3: Opportunity Compatibility */}
-        <div className="bg-white border border-[#EAE7E1] rounded-[20px] p-6 mb-10">
-          <h3 className="font-semibold text-xl mb-4 flex items-center gap-3"><ClipboardList size={24} className="text-[#C73E33] shrink-0" /> {t('oc_title')}</h3>
+        <div className="bg-white border border-[#e5e7dd] rounded-[20px] p-6 mb-10">
+          <h3 className="font-semibold text-xl mb-4 flex items-center gap-3"><ClipboardList size={24} className="text-[#59684a] shrink-0" /> {t('oc_title')}</h3>
           <dl className="divide-y divide-[#EAE7E1] text-base">
             {[
               [t('oc_meet'), job.meetingTimeNepal],
@@ -172,7 +177,7 @@ export function JobDetail({ job, t, navTo, user, savedJobs, setSavedJobs, lang, 
             <div>
               <h4 className="font-semibold text-lg mb-3">{t('deliver_title')}</h4>
               <ul className="space-y-2 text-base text-[#4A4744]">
-                {job.deliverables.map(d => <li key={d} className="flex items-start gap-2"><Check size={20} className="mt-1 shrink-0 text-[#1C1B1A]" /> <span>{d}</span></li>)}
+                {job.deliverables.map((d, i) => <li key={i} className="flex items-start gap-2"><Check size={20} className="mt-1 shrink-0 text-[#1C1B1A]" /> <span>{deliverableDetail(d)}{isSpec(d) && d.description ? <span className="block text-sm text-[#6E6963] mt-0.5">{d.description}</span> : null}</span></li>)}
               </ul>
             </div>
             <div>
@@ -184,29 +189,41 @@ export function JobDetail({ job, t, navTo, user, savedJobs, setSavedJobs, lang, 
           </div>
         </div>
 
-        <div className="bg-white border border-[#EAE7E1] rounded-[20px] p-6 sm:p-6 mb-10">
-          <h3 className="font-semibold text-xl mb-6 flex items-center gap-3"><ShieldCheck size={28} className="text-[#C73E33]" /> {t('ws_checked')}</h3>
+        {(() => { const shield = analyzeJob(job); const shieldVerdict = verdictOf(shield); return (
+        <div className="bg-white border border-[#e5e7dd] rounded-[20px] p-6 sm:p-6 mb-10">
+          <h3 className="font-semibold text-xl mb-6 flex items-center gap-3"><ShieldCheck size={28} className="text-[#59684a]" /> {t('ws_checked')}</h3>
           <div className="space-y-4 text-base font-medium">
-            <div className="flex items-start gap-3"><CheckCircle2 size={20} className="mt-0.5 text-[#1C1B1A]" /> <span>{t('ws_ok_scam')}</span></div>
-            <div className="flex items-start gap-3"><CheckCircle2 size={20} className="mt-0.5 text-[#1C1B1A]" /> <span>{t('ws_ok_pay')}</span></div>
-            {job.paymentVerified && <div className="flex items-start gap-3"><CheckCircle2 size={20} className="mt-0.5 text-[#1C1B1A]" /> <span>{t('ws_ok_id')}</span></div>}
-            <div className="flex items-start gap-3"><CheckCircle2 size={20} className="mt-0.5 text-[#1C1B1A]" /> <span>{t('ws_ok_scope')}</span></div>
+            {shieldVerdict === 'unknown' ? (
+              <div className="flex items-start gap-3"><ShieldCheck size={20} className="mt-0.5 text-[#6E6963]" /> <span>{t('ws_unknown')}</span></div>
+            ) : shield.red.length > 0 ? (
+              <>
+                {shield.red.slice(0, 3).map(id => <div key={id} className="flex items-start gap-3"><AlertTriangle size={20} className="mt-0.5 text-[#59684a]" /> <span>{t('sh_f_' + id)}</span></div>)}
+                {job.paymentVerified && <div className="flex items-start gap-3"><CheckCircle2 size={20} className="mt-0.5 text-[#1C1B1A]" /> <span>{t('ws_ok_id')}</span></div>}
+              </>
+            ) : (
+              <>
+                <div className="flex items-start gap-3"><CheckCircle2 size={20} className="mt-0.5 text-[#1C1B1A]" /> <span>{t('ws_ok_scam')}</span></div>
+                <div className="flex items-start gap-3"><CheckCircle2 size={20} className="mt-0.5 text-[#1C1B1A]" /> <span>{t('ws_ok_pay')}</span></div>
+                {job.paymentVerified && <div className="flex items-start gap-3"><CheckCircle2 size={20} className="mt-0.5 text-[#1C1B1A]" /> <span>{t('ws_ok_id')}</span></div>}
+                <div className="flex items-start gap-3"><CheckCircle2 size={20} className="mt-0.5 text-[#1C1B1A]" /> <span>{t('ws_ok_scope')}</span></div>
+              </>
+            )}
           </div>
           <Disclaimer t={t} k="disc_ws" className="mt-6" />
-        </div>
+        </div> ); })()}
 
       </div>
 
       {/* Sticky Bottom Bar */}
-      <div className="absolute bottom-0 left-0 right-0 bg-white border-t-2 border-[#EAE7E1] p-4 sm:p-6 flex flex-row gap-4 items-center justify-between sm:justify-end">
+      <div className="absolute bottom-0 left-0 right-0 bg-white border-t-2 border-[#e5e7dd] p-4 sm:p-6 flex flex-row gap-4 items-center justify-between sm:justify-end">
         {hasDraft && <div className="absolute bottom-full left-0 right-0 bg-[#FAF0EE] text-[#AE332A] text-sm font-semibold px-4 py-2 text-center sm:text-right sm:px-6">{t('pv_unfinished')}</div>}
-        <button onClick={() => setSavedJobs(prev => prev.includes(job.id) ? prev.filter(id => id !== job.id) : [...prev, job.id])} className={`px-6 py-3.5 rounded-full border font-semibold flex items-center justify-center gap-3 min-h-[52px] transition-colors ${saved ? 'bg-[#FAF0EE] text-[#AE332A] border-[#C73E33]' : 'bg-white border-[#E3E0D9] text-[#1C1B1A] hover:bg-[#F6F4EF]'}`}>
+        <button onClick={() => setSavedJobs(prev => prev.includes(job.id) ? prev.filter(id => id !== job.id) : [...prev, job.id])} className={`px-6 py-3.5 rounded-full border font-semibold flex items-center justify-center gap-3 min-h-[52px] transition-colors ${saved ? 'bg-[#FAF0EE] text-[#AE332A] border-[#59684a]' : 'bg-white border-[#E3E0D9] text-[#1C1B1A] hover:bg-[#F6F4EF]'}`}>
           <Bookmark size={20} fill={saved ? "currentColor" : "none"} /> <span className="hidden sm:inline">{saved ? t('saved') : t('save')}</span>
         </button>
         {job.externalOnly ? (job.externalUrl ?
-          <a href={job.externalUrl} target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-none sm:w-64 text-center py-3.5 bg-[#C73E33] text-white rounded-full font-semibold text-base min-h-[52px]">Visit original listing</a> :
-          <p className="text-sm text-[#AE332A]">External lead only. Contact the organisation directly. WorkPassport does not receive applications for this listing.</p>) :
-          <button onClick={() => navTo('apply', { id: job.id })} className="flex-1 sm:flex-none sm:w-64 py-3.5 bg-[#C73E33] text-white rounded-full font-semibold text-lg hover:bg-[#AE332A] min-h-[52px]">{t('apply_now')}</button>}
+          <a href={job.externalUrl} target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-none sm:w-64 text-center py-3.5 bg-[#59684a] text-white rounded-full font-semibold text-base min-h-[52px]">Visit original listing</a> :
+          <p className="text-sm text-[#AE332A]">External lead only. Contact the organisation directly. Vouch does not receive applications for this listing.</p>) :
+          <button onClick={() => navTo('apply', { id: job.id })} className="flex-1 sm:flex-none sm:w-64 py-3.5 bg-[#59684a] text-white rounded-full font-semibold text-lg hover:bg-[#415947] min-h-[52px]">{t('apply_now')}</button>}
 
       </div>
 
@@ -218,15 +235,15 @@ export function JobDetail({ job, t, navTo, user, savedJobs, setSavedJobs, lang, 
             <p className="text-[#8A8580] font-medium mb-6">Tell us what is wrong. This is kept private.</p>
             <div className="space-y-4 mb-8">
               {[t('rep_1'), t('rep_2'), t('rep_3'), t('rep_4'), t('rep_5')].map((r, i) => (
-                <label key={i} className="flex items-center gap-4 text-base font-medium cursor-pointer p-4 border border-[#EAE7E1] rounded-[14px] hover:border-[#DDD8CE] bg-[#F6F4EF]">
-                  <input type="radio" name="report_reason" checked={reportReason === r} onChange={() => setReportReason(r)} className="accent-[#C73E33] w-5 h-5" /> {r}
+                <label key={i} className="flex items-center gap-4 text-base font-medium cursor-pointer p-4 border border-[#e5e7dd] rounded-[14px] hover:border-[#DDD8CE] bg-[#F6F4EF]">
+                  <input type="radio" name="report_reason" checked={reportReason === r} onChange={() => setReportReason(r)} className="accent-[#59684a] w-5 h-5" /> {r}
                 </label>
               ))}
             </div>
             {reportError && <p role="alert" className="text-[#AE332A] mb-4">{reportError}</p>}
             <div className="flex gap-4">
               <button onClick={() => setReportOpen(false)} className="flex-1 py-3.5 border border-[#E3E0D9] rounded-full font-semibold text-lg bg-white hover:bg-[#F6F4EF] min-h-[52px]">{t('cancel')}</button>
-              <button onClick={sendReport} disabled={!reportReason || reportBusy} className="flex-1 py-3.5 disabled:opacity-50 bg-[#C73E33] text-white rounded-full font-semibold text-lg hover:bg-[#AE332A] min-h-[52px]">{t('send_report')}</button>
+              <button onClick={sendReport} disabled={!reportReason || reportBusy} className="flex-1 py-3.5 disabled:opacity-50 bg-[#59684a] text-white rounded-full font-semibold text-lg hover:bg-[#415947] min-h-[52px]">{t('send_report')}</button>
             </div>
           </div>
         </div>

@@ -39,7 +39,7 @@ export function NavLink({ label, active, onClick }) {
   return (
     <button 
       onClick={onClick}
-      className={`min-h-[48px] flex items-center whitespace-nowrap text-base font-medium border-b-2 transition-colors ${active ? 'border-[#C73E33] text-[#AE332A]' : 'border-transparent text-[#4A4744] hover:text-[#1C1B1A]'}`}
+      className={`min-h-[48px] flex items-center whitespace-nowrap text-base font-medium border-b-2 transition-colors ${active ? 'border-[#59684a] text-[#354a37]' : 'border-transparent text-[#4A4744] hover:text-[#1C1B1A]'}`}
     >
       {label}
     </button>
@@ -79,11 +79,11 @@ export function NotificationBell({ t, priv = false, connected = false }) {
     <div className="relative" ref={ref}>
       <button onClick={() => setOpen(!open)} aria-expanded={open} aria-label={t('nt_title')} className="relative min-h-[48px] min-w-[44px] px-2 flex items-center justify-center rounded-full hover:bg-[#F0EEE9]">
         <Bell size={24} className="text-[#4A4744]" />
-        {count > 0 && <div className="absolute top-3 right-2 w-2.5 h-2.5 bg-[#C73E33] rounded-full ring-2 ring-[#FBFAF8]"></div>}
+        {count > 0 && <div className="absolute top-3 right-2 w-2.5 h-2.5 bg-[#59684a] rounded-full ring-2 ring-[#FBFAF8]"></div>}
       </button>
       {open && (
-        <div className="absolute right-[-72px] sm:right-0 mt-2 w-[min(340px,calc(100vw-32px))] bg-white border border-[#EAE7E1] rounded-[20px] shadow-[0_8px_24px_rgba(28,27,26,0.08)] overflow-hidden z-50" role="dialog" aria-label={t('nt_title')}>
-          <div className="flex items-center justify-between gap-2 pl-5 pr-2 py-1 border-b border-[#EAE7E1]">
+        <div className="absolute right-[-72px] sm:right-0 mt-2 w-[min(340px,calc(100vw-32px))] bg-white border border-[#e5e7dd] rounded-[20px] shadow-[0_8px_24px_rgba(28,27,26,0.08)] overflow-hidden z-50" role="dialog" aria-label={t('nt_title')}>
+          <div className="flex items-center justify-between gap-2 pl-5 pr-2 py-1 border-b border-[#e5e7dd]">
             <div>
               <div className="font-semibold text-base">{t('nt_title')}</div>
               <div className="text-[13px] text-[#6E6963]">{connected ? 'Account updates' : t('nt_demo')}</div>
@@ -136,7 +136,7 @@ export function UserDropdown({ user, onLogout, t, navTo, lang, setLang, showLock
 
   return (
     <div className="relative" ref={ref}>
-      <button onClick={() => setOpen(!open)} className="flex items-center gap-2 bg-[#F6F4EF] border border-[#EAE7E1] rounded-full pl-1.5 pr-3 py-1.5 hover:bg-[#EDEAE4] transition-colors min-h-[48px]">
+      <button onClick={() => setOpen(!open)} className="flex items-center gap-2 bg-[#F6F4EF] border border-[#e5e7dd] rounded-full pl-1.5 pr-3 py-1.5 hover:bg-[#EDEAE4] transition-colors min-h-[48px]">
         <div className="w-8 h-8 bg-[#FAF0EE] text-[#AE332A] rounded-full flex items-center justify-center text-sm font-semibold">{initials}</div>
         <div className="text-sm text-left hidden sm:block">
           <div className="font-semibold leading-tight text-[#1C1B1A]">{user.name.split(' ')[0]}</div>
@@ -145,14 +145,14 @@ export function UserDropdown({ user, onLogout, t, navTo, lang, setLang, showLock
         <ChevronDown size={16} className="text-[#4A4744]" />
       </button>
       {open && (
-        <div className="absolute right-0 mt-2 w-56 bg-white border border-[#EAE7E1] rounded-[16px] shadow-[0_8px_24px_rgba(28,27,26,0.08)] overflow-hidden z-50">
-          <div className="px-5 py-4 border-b border-[#EAE7E1] sm:hidden">
+        <div className="absolute right-0 mt-2 w-56 bg-white border border-[#e5e7dd] rounded-[16px] shadow-[0_8px_24px_rgba(28,27,26,0.08)] overflow-hidden z-50">
+          <div className="px-5 py-4 border-b border-[#e5e7dd] sm:hidden">
             <div className="font-semibold text-[#1C1B1A] text-lg">{user.name}</div>
             <div className="text-sm text-[#8A8580]">{user.badge || "Beginner"}</div>
           </div>
-          <button onClick={() => { navTo('passport'); setOpen(false); }} className="w-full text-left px-5 py-4 min-h-[48px] text-base text-[#4A4744] hover:bg-[#F6F4EF] border-b border-[#EAE7E1]">{t('nav_passport')}</button>
-          <button onClick={() => { setLang(lang === 'en' ? 'ne' : 'en'); setOpen(false); }} className="w-full text-left px-5 py-4 min-h-[48px] text-base text-[#4A4744] hover:bg-[#F6F4EF] border-b border-[#EAE7E1]">Language: {lang === 'en' ? 'नेपाली' : 'English'}</button>
-          {showLock && <button onClick={() => { setOpen(false); onLock(); }} className="w-full text-left px-5 py-4 min-h-[48px] text-base text-[#4A4744] hover:bg-[#F6F4EF] border-b border-[#EAE7E1] flex items-center gap-3"><Lock size={20} /> {t('pv_lock_now')}</button>}
+          <button onClick={() => { navTo('passport'); setOpen(false); }} className="w-full text-left px-5 py-4 min-h-[48px] text-base text-[#4A4744] hover:bg-[#F6F4EF] border-b border-[#e5e7dd]">{t('nav_passport')}</button>
+          <button onClick={() => { setLang(lang === 'en' ? 'ne' : 'en'); setOpen(false); }} className="w-full text-left px-5 py-4 min-h-[48px] text-base text-[#4A4744] hover:bg-[#F6F4EF] border-b border-[#e5e7dd]">Language: {lang === 'en' ? 'नेपाली' : 'English'}</button>
+          {showLock && <button onClick={() => { setOpen(false); onLock(); }} className="w-full text-left px-5 py-4 min-h-[48px] text-base text-[#4A4744] hover:bg-[#F6F4EF] border-b border-[#e5e7dd] flex items-center gap-3"><Lock size={20} /> {t('pv_lock_now')}</button>}
           <button onClick={() => { onLogout(); setOpen(false); }} className="w-full text-left px-5 py-4 min-h-[48px] text-base text-[#AE332A] hover:bg-[#F6F4EF] flex items-center gap-3 font-semibold"><LogOut size={20}/> {t('nav_logout')}</button>
         </div>
       )}

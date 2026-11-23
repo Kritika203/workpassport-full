@@ -9,7 +9,7 @@ import { fmt, fmtMoney } from '../../utils/format.js';
 
 
 
-export const PROOF_INPUT = "w-full min-h-[48px] border border-[#EAE7E1] bg-white rounded-[14px] px-4 text-base outline-none focus:border-[#C73E33] focus:ring-2 focus:ring-[#C73E33]/30";
+export const PROOF_INPUT = "w-full min-h-[48px] border border-[#e5e7dd] bg-white rounded-[14px] px-4 text-base outline-none focus:border-[#59684a] focus:ring-2 focus:ring-[#59684a]/30";
 
 export const PROOF_BTN = "inline-flex items-center justify-center gap-2 border border-[#E3E0D9] bg-white text-[#1C1B1A] rounded-full px-5 font-semibold text-base hover:border-[#DDD8CE] hover:bg-[#F6F4EF] min-h-[48px]";
 
@@ -52,7 +52,7 @@ export function ProofArea({ skill, items, t, digits, onAdd, onRemove }) {
   };
 
   return (
-    <div className="mt-5 pt-5 border-t border-[#EAE7E1]">
+    <div className="mt-5 pt-5 border-t border-[#e5e7dd]">
       <div className="flex flex-wrap items-baseline justify-between gap-x-3 mb-3">
         <h4 className="font-semibold text-base text-[#1C1B1A]">{t('pr_title')}</h4>
         {items.length > 0 && <span className="text-sm text-[#6E6963]">{fmt(t('pr_count'), { n: digits(items.length) })}</span>}
@@ -63,10 +63,10 @@ export function ProofArea({ skill, items, t, digits, onAdd, onRemove }) {
       {items.length > 0 && (
         <div className="space-y-3 mb-4">
           {items.map(it => (
-            <div key={it.id} className="flex items-start gap-3 bg-[#F6F4EF] border border-[#EAE7E1] rounded-[14px] p-3">
+            <div key={it.id} className="flex items-start gap-3 bg-[#F6F4EF] border border-[#e5e7dd] rounded-[14px] p-3">
               {it.type === 'photo'
-                ? <img src={it.src} alt={it.note || skill} className="w-16 h-16 rounded-[14px] object-cover shrink-0 border border-[#EAE7E1]" />
-                : <div className="w-16 h-16 rounded-[14px] bg-[#FAF0EE] flex items-center justify-center shrink-0"><Link2 size={24} className="text-[#C73E33]" /></div>}
+                ? <img src={it.src} alt={it.note || skill} className="w-16 h-16 rounded-[14px] object-cover shrink-0 border border-[#e5e7dd]" />
+                : <div className="w-16 h-16 rounded-[14px] bg-[#FAF0EE] flex items-center justify-center shrink-0"><Link2 size={24} className="text-[#59684a]" /></div>}
               <div className="min-w-0 flex-1">
                 {it.type === 'link' && (
                   <a href={safeHref(it.src)} target="_blank" rel="noopener noreferrer" className="block min-h-[24px] break-all">
@@ -84,29 +84,29 @@ export function ProofArea({ skill, items, t, digits, onAdd, onRemove }) {
       )}
 
       {mode === 'photo' && (
-        <div className="border border-[#EAE7E1] rounded-[14px] p-4 mb-4 bg-white">
-          {photo && <img src={photo} alt="" className="w-24 h-24 rounded-[14px] object-cover border border-[#EAE7E1] mb-3" />}
+        <div className="border border-[#e5e7dd] rounded-[14px] p-4 mb-4 bg-white">
+          {photo && <img src={photo} alt="" className="w-24 h-24 rounded-[14px] object-cover border border-[#e5e7dd] mb-3" />}
           {photo && (<>
             <label className="block text-sm font-semibold text-[#4A4744] mb-1.5" htmlFor={'pn-' + skill}>{t('pr_note_label')}</label>
             <input id={'pn-' + skill} value={note} onChange={e => setNote(e.target.value)} maxLength={140} placeholder={t('pr_note_ph')} className={PROOF_INPUT + " mb-3"} />
           </>)}
           {err && <p role="alert" className="text-[#AE332A] text-sm mb-3 flex items-start gap-2 bg-[#FAF0EE] p-3 rounded-[12px]"><AlertTriangle size={18} className="shrink-0 mt-0.5" /> <span>{err}</span></p>}
           <div className="flex flex-wrap gap-3">
-            {photo && <button onClick={savePhoto} className="bg-[#C73E33] text-white rounded-full px-6 font-semibold text-base hover:bg-[#AE332A] min-h-[48px]">{t('save')}</button>}
+            {photo && <button onClick={savePhoto} className="bg-[#59684a] text-white rounded-full px-6 font-semibold text-base hover:bg-[#415947] min-h-[48px]">{t('save')}</button>}
             <button onClick={close} className={PROOF_BTN}>{t('cancel')}</button>
           </div>
         </div>
       )}
 
       {mode === 'link' && (
-        <div className="border border-[#EAE7E1] rounded-[14px] p-4 mb-4 bg-white">
+        <div className="border border-[#e5e7dd] rounded-[14px] p-4 mb-4 bg-white">
           <label className="block text-sm font-semibold text-[#4A4744] mb-1.5" htmlFor={'pu-' + skill}>{t('pr_link_label')}</label>
           <input id={'pu-' + skill} type="url" inputMode="url" value={url} onChange={e => { setUrl(e.target.value); setErr(""); }} placeholder="https://" className={PROOF_INPUT + " mb-3"} />
           <label className="block text-sm font-semibold text-[#4A4744] mb-1.5" htmlFor={'pl-' + skill}>{t('pr_note_label')}</label>
           <input id={'pl-' + skill} value={note} onChange={e => setNote(e.target.value)} maxLength={140} placeholder={t('pr_note_ph')} className={PROOF_INPUT + " mb-3"} />
           {err && <p role="alert" className="text-[#AE332A] text-sm mb-3 flex items-start gap-2 bg-[#FAF0EE] p-3 rounded-[12px]"><AlertTriangle size={18} className="shrink-0 mt-0.5" /> <span>{err}</span></p>}
           <div className="flex flex-wrap gap-3">
-            <button onClick={saveLink} className="bg-[#C73E33] text-white rounded-full px-6 font-semibold text-base hover:bg-[#AE332A] min-h-[48px]">{t('save')}</button>
+            <button onClick={saveLink} className="bg-[#59684a] text-white rounded-full px-6 font-semibold text-base hover:bg-[#415947] min-h-[48px]">{t('save')}</button>
             <button onClick={close} className={PROOF_BTN}>{t('cancel')}</button>
           </div>
         </div>
@@ -128,7 +128,7 @@ export function WorkSamples({ groups, t }) {
   return (
     <section className="mb-10">
       <h2 className="font-semibold text-[22px] mb-4">{t('pr_gallery_title')}</h2>
-      <div className="bg-white border border-[#EAE7E1] rounded-[20px] p-5 sm:p-6 space-y-6">
+      <div className="bg-white border border-[#e5e7dd] rounded-[20px] p-5 sm:p-6 space-y-6">
         {groups.map(([skill, items]) => (
           <div key={skill}>
             <h3 className="text-sm font-semibold text-[#6E6963] mb-3">{skill}</h3>
@@ -136,12 +136,12 @@ export function WorkSamples({ groups, t }) {
               {items.map(it => (
                 <div key={it.id} className="flex items-start gap-4">
                   {it.type === 'photo'
-                    ? <img src={it.src} alt={it.note || skill} className="w-[120px] h-[120px] rounded-[14px] object-cover shrink-0 border border-[#EAE7E1]" />
+                    ? <img src={it.src} alt={it.note || skill} className="w-[120px] h-[120px] rounded-[14px] object-cover shrink-0 border border-[#e5e7dd]" />
                     : null}
                   <div className="min-w-0 flex-1">
                     {it.type === 'link' && (
-                      <a href={safeHref(it.src)} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 min-h-[48px] bg-[#F6F4EF] border border-[#EAE7E1] rounded-[14px] px-3 py-2 mb-1.5">
-                        <span className="w-10 h-10 rounded-[12px] bg-[#FAF0EE] flex items-center justify-center shrink-0"><Link2 size={20} className="text-[#C73E33]" /></span>
+                      <a href={safeHref(it.src)} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 min-h-[48px] bg-[#F6F4EF] border border-[#e5e7dd] rounded-[14px] px-3 py-2 mb-1.5">
+                        <span className="w-10 h-10 rounded-[12px] bg-[#FAF0EE] flex items-center justify-center shrink-0"><Link2 size={20} className="text-[#59684a]" /></span>
                         <span className="min-w-0 font-semibold text-base text-[#1C1B1A] break-all">{proofDomain(it.src)}</span>
                       </a>
                     )}
@@ -164,7 +164,7 @@ export function PassportPrint({ t, lang, user, levels, evidenceMap, confirmedLis
   const earnedTxt = hideMoney ? MASK : `NPR ${fmtMoney(earned)}`;
   return createPortal(
     <div className="passport-print">
-      <div className="pp-brand">WorkPassport</div>
+      <div className="pp-brand">Vouch</div>
       <h1 className="pp-name">{user.name}</h1>
       {user.headline && <p><strong>{user.headline}</strong></p>}
       {user.about && <p>{user.about}</p>}

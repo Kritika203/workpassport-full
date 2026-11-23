@@ -24,7 +24,7 @@ class Command(BaseCommand):
         demo_client.is_superuser = False
         demo_client.save()
         Profile.objects.update_or_create(user=demo_client, defaults={
-            'role': 'client', 'display_name': 'WorkPassport Practice Client',
+            'role': 'client', 'display_name': 'Vouch Practice Client',
         })
         created = 0
         updated = 0
@@ -58,5 +58,7 @@ class Command(BaseCommand):
             job.internet_need = row.get('internetNeed', '')
             job.status = 'published'
             job.payment_verified = False
+            job.moderation_source = 'practice'
+            job.moderation_reasons = ['sample_job_not_verified']
             job.save()
         self.stdout.write(self.style.SUCCESS(f'Created {created} and updated {updated} practice jobs.'))

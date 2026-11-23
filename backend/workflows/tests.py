@@ -281,6 +281,63 @@ class WorkflowsTests(APITestCase):
         self.assertEqual(self.client.get(f'/api/flows/public-passport/{token}/').status_code, 404)
 
 
+    def test_deliverable_specs_checked_on_upload_and_review(self):
+        import base64
+        from PIL import Image
+        from io import BytesIO
+        self.job.deliverables = [{
+            'name': 'Logo file', 'description': 'Final logo in PNG, transparent background.',
+            'quantity': 1, 'formats': ['png'], 'max_mb': 10, 'link_allowed': False, 'milestone': 1,
+        }]
+        self.job.save()
+        self.application.status = 'accepted'
+        self.application.save()
+        url = f'/api/flows/workrooms/{self.application.pk}/'
+        self.use(self.client_user)
+        room = self.client.get(url)
+        self.assertEqual(room.status_code, 200)
+        self.assertEqual(room.data['deliverable_specs'][0]['name'], 'Logo file')
+        mid = self.client.post(url + 'milestones/', {'title': 'Logo', 'amount_usd': '25.00', 'position': 0}, format='json').data['id']
+        path = f'{url}milestones/{mid}/'
+        self.client.post(path + 'state/', {'state': 'funded_demo'}, format='json')
+
+        def payload(fmt, mime):
+            out = BytesIO()
+            Image.new('RGB', (4, 4), 'white').save(out, fmt)
+            return f'data:{mime};base64,' + base64.b64encode(out.getvalue()).decode()
+
+        self.use(self.freelancer)
+        # Wrong formats for this spec are refused by the server, PNG is accepted.
+        self.assertEqual(self.client.post(path + 'files/', {'name': 'logo.jpg', 'data': payload('JPEG', 'image/jpeg')}, format='json').status_code, 400)
+        pdf = 'data:application/pdf;base64,' + base64.b64encode(b'%PDF-1.4 test').decode()
+        self.assertEqual(self.client.post(path + 'files/', {'name': 'logo.pdf', 'data': pdf}, format='json').status_code, 400)
+        self.assertEqual(self.client.post(path + 'files/', {'name': 'logo.png', 'data': payload('PNG', 'image/png')}, format='json').status_code, 201)
+        self.assertEqual(self.client.post(path + 'state/', {'state': 'submitted'}, format='json').status_code, 200)
+        # Unticked spec items lead the revision note; the checklist is stored.
+        self.use(self.client_user)
+        r = self.client.post(path + 'state/', {'state': 'revision_requested', 'note': 'Please redo the colours.', 'checks': []}, format='json')
+        self.assertEqual(r.status_code, 200)
+        milestone = Milestone.objects.get(pk=mid)
+        self.assertTrue(milestone.revision_note.startswith('Missing or incomplete: Logo file.'))
+        self.assertIn('redo the colours', milestone.revision_note)
+        self.assertEqual(milestone.review_checks, [])
+        # Resubmit with fresh delivery, then release with the item ticked.
+        self.use(self.freelancer)
+        self.assertEqual(self.client.post(path + 'delivery/', {'description': 'Updated logo, colours redone.', 'links': []}, format='json').status_code, 200)
+        self.assertEqual(self.client.post(path + 'state/', {'state': 'submitted'}, format='json').status_code, 200)
+        self.use(self.client_user)
+        r = self.client.post(path + 'state/', {'state': 'released_demo', 'checks': ['Logo file']}, format='json')
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(Milestone.objects.get(pk=mid).review_checks, ['Logo file'])
+
+
+    def test_shield_unknown_verdict_for_gibberish(self):
+        from .services import analyze
+        self.assertEqual(analyze('uihduoiwhodwehdc asdfgh qwerty zzz')['verdict'], 'unknown')
+        self.assertEqual(analyze('Pay the registration fee first by eSewa to start today')['verdict'], 'danger')
+        legit = analyze('Logo design for a new cafe. Pay NPR 6000 by bank transfer. Deadline Friday.')
+        self.assertNotEqual(legit['verdict'], 'unknown')
+
 class ExtensionPairingTests(APITestCase):
     """An extension is a separate, short-lived permission, never a password/JWT."""
 
@@ -345,3 +402,175 @@ class ExtensionPairingTests(APITestCase):
         }, format='json').status_code, 400)
         self.client.credentials(HTTP_AUTHORIZATION='Extension ' + 'z' * 64)
         self.assertEqual(self.client.get('/api/flows/extension/passport/').status_code, 401)
+
+
+
+class PaymentTests(APITestCase):
+    """DirectPay: methods, the start-record-confirm/dispute flow, and isolation."""
+
+    PNG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAwMCAO+ip1sAAAAASUVORK5CYII='
+
+    def setUp(self):
+        self.freelancer = User.objects.create_user(username='pay_free', password='x')
+        self.other = User.objects.create_user(username='pay_other', password='x')
+        self.client_user = User.objects.create_user(username='pay_client', password='x')
+        Profile.objects.create(user=self.freelancer, role='freelancer')
+        Profile.objects.create(user=self.other, role='freelancer')
+        Profile.objects.create(user=self.client_user, role='client')
+        self.job = Job.objects.create(owner=self.client_user, title='Logo job', description='Design a logo.',
+            category='Design', client_name='Client', required_skills=['Canva'],
+            budget_usd=Decimal('30'), status='published')
+        self.application = Application.objects.create(user=self.freelancer, job=self.job,
+            message='I can do it.', proposed_rate_usd=Decimal('25'), status='accepted')
+        from .models import Workroom
+        self.room = Workroom.objects.create(application=self.application)
+        self.milestone = Milestone.objects.create(workroom=self.room, title='Logo files',
+            amount_usd=Decimal('25'), state='released_demo', position=0)
+
+    def use(self, user):
+        self.client.force_authenticate(user=user)
+
+    def add_method(self):
+        self.use(self.freelancer)
+        r = self.client.post('/api/flows/payments/methods/',
+            {'kind': 'esewa', 'holder_name': 'Maya Rai', 'mobile': '9841234567', 'is_preferred': True}, format='json')
+        assert r.status_code == 201, r.data
+        return r.data['id']
+
+    def start(self):
+        self.use(self.client_user)
+        return self.client.post('/api/flows/payments/start/', {'milestone_id': self.milestone.pk}, format='json')
+
+    def test_methods_crud_validation_and_isolation(self):
+        self.use(self.freelancer)
+        bad = self.client.post('/api/flows/payments/methods/',
+            {'kind': 'esewa', 'holder_name': 'Maya', 'mobile': '123'}, format='json')
+        self.assertEqual(bad.status_code, 400)
+        bad = self.client.post('/api/flows/payments/methods/',
+            {'kind': 'bank', 'holder_name': 'Maya', 'bank_name': 'Nabil'}, format='json')
+        self.assertEqual(bad.status_code, 400)
+        mid = self.add_method()
+        rows = self.client.get('/api/flows/payments/methods/').data
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]['mobile'], '9841234567')
+        # Another user sees none of them and cannot touch them.
+        self.use(self.other)
+        self.assertEqual(self.client.get('/api/flows/payments/methods/').data, [])
+        self.assertEqual(self.client.patch(f'/api/flows/payments/methods/{mid}/',
+            {'holder_name': 'Hacked'}, format='json').status_code, 404)
+        self.assertEqual(self.client.delete(f'/api/flows/payments/methods/{mid}/').status_code, 404)
+        # Owner can edit and delete.
+        self.use(self.freelancer)
+        r = self.client.patch(f'/api/flows/payments/methods/{mid}/', {'mobile': '9851098765'}, format='json')
+        self.assertEqual(r.data['mobile'], '9851098765')
+        self.assertEqual(self.client.delete(f'/api/flows/payments/methods/{mid}/').status_code, 204)
+
+    def test_full_flow_record_confirm(self):
+        from .models import PaymentRecord
+        self.add_method()
+        r = self.start()
+        self.assertEqual(r.status_code, 201, r.data)
+        pid = r.data['id']
+        self.assertEqual(r.data['status'], 'awaiting_payment')
+        self.assertEqual(r.data['method_snapshot']['mobile'], '9841234567')
+        self.assertEqual(self.start().status_code, 400)  # duplicate active payment
+        # Freelancer cannot record the employer's payment.
+        self.use(self.freelancer)
+        self.assertEqual(self.client.post(f'/api/flows/payments/{pid}/sent/',
+            {'amount': '25', 'transaction_ref': 'REF12345', 'paid_date': '2026-11-22'}, format='json').status_code, 400)
+        # Employer records it, with a receipt.
+        self.use(self.client_user)
+        r = self.client.post(f'/api/flows/payments/{pid}/sent/',
+            {'amount': '25', 'transaction_ref': 'REF12345', 'paid_date': '2026-11-22',
+             'receipt': {'name': 'receipt.png', 'data': self.PNG}}, format='json')
+        self.assertEqual(r.status_code, 200, r.data)
+        self.assertEqual(r.data['status'], 'sent')
+        self.assertTrue(r.data['has_receipt'])
+        self.assertTrue(InboxNotification.objects.filter(owner=self.freelancer, kind='payment_sent').exists())
+        # Employer cannot confirm receipt on the freelancer's behalf.
+        self.assertEqual(self.client.post(f'/api/flows/payments/{pid}/confirm/', {}, format='json').status_code, 400)
+        # Freelancer confirms; employer is notified; a second confirm is refused.
+        self.use(self.freelancer)
+        r = self.client.post(f'/api/flows/payments/{pid}/confirm/', {}, format='json')
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.data['status'], 'confirmed')
+        self.assertTrue(InboxNotification.objects.filter(owner=self.client_user, kind='payment_confirmed').exists())
+        self.assertEqual(self.client.post(f'/api/flows/payments/{pid}/confirm/', {}, format='json').status_code, 400)
+        self.assertEqual([e['action'] for e in r.data['events']], ['created', 'sent', 'confirmed'])
+        # Confirmed is final: no new attempt for this milestone.
+        self.assertEqual(self.start().status_code, 400)
+        self.assertEqual(PaymentRecord.objects.filter(milestone=self.milestone).count(), 1)
+
+    def test_dispute_and_retry(self):
+        self.add_method()
+        pid = self.start().data['id']
+        self.use(self.client_user)
+        self.client.post(f'/api/flows/payments/{pid}/sent/',
+            {'amount': '20', 'transaction_ref': 'REF99999', 'paid_date': '2026-11-22'}, format='json')
+        # Employer cannot dispute; freelancer must explain.
+        self.assertEqual(self.client.post(f'/api/flows/payments/{pid}/dispute/',
+            {'reason': 'wrong_amount', 'note': 'Only 20 arrived'}, format='json').status_code, 400)
+        self.use(self.freelancer)
+        self.assertEqual(self.client.post(f'/api/flows/payments/{pid}/dispute/',
+            {'reason': 'wrong_amount', 'note': ''}, format='json').status_code, 400)
+        r = self.client.post(f'/api/flows/payments/{pid}/dispute/',
+            {'reason': 'wrong_amount', 'note': 'Only 20 of 25 arrived in my eSewa.'}, format='json')
+        self.assertEqual(r.status_code, 200, r.data)
+        self.assertEqual(r.data['status'], 'disputed')
+        self.assertEqual(r.data['disputes'][0]['reason'], 'wrong_amount')
+        self.assertTrue(InboxNotification.objects.filter(owner=self.client_user, kind='payment_disputed').exists())
+        # Retry keeps the disputed record and creates attempt 2; employer can cancel it.
+        r = self.start()
+        self.assertEqual(r.status_code, 201)
+        self.assertEqual(r.data['attempt'], 2)
+        self.assertEqual(self.client.post(f'/api/flows/payments/{r.data["id"]}/cancel/', {}, format='json').data['status'], 'cancelled')
+        self.assertEqual(self.start().status_code, 201)  # a third attempt may start
+
+    def test_start_requires_approval_and_method(self):
+        # No payment method yet.
+        self.assertEqual(self.start().status_code, 400)
+        self.add_method()
+        # Milestone not yet approved.
+        self.milestone.state = 'submitted'
+        self.milestone.save()
+        self.assertEqual(self.start().status_code, 400)
+        self.milestone.state = 'released_demo'
+        self.milestone.save()
+        # The freelancer cannot start a payment on their own milestone.
+        self.use(self.freelancer)
+        self.assertEqual(self.client.post('/api/flows/payments/start/',
+            {'milestone_id': self.milestone.pk}, format='json').status_code, 400)
+
+    def test_receipt_validation_and_record_isolation(self):
+        self.add_method()
+        pid = self.start().data['id']
+        self.use(self.client_user)
+        bad = self.client.post(f'/api/flows/payments/{pid}/sent/',
+            {'amount': '25', 'transaction_ref': 'REF12345', 'paid_date': '2026-11-22',
+             'receipt': {'name': 'evil.png', 'data': 'data:image/png;base64,TVqQAAMAAAAEAAAA//8AALgAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'}}, format='json')
+        self.assertEqual(bad.status_code, 400)  # PNG header claimed, EXE content
+        ok = self.client.post(f'/api/flows/payments/{pid}/sent/',
+            {'amount': '25', 'transaction_ref': 'REF12345', 'paid_date': '2026-11-22',
+             'receipt': {'name': 'receipt.png', 'data': self.PNG}}, format='json')
+        self.assertEqual(ok.status_code, 200)
+        # A third user sees no records and cannot act or download.
+        self.use(self.other)
+        self.assertEqual(self.client.get('/api/flows/payments/').data, [])
+        self.assertEqual(self.client.post(f'/api/flows/payments/{pid}/confirm/', {}, format='json').status_code, 400)
+        self.assertEqual(self.client.get(f'/api/flows/payments/{pid}/receipt/').status_code, 400)
+        # A participant can download the receipt.
+        self.use(self.freelancer)
+        self.assertEqual(self.client.get(f'/api/flows/payments/{pid}/receipt/').status_code, 200)
+
+    def test_multiple_milestones_are_independent(self):
+        second = Milestone.objects.create(workroom=self.room, title='Source files',
+            amount_usd=Decimal('10'), state='released_demo', position=1)
+        self.add_method()
+        first = self.start()
+        self.assertEqual(first.status_code, 201)
+        self.use(self.client_user)
+        r2 = self.client.post('/api/flows/payments/start/', {'milestone_id': second.pk}, format='json')
+        self.assertEqual(r2.status_code, 201)
+        self.assertNotEqual(first.data['id'], r2.data['id'])
+        rows = self.client.get('/api/flows/payments/').data
+        self.assertEqual(len(rows), 2)

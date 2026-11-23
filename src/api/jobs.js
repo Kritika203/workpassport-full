@@ -22,7 +22,7 @@ export function toUiJob(row) {
     paymentVerified: row.payment_verified,
     postedHoursAgo: Math.max(0, Math.floor((Date.now() - when) / 3600000)),
     applicants: 0,
-    aboutClient: 'This listing is published in WorkPassport. Payment details have not been independently verified.',
+    aboutClient: row.moderation_label || 'This listing is published in Vouch. Payment details have not been independently verified.',
     jobsPostedByClient: 0,
     hireRate: 0,
     memberSince: new Date(when).getFullYear(),

@@ -20,15 +20,15 @@ export function PasswordReset({ uid, token }) {
     } catch (err) { setError(err.message || 'This link has expired. Request another reset.'); }
     finally { setBusy(false); }
   };
-  return <main className="min-h-screen bg-[#FBFAF8] p-6 flex items-center justify-center text-[#1C1B1A]">
-    <section className="bg-white border border-[#EAE7E1] rounded-[20px] p-6 max-w-md w-full space-y-4">
-      <h1 className="text-2xl font-semibold">Reset your WorkPassport password</h1>
-      {message ? <><p>{message}</p><a href="/" className="underline text-[#AE332A]">Return to WorkPassport</a></> :
+  return <main className="min-h-screen bg-[#fcfbf8] p-6 flex items-center justify-center text-[#1C1B1A]">
+    <section className="bg-white border border-[#e5e7dd] rounded-[20px] p-6 max-w-md w-full space-y-4">
+      <h1 className="text-2xl font-semibold">Reset your Vouch password</h1>
+      {message ? <><p>{message}</p><a href="/" className="underline text-[#AE332A]">Return to Vouch</a></> :
         <form onSubmit={submit} className="space-y-4">
-          <PasswordInput label="New password" inputClassName="w-full border border-[#EAE7E1] rounded-xl px-4 py-3 min-h-[48px]" minLength={8} autoComplete="new-password" value={password} onChange={e => setPassword(e.target.value)} />
-          <PasswordInput label="Confirm password" inputClassName="w-full border border-[#EAE7E1] rounded-xl px-4 py-3 min-h-[48px]" autoComplete="new-password" value={again} onChange={e => setAgain(e.target.value)} />
+          <PasswordInput label="New password" inputClassName="w-full border border-[#e5e7dd] rounded-xl px-4 py-3 min-h-[48px]" minLength={8} autoComplete="new-password" value={password} onChange={e => setPassword(e.target.value)} />
+          <PasswordInput label="Confirm password" inputClassName="w-full border border-[#e5e7dd] rounded-xl px-4 py-3 min-h-[48px]" autoComplete="new-password" value={again} onChange={e => setAgain(e.target.value)} />
           {error && <p role="alert" className="text-[#AE332A]">{error}</p>}
-          <button disabled={busy} className="bg-[#C73E33] text-white rounded-full px-5 py-3 min-h-[48px]">{busy ? 'Saving…' : 'Change password'}</button>
+          <button disabled={busy} className="bg-[#59684a] text-white rounded-full px-5 py-3 min-h-[48px]">{busy ? 'Saving…' : 'Change password'}</button>
         </form>}
     </section>
   </main>;

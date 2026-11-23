@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views, extension_api, whatsapp_api
+from . import payment_views, views, extension_api, whatsapp_api
 
 urlpatterns = [
     path('extension/pair/', extension_api.PairExtension.as_view()),
@@ -12,6 +12,16 @@ urlpatterns = [
     path('extension/saved-jobs/', extension_api.ExtensionSavedJobs.as_view()),
     path('extension/saved-jobs/<int:pk>/', extension_api.ExtensionSavedJobDelete.as_view()),
     path('shield/check/', views.CheckText.as_view()),
+    path('payments/methods/', payment_views.PaymentMethodsView.as_view()),
+    path('payments/methods/<int:pk>/', payment_views.PaymentMethodDetail.as_view()),
+    path('payments/', payment_views.PaymentList.as_view()),
+    path('payments/start/', payment_views.PaymentStart.as_view()),
+    path('payments/<int:pk>/sent/', payment_views.PaymentSent.as_view()),
+    path('payments/<int:pk>/confirm/', payment_views.PaymentConfirm.as_view()),
+    path('payments/<int:pk>/dispute/', payment_views.PaymentDisputeView.as_view()),
+    path('payments/<int:pk>/cancel/', payment_views.PaymentCancel.as_view()),
+    path('payments/<int:pk>/receipt/', payment_views.PaymentReceiptDownload.as_view()),
+    path('payments/<int:pk>/dispute-evidence/', payment_views.PaymentEvidenceDownload.as_view()),
     path('whatsapp/webhook/', whatsapp_api.WhatsAppWebhookView.as_view()),
     path('proof/', views.MyProofs.as_view()),
     path('passport/share/', views.MyPassportShare.as_view()),

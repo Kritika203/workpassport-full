@@ -9,7 +9,7 @@ import { fmt } from '../../utils/format.js';
 export function VaultPrint({ t, lang, name, items, masked }) {
   return createPortal(
     <div className="vault-print">
-      <div className="pp-brand">WorkPassport</div>
+      <div className="pp-brand">Vouch</div>
       <h1 className="pp-name">{t('ev_rep_title')}</h1>
       <p>{fmt(t('pdf_made_on'), { date: evToday(lang) })}</p>
       <p>{fmt(t('ev_intro'), { name })}</p>

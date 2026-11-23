@@ -18,9 +18,9 @@ export function LevelBadge({ level, t }) {
 
 export function RuleToggle({ label, on, onClick }) {
   return (
-    <button onClick={onClick} className="w-full flex items-center justify-between p-5 border border-[#EAE7E1] rounded-[14px] hover:border-[#DDD8CE] transition-colors bg-white min-h-[48px] text-left" role="switch" aria-checked={on}>
+    <button onClick={onClick} className="w-full flex items-center justify-between p-5 border border-[#e5e7dd] rounded-[14px] hover:border-[#DDD8CE] transition-colors bg-white min-h-[48px] text-left" role="switch" aria-checked={on}>
       <span className="text-base font-medium pr-4">{label}</span>
-      <div className={`shrink-0 w-12 h-7 rounded-full flex items-center p-1 transition-colors ${on ? 'bg-[#C73E33]' : 'bg-[#E3E0D9]'}`}>
+      <div className={`shrink-0 w-12 h-7 rounded-full flex items-center p-1 transition-colors ${on ? 'bg-[#59684a]' : 'bg-[#E3E0D9]'}`}>
         <div className={`w-5 h-5 bg-white rounded-full transition-transform ${on ? 'translate-x-5' : 'translate-x-0'}`}></div>
       </div>
     </button>

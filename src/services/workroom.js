@@ -2,8 +2,11 @@
 
 
 
+import { deliverableText } from '../utils/deliverables.js';
+
 export function buildWorkroomMilestones(job) {
-  const items = (job.deliverables && job.deliverables.length) ? job.deliverables : [job.title];
+  const raw = (job.deliverables && job.deliverables.length) ? job.deliverables : [job.title];
+  const items = raw.map(deliverableText);
   const n = items.length;
   const base = Math.floor(job.budgetUSD / n);
   const extra = job.budgetUSD - base * n; // leftover whole dollars go to the first milestones, one each

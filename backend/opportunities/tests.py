@@ -123,6 +123,148 @@ class JobTests(APITestCase):
         }, format='json').status_code, 404)
 
 
+    def test_job_deliverable_specs_are_validated(self):
+        self.client.force_authenticate(user=self.client_user)
+        base = {
+            'title': 'Logo job', 'description': 'Design a logo', 'category': 'Design',
+            'client_name': 'Example Inc', 'budget_usd': '30.00',
+        }
+        spec = {
+            'name': 'Logo file', 'description': 'Final logo in PNG, transparent background, 2000px wide.',
+            'quantity': 1, 'formats': ['png'], 'max_mb': 10, 'link_allowed': False, 'milestone': 1,
+        }
+        r = self.client.post('/api/client/jobs/', {**base, 'deliverables': [spec]}, format='json')
+        self.assertEqual(r.status_code, 201)
+        saved = Job.objects.get(pk=r.data['id']).deliverables
+        self.assertEqual(saved[0]['name'], 'Logo file')
+        self.assertEqual(saved[0]['formats'], ['png'])
+        # Legacy plain lines still work.
+        r = self.client.post('/api/client/jobs/', {**base, 'deliverables': ['One logo']}, format='json')
+        self.assertEqual(r.status_code, 201)
+        # Blocked format, oversize cap and vague description are all rejected.
+        for bad in ({**spec, 'formats': ['exe']}, {**spec, 'max_mb': 50}, {**spec, 'description': 'a logo'}):
+            r = self.client.post('/api/client/jobs/', {**base, 'deliverables': [bad]}, format='json')
+            self.assertEqual(r.status_code, 400, bad)
+
+
+    def test_client_sees_applicant_passport_summary(self):
+        from accounts.models import Skill, SkillVerification, TrainingEntry
+        skill = Skill.objects.create(user=self.freelancer, name='Canva', level='intermediate')
+        SkillVerification.objects.create(skill=skill, level='demonstrated')
+        SkillVerification.objects.create(skill=skill, level='self')
+        TrainingEntry.objects.create(user=self.freelancer, title='Graphic Design Basics', institution='Local Institute', year=2025)
+        self.client.force_authenticate(user=self.client_user)
+        from .models import Application
+        Application.objects.create(user=self.freelancer, job=self.job, message='I can do it.', proposed_rate_usd=35)
+        data = self.client.get('/api/client/applications/').data
+        rows = data['results'] if isinstance(data, dict) else data
+        row = next(r for r in rows if r['applicant_name'] == self.freelancer.username)
+        self.assertEqual(row['applicant_skills'], [{'name': 'Canva', 'level': 'intermediate', 'proof': 'demonstrated'}])
+        self.assertEqual(row['applicant_proofs'], 1)
+        self.assertEqual(row['applicant_completed_jobs'], 0)
+        self.assertEqual(row['applicant_training'][0]['title'], 'Graphic Design Basics')
+
+    def test_client_decision_reason_is_saved_and_visible_to_freelancer(self):
+        from .models import Application
+        app = Application.objects.create(user=self.freelancer, job=self.job, message='Hire me.', proposed_rate_usd=35)
+        url = f'/api/client/applications/{app.pk}/'
+        self.client.force_authenticate(user=self.client_user)
+        r = self.client.patch(url, {'status': 'rejected', 'decision_reason': 'Budget went to another design this month.'}, format='json')
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.data['decision_reason'], 'Budget went to another design this month.')
+        # Unknown fields and over-long reasons are refused.
+        app2 = Application.objects.create(user=self.other, job=self.job, message='Me too.', proposed_rate_usd=30)
+        url2 = f'/api/client/applications/{app2.pk}/'
+        self.assertEqual(self.client.patch(url2, {'status': 'rejected', 'hack': 1}, format='json').status_code, 400)
+        self.assertEqual(self.client.patch(url2, {'status': 'rejected', 'decision_reason': 'x' * 501}, format='json').status_code, 400)
+        # The freelancer sees the decision and the reason on their own list.
+        self.client.force_authenticate(user=self.freelancer)
+        data = self.client.get('/api/me/applications/').data
+        mine = data['results'] if isinstance(data, dict) else data
+        mine = next(r for r in mine if r['id'] == app.pk)
+        self.assertEqual(mine['status'], 'rejected')
+        self.assertEqual(mine['decision_reason'], 'Budget went to another design this month.')
+        # Decisions are final: a second change is refused.
+        self.client.force_authenticate(user=self.client_user)
+        self.assertEqual(self.client.patch(url, {'status': 'accepted'}, format='json').status_code, 400)
+
+
+    def test_client_dashboard_aggregates_own_data_only(self):
+        from decimal import Decimal as D
+        from .models import Application
+        from workflows.models import Workroom, Milestone
+        app = Application.objects.create(user=self.freelancer, job=self.job, message='Hire me.', proposed_rate_usd=D('40'), status='accepted')
+        Application.objects.create(user=self.other, job=self.job, message='Waiting.', proposed_rate_usd=D('30'), status='submitted')
+        room = Workroom.objects.create(application=app)
+        Milestone.objects.create(workroom=room, title='Draft', amount_usd=D('15'), state='submitted', position=0)
+        Milestone.objects.create(workroom=room, title='Final', amount_usd=D('25'), state='released_demo', position=1, delivery_note='Done.')
+        self.client.force_authenticate(user=self.client_user)
+        r = self.client.get('/api/client/dashboard/')
+        self.assertEqual(r.status_code, 200)
+        d = r.data
+        self.assertEqual(d['jobs_by_status']['published'], 1)
+        self.assertEqual(d['applicants_waiting'], 1)
+        self.assertEqual(len(d['review_items']), 1)
+        self.assertEqual(d['review_items'][0]['milestone_title'], 'Draft')
+        self.assertEqual(d['total_released_usd'], '25.00')
+        self.assertEqual(d['total_agreed_usd'], '40.00')
+        self.assertEqual(d['spent_by_job'][0]['released_usd'], '25.00')
+        # Another client and a freelancer see none of this.
+        self.client.force_authenticate(user=self.other_client)
+        d2 = self.client.get('/api/client/dashboard/').data
+        self.assertEqual(d2['total_jobs'], 0)
+        self.assertEqual(d2['review_items'], [])
+        self.client.force_authenticate(user=self.freelancer)
+        self.assertEqual(self.client.get('/api/client/dashboard/').status_code, 403)
+
+
+    def test_explore_shortlist_and_invite(self):
+        from accounts.models import Skill, SkillVerification, TrainingEntry
+        from .models import ClientInvite, ClientShortlist
+        from workflows.models import InboxNotification
+        skill = Skill.objects.create(user=self.freelancer, name='Canva', level='beginner')
+        SkillVerification.objects.create(skill=skill, level='institution')
+        TrainingEntry.objects.create(user=self.freelancer, title='Design Basics', institution='Institute', year=2025)
+        prof = self.freelancer.profile
+        prof.district = 'Pokhara'
+        prof.display_name = 'Maya Freelancer'
+        prof.save()
+        self.client.force_authenticate(user=self.client_user)
+        rows = self.client.get('/api/client/explore/').data
+        self.assertEqual(len(rows), 2)  # both fixture freelancers are listed
+        maya = next(r for r in rows if r['user_id'] == self.freelancer.pk)
+        self.assertEqual(maya['name'], 'Maya Freelancer')
+        self.assertEqual(maya['skills'][0]['proof'], 'institution')
+        # Filters: skill + proof + location + training.
+        self.assertEqual(len(self.client.get('/api/client/explore/?skill=canva').data), 1)
+        self.assertEqual(len(self.client.get('/api/client/explore/?proof=platform').data), 0)
+        self.assertEqual(len(self.client.get('/api/client/explore/?location=pokhara').data), 1)
+        self.assertEqual(len(self.client.get('/api/client/explore/?training=1').data), 1)
+        self.assertEqual(self.client.get('/api/client/explore/?proof=bogus').status_code, 400)
+        # Shortlist add + remove, scoped to this client.
+        r = self.client.post('/api/client/shortlist/', {'freelancer_id': self.freelancer.pk}, format='json')
+        self.assertEqual(r.status_code, 201)
+        self.assertEqual(r.data['freelancer_ids'], [self.freelancer.pk])
+        self.assertEqual(ClientShortlist.objects.filter(client=self.other_client).count(), 0)
+        self.assertEqual(self.client.delete(f'/api/client/shortlist/{self.freelancer.pk}/').status_code, 204)
+        self.assertEqual(ClientShortlist.objects.count(), 0)
+        # Invite: published own job only, deduped, freelancer notified once.
+        r = self.client.post('/api/client/invite/', {'freelancer_id': self.freelancer.pk, 'job_id': self.job.pk}, format='json')
+        self.assertEqual(r.status_code, 201)
+        self.assertTrue(InboxNotification.objects.filter(owner=self.freelancer, kind='invite').exists())
+        r = self.client.post('/api/client/invite/', {'freelancer_id': self.freelancer.pk, 'job_id': self.job.pk}, format='json')
+        self.assertEqual(r.status_code, 200)
+        self.assertTrue(r.data['already_invited'])
+        self.assertEqual(ClientInvite.objects.count(), 1)
+        self.assertEqual(InboxNotification.objects.filter(owner=self.freelancer, kind='invite').count(), 1)
+        draft = Job.objects.create(owner=self.client_user, title='Draft job', description='x', category='Design',
+            client_name='Example', required_skills=[], budget_usd=10, status='pending_review')
+        self.assertEqual(self.client.post('/api/client/invite/', {'freelancer_id': self.freelancer.pk, 'job_id': draft.pk}, format='json').status_code, 400)
+        # Freelancers cannot use the client directory.
+        self.client.force_authenticate(user=self.freelancer)
+        self.assertEqual(self.client.get('/api/client/explore/').status_code, 403)
+
+
 class PracticeJobTests(APITestCase):
     def test_seeded_practice_jobs_use_real_conversations_and_milestones(self):
         from django.core.management import call_command
@@ -163,3 +305,4 @@ class PracticeJobTests(APITestCase):
         for state in ['submitted', 'released_demo']:
             self.assertEqual(self.client.post(endpoint, {'state': state}, format='json').status_code, 200)
         self.assertEqual(self.client.get('/api/flows/passport/completions/').data['count'], 1)
+

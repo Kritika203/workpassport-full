@@ -28,28 +28,32 @@ export function NetPayPreview({ usd, t }) {
   const fee = feeFor(m);
   const feePct = gross > 0 ? Math.round(fee / gross * 100) : 0;
   const net = gross - fee;
-  const netShown = Math.round(net / 10) * 10;
+  // Display whole rupees only, and derive the net from the two displayed
+  // numbers so the arithmetic on screen always adds up exactly.
+  const grossR = Math.round(gross);
+  const feeR = Math.round(fee);
+  const netShown = grossR - feeR;
   const label = (id) => id === 'bank' ? t('np_bank') : id === 'payoneer' ? 'Payoneer' : 'Wise';
   return (
     <div>
-      <div className="bg-white border border-[#EAE7E1] rounded-[20px] p-5 sm:p-6">
-        <h3 className="font-semibold text-lg mb-4 flex items-center gap-2"><Wallet size={22} className="text-[#C73E33] shrink-0" /> {t('np_title')}</h3>
+      <div className="bg-white border border-[#e5e7dd] rounded-[20px] p-5 sm:p-6">
+        <h3 className="font-semibold text-lg mb-4 flex items-center gap-2"><Wallet size={22} className="text-[#59684a] shrink-0" /> {t('np_title')}</h3>
         <div className="flex flex-wrap gap-2 mb-5">
           {PAY_METHODS.map(x => (
-            <button key={x.id} onClick={() => setChosen(x.id)} aria-pressed={m.id === x.id} className={`px-4 rounded-full border text-base font-semibold min-h-[44px] transition-colors ${m.id === x.id ? 'border-[#C73E33] bg-[#FAF0EE] text-[#AE332A]' : 'border-[#EAE7E1] bg-white text-[#4A4744] hover:border-[#DDD8CE]'}`}>
+            <button key={x.id} onClick={() => setChosen(x.id)} aria-pressed={m.id === x.id} className={`px-4 rounded-full border text-base font-semibold min-h-[44px] transition-colors ${m.id === x.id ? 'border-[#59684a] bg-[#FAF0EE] text-[#AE332A]' : 'border-[#e5e7dd] bg-white text-[#4A4744] hover:border-[#DDD8CE]'}`}>
               {label(x.id)}
             </button>
           ))}
         </div>
         <div className="space-y-3 text-base">
           <div className="flex justify-between gap-4"><span className="text-[#4A4744]">{t('np_price')}</span><span className="font-semibold">${fmtMoney(amount)}</span></div>
-          <div className="flex justify-between gap-4"><span className="text-[#4A4744]">{t('np_rupees')}</span><span className="font-semibold">NPR {fmtMoney(Math.round(gross))}</span></div>
-          <div className="flex justify-between gap-4"><span className="text-[#4A4744]">{t('np_fees')}</span><span className="font-semibold">− NPR {fmtMoney(Math.round(fee))} ({feePct}%)</span></div>
+          <div className="flex justify-between gap-4"><span className="text-[#4A4744]">{t('np_rupees')}</span><span className="font-semibold">NPR {fmtMoney(grossR)}</span></div>
+          <div className="flex justify-between gap-4"><span className="text-[#4A4744]">{t('np_fees')}</span><span className="font-semibold">− NPR {fmtMoney(feeR)} ({feePct}%)</span></div>
         </div>
         {net > 0 && feePct > 20 && (
           <div className="flex items-start gap-2 text-[#AE332A] font-semibold text-base bg-[#FAF0EE] p-3 rounded-[12px] mt-3"><AlertTriangle size={20} className="mt-0.5 shrink-0" /> <span>{t('np_fee_high')}</span></div>
         )}
-        <div className="border-t border-[#EAE7E1] mt-4 pt-4">
+        <div className="border-t border-[#e5e7dd] mt-4 pt-4">
           {net > 0 && netShown > 0 ? (
             <div className="flex justify-between items-baseline gap-4 flex-wrap">
               <span className="font-semibold text-lg">{t('np_receive')}</span>
@@ -59,6 +63,7 @@ export function NetPayPreview({ usd, t }) {
             <div className="flex items-start gap-2 text-[#AE332A] font-semibold text-base bg-[#FAF0EE] p-3 rounded-[12px]"><AlertTriangle size={20} className="mt-0.5 shrink-0" /> <span>{t('np_warn')}</span></div>
           )}
         </div>
+        <p className="text-sm text-[#6B6561] mt-3">{t('np_sample_note')}</p>
       </div>
       <Disclaimer t={t} k="disc_paynet" className="mt-3" />
     </div>
@@ -70,7 +75,7 @@ export function NetPayCalculator({ t }) {
   return (
     <div className="mt-6 mb-8">
       <label htmlFor="np-calc" className="block text-base font-semibold mb-2">{t('np_calc_label')}</label>
-      <input id="np-calc" type="number" inputMode="decimal" min="0" value={val} onChange={e => setVal(e.target.value)} className="w-full sm:w-48 mb-4 px-4 border border-[#EAE7E1] rounded-full text-base min-h-[48px] bg-white focus:outline-none focus:border-[#C73E33]" />
+      <input id="np-calc" type="number" inputMode="decimal" min="0" value={val} onChange={e => setVal(e.target.value)} className="w-full sm:w-48 mb-4 px-4 border border-[#e5e7dd] rounded-full text-base min-h-[48px] bg-white focus:outline-none focus:border-[#59684a]" />
       <NetPayPreview usd={Math.max(0, parseFloat(val) || 0)} t={t} />
     </div>
   );

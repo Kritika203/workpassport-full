@@ -9,6 +9,7 @@ class Job(models.Model):
         ('published', 'Published'),
         ('rejected', 'Rejected'),
         ('closed', 'Closed'),
+        ('suspended', 'Suspended'),
     ]
     BUDGET_TYPES = [('fixed', 'Fixed'), ('hourly', 'Hourly')]
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True, related_name='posted_jobs')
@@ -33,6 +34,10 @@ class Job(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending_review')
     # Payment verification should never be asserted by a self-registering client.
     payment_verified = models.BooleanField(default=False)
+    moderation_source = models.CharField(max_length=15, default='pending', choices=[('pending','Pending'),('automated','Automated'),('staff','Staff'),('practice','Practice')])
+    moderation_score = models.PositiveSmallIntegerField(default=0)
+    moderation_reasons = models.JSONField(default=list, blank=True)
+    moderated_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -62,6 +67,8 @@ class Application(models.Model):
     message = models.TextField()
     proposed_rate_usd = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='submitted')
+    # The client's reason for a decision, visible to the freelancer.
+    decision_reason = models.TextField(blank=True, default='')
     applied_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -70,3 +77,40 @@ class Application(models.Model):
 
     def __str__(self):
         return f'{self.user.username} -> {self.job.title}'
+
+
+class ClientShortlist(models.Model):
+    """A client's saved freelancers (one list; named lists are a later step)."""
+    client = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='shortlist_entries')
+    freelancer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='shortlisted_by')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['client', 'freelancer'], name='unique_shortlist_entry')]
+        ordering = ['-created_at']
+
+
+class ClientInvite(models.Model):
+    """An invitation from a client to a freelancer to apply for one live job."""
+    client = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='sent_invites')
+    freelancer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='job_invites')
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='invites')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['client', 'freelancer', 'job'], name='unique_invite')]
+        ordering = ['-created_at']
+
+
+class JobModerationEvent(models.Model):
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='moderation_events')
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
+    source = models.CharField(max_length=15)
+    old_status = models.CharField(max_length=20, blank=True)
+    new_status = models.CharField(max_length=20)
+    reason = models.TextField()
+    score = models.PositiveSmallIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']

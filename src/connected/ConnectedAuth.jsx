@@ -1,14 +1,14 @@
-// Sign up and sign in forms for WorkPassport accounts.
+// Sign up and sign in forms for Vouch accounts.
 
 import { useState } from 'react';
 import { ArrowLeft, ShieldCheck } from 'lucide-react';
 import { api, storeApiSession } from '../api/client.js';
 import { PasswordInput } from './PasswordInput.jsx';
 
-const INPUT = 'w-full border border-[#EAE7E1] rounded-[12px] bg-white px-4 py-3 min-h-[48px] outline-none focus:border-[#C73E33]';
+const INPUT = 'w-full border border-[#e0e5db] rounded-[10px] bg-white px-4 py-3 min-h-[48px] outline-none focus:border-[#59684a]';
 const COPY = {
   en: {
-    back: 'Back', create: 'Create your WorkPassport', login: 'Welcome back',
+    back: 'Back', create: 'Create your Vouch account', login: 'Welcome back',
     createSub: 'Create an account to save your skills, jobs and applications.',
     loginSub: 'Sign in to pick up where you left off.',
     username: 'Username', email: 'Email address', name: 'Full name',
@@ -16,7 +16,7 @@ const COPY = {
     freelancer: 'Find freelance work', client: 'Hire freelancers',
     createButton: 'Create account', loginButton: 'Log in',
     busy: 'Please wait…', switchToLogin: 'Already have an account? Log in',
-    switchToCreate: 'New to WorkPassport? Create an account',
+    switchToCreate: 'New to Vouch? Create an account',
     mismatch: 'Your passwords do not match.',
     length: 'Choose a password with at least 8 characters.',
     safe: 'Use a password you have not used elsewhere.',
@@ -25,7 +25,7 @@ const COPY = {
     sendReset: 'Send reset link', resetSent: 'If an account uses that email, a reset link will be sent.',
   },
   ne: {
-    back: 'पछाडि', create: 'आफ्नो WorkPassport बनाउनुहोस्', login: 'फेरि स्वागत छ',
+    back: 'पछाडि', create: 'आफ्नो Vouch बनाउनुहोस्', login: 'फेरि स्वागत छ',
     createSub: 'आफ्ना सीप, काम र आवेदन सुरक्षित राख्न खाता बनाउनुहोस्।',
     loginSub: 'आफ्नो काम जारी राख्न लग इन गर्नुहोस्।',
     username: 'प्रयोगकर्ता नाम', email: 'इमेल ठेगाना', name: 'पूरा नाम',
@@ -33,7 +33,7 @@ const COPY = {
     freelancer: 'फ्रिलान्स काम खोज्न', client: 'फ्रिलान्सरलाई काम दिन',
     createButton: 'खाता बनाउनुहोस्', loginButton: 'लग इन गर्नुहोस्',
     busy: 'कृपया पर्खनुहोस्…', switchToLogin: 'पहिल्यै खाता छ? लग इन गर्नुहोस्',
-    switchToCreate: 'WorkPassport मा नयाँ हुनुहुन्छ? खाता बनाउनुहोस्',
+    switchToCreate: 'Vouch मा नयाँ हुनुहुन्छ? खाता बनाउनुहोस्',
     mismatch: 'दुवै पासवर्ड मिलेनन्।', length: 'कम्तीमा ८ अक्षरको पासवर्ड राख्नुहोस्।',
     safe: 'अरू ठाउँमा प्रयोग नगरेको पासवर्ड राख्नुहोस्।',
     forgot: 'पासवर्ड बिर्सनुभयो?', forgotTitle: 'पासवर्ड परिवर्तन गर्नुहोस्',
@@ -98,12 +98,11 @@ export function ConnectedAuth({ initialMode = 'register', lang = 'en', onBack, o
   };
 
   return (
-    <div className="min-h-screen bg-[#FBFAF8] text-[#1C1B1A] px-4 py-12">
-      <div className="mx-auto max-w-md">
-        <button type="button" onClick={onBack} className="flex items-center gap-2 mb-8 min-h-[44px] text-[#4A4744]"><ArrowLeft size={20}/>{text.back}</button>
-        <div className="bg-white border border-[#EAE7E1] rounded-[20px] p-6 sm:p-8">
-          <div className="flex items-center gap-2 mb-4"><ShieldCheck className="text-[#C73E33]"/><span className="font-semibold text-lg">WorkPassport</span></div>
-          <h1 className="text-[28px] font-semibold mb-2">{mode === 'forgot' ? text.forgotTitle : mode === 'login' ? text.login : text.create}</h1>
+    <div className="vouch-auth">
+      <header className="vouch-auth-header"><strong className="vouch-brand">vouch<span>.</span></strong><button type="button" onClick={onBack} className="vouch-header-text">← {text.back}</button></header>
+      <div className="vouch-auth-wrap">
+        <div className="vouch-auth-card">
+          <h1 className="vouch-auth-title mb-2">{mode === 'forgot' ? text.forgotTitle : mode === 'login' ? text.login : text.create}</h1>
           <p className="text-[#4A4744] mb-6">{mode === 'forgot' ? text.forgotSub : mode === 'login' ? text.loginSub : text.createSub}</p>
           <form onSubmit={submit} className="space-y-4">
             {mode === 'register' && <>
@@ -124,7 +123,7 @@ export function ConnectedAuth({ initialMode = 'register', lang = 'en', onBack, o
             </>}
             {notice && <div role="status" className="bg-[#F5F5EF] text-[#36463F] px-4 py-3 rounded-xl">{notice}</div>}
             {error && <div role="alert" className="bg-[#FAF0EE] text-[#AE332A] px-4 py-3 rounded-xl">{error}</div>}
-            <button type="submit" disabled={busy} className="w-full bg-[#C73E33] hover:bg-[#AE332A] text-white rounded-full min-h-[52px] font-semibold disabled:opacity-50">{busy ? text.busy : mode === 'forgot' ? text.sendReset : mode === 'login' ? text.loginButton : text.createButton}</button>
+            <button type="submit" disabled={busy} className="w-full bg-[#59684a] hover:bg-[#415947] text-white rounded-full min-h-[52px] font-semibold disabled:opacity-50">{busy ? text.busy : mode === 'forgot' ? text.sendReset : mode === 'login' ? text.loginButton : text.createButton}</button>
           </form>
           {mode === 'login' && <button type="button" className="mt-3 block underline text-[#AE332A] min-h-[44px]" onClick={() => { setMode('forgot'); setError(''); setNotice(''); }}>{text.forgot}</button>}
           <button type="button" className="mt-5 underline text-[#AE332A] min-h-[44px]" onClick={() => {setMode(mode === 'login' ? 'register' : 'login');setError('');setNotice('');}}>{mode === 'login' ? text.switchToCreate : text.switchToLogin}</button>

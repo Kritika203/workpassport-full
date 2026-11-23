@@ -13,4 +13,9 @@ urlpatterns = [
     path('client/jobs/<int:pk>/', views.ClientJobDetail.as_view(), name='client-job-detail'),
     path('client/applications/', views.ClientApplications.as_view(), name='client-applications'),
     path('client/applications/<int:pk>/', views.ClientApplicationUpdate.as_view(), name='client-application-update'),
+    path('client/dashboard/', views.ClientDashboard.as_view(), name='client-dashboard'),
+    path('client/explore/', views.ClientExplore.as_view(), name='client-explore'),
+    path('client/shortlist/', views.ClientShortlistView.as_view(), name='client-shortlist'),
+    path('client/shortlist/<int:freelancer_id>/', views.ClientShortlistRemove.as_view(), name='client-shortlist-remove'),
+    path('client/invite/', views.ClientInviteView.as_view(), name='client-invite'),
 ]
