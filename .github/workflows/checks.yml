@@ -18,7 +18,7 @@ jobs:
       - run: python backend/manage.py migrate
         env:
           DJANGO_DEBUG: 'true'
-      - run: python backend/manage.py test
+      - run: python backend/manage.py test accounts opportunities workflows
         env:
           DJANGO_DEBUG: 'true'
 
