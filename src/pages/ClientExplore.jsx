@@ -182,12 +182,17 @@ export function ClientExplore({ t, lang, navTo, showToast, connected = false, cl
               <button onClick={() => setOpenId(openId === row.user_id ? null : row.user_id)} className="flex-1 border border-[#E3E6E1] bg-white rounded-full px-4 font-semibold text-base hover:border-[#DDD8CE] min-h-[48px]">
                 {ne ? 'Vouch हेर्नुहोस्' : 'View Vouch'}
               </button>
-              <select aria-label={ne ? 'निम्तो दिने काम' : 'Job to invite to'} value={jobVal}
-                onChange={e => setInviteJob(prev => ({ ...prev, [row.user_id]: connected ? Number(e.target.value) : e.target.value }))}
-                className="flex-1 rounded-full border border-[#E3E6E1] bg-white px-4 min-h-[48px] text-base" disabled={!liveJobs.length}>
-                {liveJobs.length === 0 && <option value="">{ne ? 'लाइभ काम छैन' : 'No live job'}</option>}
-                {liveJobs.map(j => <option key={j.id} value={connected ? j.apiId : j.id}>{j.title}</option>)}
-              </select>
+              {liveJobs.length ? (
+                <select aria-label={ne ? 'निम्तो दिने काम' : 'Job to invite to'} value={jobVal}
+                  onChange={e => setInviteJob(prev => ({ ...prev, [row.user_id]: connected ? Number(e.target.value) : e.target.value }))}
+                  className="vouch-job-invite-select flex-1 rounded-full border border-[#E3E6E1] bg-white px-4 min-h-[48px] text-base">
+                  {liveJobs.map(j => <option key={j.id} value={connected ? j.apiId : j.id}>{j.title}</option>)}
+                </select>
+              ) : (
+                <div role="status" className="vouch-no-live-job flex-1 rounded-full border border-[#E3E6E1] min-h-[48px] text-base">
+                  {ne ? 'लाइभ काम छैन' : 'No live job'}
+                </div>
+              )}
               <button onClick={() => invite(row)} disabled={busy || !liveJobs.length} className="flex-1 bg-[#003D14] text-white rounded-full px-4 font-semibold text-base hover:bg-[#0E5C2A] min-h-[48px] disabled:opacity-50">
                 {ne ? 'आवेदन दिन निम्तो दिनुहोस्' : 'Invite to Apply'}
               </button>

@@ -29,3 +29,31 @@ html.vouch-low-data .wp-app{font-size:19px!important;line-height:1.75!important;
 @media(max-width:500px){.vouch-lowdata-toggle{font-size:10px;white-space:normal;max-width:90px;text-align:center;line-height:1.1;padding-inline:6px}}
 /* After the community introduction, the gentle reference-inspired continuation takes over. */
 .vouch-public #trust{scroll-margin-top:80px}
+
+
+/* Vouch landing refinements: no dividing rules, numbered cards slide out
+   of a soft left-side stack in sequence on hover or keyboard focus. */
+.vouch-public :is(.vouch-steps,.vouch-short-section,.vouch-cont-section,.vouch-marquee-section,.vouch-cont-footer,.vouch-footer){border-top:0!important;border-bottom:0!important}
+.vouch-public .vouch-step-row{gap:17px;align-items:stretch;margin-top:29px;isolation:isolate}
+.vouch-public .vouch-step-row article{
+  position:relative;min-width:0;min-height:188px;padding:25px 28px;
+  border:1px solid #dbe7dc!important;border-radius:21px;background:#fff;
+  box-shadow:0 12px 28px rgba(18,62,36,.055);cursor:default;
+  transition:transform 420ms cubic-bezier(.21,.75,.35,1),box-shadow 250ms ease,border-color 250ms ease;
+}
+.vouch-public .vouch-step-row article+article{border-left:1px solid #dbe7dc!important;padding-left:28px}
+.vouch-public .vouch-step-row article:nth-child(1){z-index:3;transform:translateX(0)}
+.vouch-public .vouch-step-row article:nth-child(2){z-index:2;transform:translate(-17px,8px);transition-delay:65ms}
+.vouch-public .vouch-step-row article:nth-child(3){z-index:1;transform:translate(-34px,16px);transition-delay:130ms}
+.vouch-public .vouch-step-row:is(:hover,:focus-within) article{transform:translate(0,0)}
+.vouch-public .vouch-step-row article:is(:hover,:focus-visible){z-index:5;border-color:#a9cbb4!important;box-shadow:0 16px 32px rgba(18,62,36,.095)}
+.vouch-public .vouch-step-row article:focus-visible{outline:2px solid #377754;outline-offset:4px}
+.vouch-public .vouch-cont-feature-list>div{border-top:0}
+@media(max-width:700px),(hover:none){
+ .vouch-public .vouch-step-row{grid-template-columns:1fr;gap:12px}
+ .vouch-public .vouch-step-row article,.vouch-public .vouch-step-row article:nth-child(n){min-height:0;transform:none;transition:none;padding:21px 23px}
+ .vouch-public .vouch-step-row article+article{border:1px solid #dbe7dc!important;padding-left:23px}
+}
+@media(prefers-reduced-motion:reduce){
+ .vouch-public .vouch-step-row article,.vouch-public .vouch-step-row article:nth-child(n){transform:none!important;transition:none!important}
+}

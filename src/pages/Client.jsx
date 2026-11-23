@@ -12,6 +12,13 @@ import { ALL_FORMATS, specSizeCap, validateSpec } from '../utils/deliverables.js
 import { JOB_TEMPLATES } from '../data/templates.js';
 
 const emptySpec = () => ({ name: '', description: '', quantity: 1, formats: [], max_mb: 10, link_allowed: false, milestone: null });
+const FORMAT_GROUPS = [
+  { en: 'Images and design', ne: 'तस्बिर र डिजाइन', extensions: ['png','jpg','jpeg','svg','webp','gif','psd','ai','fig'] },
+  { en: 'Documents and data', ne: 'कागजात र डाटा', extensions: ['pdf','docx','txt','xlsx','csv'] },
+  { en: 'Video and audio', ne: 'भिडियो र अडियो', extensions: ['mp4','mov','mp3','wav'] },
+  { en: 'Archives', ne: 'फाइल समूह', extensions: ['zip'] },
+];
+
 const SPEC_ERR_TEXT = {
   name: ['Give this deliverable a name (at least 3 letters).', 'यस डेलिभरेबललाई नाम दिनुहोस् (कम्तीमा ३ अक्षर)।'],
   description: ['Describe it exactly (at least 20 characters): size, content, and what “done” looks like.', 'ठीकसँग वर्णन गर्नुहोस् (कम्तीमा २० अक्षर): साइज, सामग्री, र “सकिएको” भनेको के हो।'],
@@ -278,17 +285,35 @@ export function ClientView({ t, lang, navTo, showToast, clientJobs, setClientJob
               </div>
               <div>
                 <div className={CL_LABEL}>{lang === 'ne' ? 'मिल्ने फाइल ढाँचा' : 'Allowed file formats'}</div>
-                <div className="flex flex-wrap gap-1.5">
-                  {ALL_FORMATS.map(f => {
-                    const on = s.formats.includes(f);
-                    return (
-                      <button key={f} type="button" aria-pressed={on} onClick={() => toggleFormat(f)}
-                        className={`min-h-[38px] px-3 rounded-full border text-sm font-semibold uppercase ${on ? 'bg-[#FAF0EE] border-[#003D14] text-[#AE332A]' : 'bg-white border-[#E3E6E1] text-[#475249] hover:bg-[#F7F7F4]'}`}>
-                        {f}
-                      </button>
-                    );
-                  })}
-                </div>
+                <details className="vouch-formats-picker">
+                  <summary>
+                    <span>{lang === 'ne' ? 'फाइल प्रकार छान्नुहोस्' : 'Choose file formats'}</span>
+                    <small>{s.formats.length
+                      ? `${s.formats.length} selected · ${s.formats.slice(0, 3).map(f => f.toUpperCase()).join(', ')}${s.formats.length > 3 ? ` +${s.formats.length - 3}` : ''}`
+                      : (lang === 'ne' ? 'अहिलेसम्म छानिएको छैन' : 'None selected')}</small>
+                  </summary>
+                  <div className="vouch-formats-groups">
+                    {FORMAT_GROUPS.map(group => {
+                      const available = ALL_FORMATS.filter(f => group.extensions.includes(f));
+                      return available.length ? <fieldset key={group.en}>
+                        <legend>{lang === 'ne' ? group.ne : group.en}</legend>
+                        <div className="vouch-formats-options">
+                          {available.map(f => <button
+                            key={f} type="button" aria-pressed={s.formats.includes(f)}
+                            onClick={() => toggleFormat(f)}
+                            className={s.formats.includes(f) ? 'is-selected' : ''}
+                          >{f.toUpperCase()}</button>)}
+                        </div>
+                      </fieldset> : null;
+                    })}
+                    {ALL_FORMATS.some(f => !FORMAT_GROUPS.some(g => g.extensions.includes(f))) &&
+                      <fieldset><legend>{lang === 'ne' ? 'अन्य' : 'Other'}</legend><div className="vouch-formats-options">
+                        {ALL_FORMATS.filter(f => !FORMAT_GROUPS.some(g => g.extensions.includes(f))).map(f =>
+                          <button key={f} type="button" aria-pressed={s.formats.includes(f)}
+                            onClick={() => toggleFormat(f)} className={s.formats.includes(f) ? 'is-selected' : ''}>{f.toUpperCase()}</button>)}
+                      </div></fieldset>}
+                  </div>
+                </details>
               </div>
               <div className="grid grid-cols-2 gap-3 items-end">
                 <div>

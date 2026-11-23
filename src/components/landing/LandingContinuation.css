@@ -48,3 +48,16 @@
 @media(max-width:790px){.vouch-cont-proofs{grid-template-columns:1fr}.vouch-cont-proofs article{min-height:0}.vouch-cont-safety-grid{grid-template-columns:1fr}.vouch-cont-footer-grid{grid-template-columns:1fr;gap:32px}}
 @media(max-width:550px){.vouch-cont-section{padding:55px 0}.vouch-cont-feature-list{grid-template-columns:1fr}.vouch-marquee-track li{width:235px}.vouch-cont-footer nav{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:30px}.vouch-cont-footer{padding:39px 0}}
 @media(prefers-reduced-motion:reduce){.vouch-marquee{mask-image:none}.vouch-marquee-track{width:100%;animation:none}.vouch-marquee-track ul{flex-wrap:wrap;gap:12px}.vouch-marquee-track ul[aria-hidden='true']{display:none}.vouch-marquee-track li{width:min(100%,280px)}.vouch-marquee-heading button{display:none}}
+
+
+/* Match the mint/ivory page palette; avoid a hard horizontal band or rules. */
+.vouch-public .vouch-marquee-section{
+  background:linear-gradient(105deg,rgba(232,244,234,.80),rgba(249,252,248,.92));
+  border:0!important;padding:35px 0 43px;
+}
+.vouch-public .vouch-marquee-track li{
+  background:#fff;border-color:#dbe7dd;color:#253c2d;
+  box-shadow:0 9px 23px rgba(25,66,38,.055)
+}
+.vouch-public .vouch-marquee{mask-image:linear-gradient(to right,transparent,#000 4%,#000 96%,transparent)}
+@media(prefers-reduced-motion:reduce){.vouch-public .vouch-marquee{mask-image:none}}
