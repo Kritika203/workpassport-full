@@ -1,0 +1,29 @@
+name: Vouch live browser smoke test
+on:
+  push:
+    branches:
+      - audit-live-vouch-2026-11-23
+jobs:
+  live-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser test tools
+        run: |
+          npm install --no-save --no-audit --no-fund playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Test the LIVE Render frontend and API (read-only and demo flows)
+        run: node scripts/live-smoke.mjs
+        env:
+          VOUCH_WEB_URL: https://workpassport-web.onrender.com
+          VOUCH_API_URL: https://workpassport-api.onrender.com
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: vouch-live-smoke-screenshots
+          path: smoke-artifacts/
+          if-no-files-found: ignore
