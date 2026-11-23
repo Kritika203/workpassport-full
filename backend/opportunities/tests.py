@@ -19,7 +19,7 @@ class JobTests(APITestCase):
         self.job = Job.objects.create(
             owner=self.client_user, title='Canva design', description='Design a logo',
             client_name='Example Client', category='Design', required_skills=['Canva'],
-            budget_usd=40, status='published'
+            budget_usd=40, status='published', moderation_source='staff'
         )
 
     def test_client_jobs_need_moderation(self):
@@ -306,3 +306,27 @@ class PracticeJobTests(APITestCase):
             self.assertEqual(self.client.post(endpoint, {'state': state}, format='json').status_code, 200)
         self.assertEqual(self.client.get('/api/flows/passport/completions/').data['count'], 1)
 
+
+
+class LegacyModerationVisibilityTests(APITestCase):
+    """A pre-moderation published gibberish listing must not remain public."""
+
+    def test_legacy_unreviewed_job_hidden_everywhere_without_deleting_it(self):
+        user = User.objects.create_user(username='legacy_worker', password='pass123')
+        Profile.objects.create(user=user, role='freelancer')
+        legacy = Job.objects.create(title='uihduoiwhodwehdc', description='x',
+            category='Design', client_name='hcgvjbknl', budget_usd=200,
+            status='published', moderation_source='pending')
+        detail = f'/api/jobs/{legacy.pk}/'
+        self.assertEqual(self.client.get('/api/jobs/').data['count'], 0)
+        self.assertEqual(self.client.get(detail).status_code, 404)
+        self.client.force_authenticate(user=user)
+        self.assertEqual(self.client.post(detail + 'save/').status_code, 404)
+        self.assertEqual(self.client.post(detail + 'apply/', {
+            'message': 'Please hire me.', 'proposed_rate_usd': '200',
+        }, format='json').status_code, 404)
+        self.assertEqual(Job.objects.get(pk=legacy.pk).status, 'published')
+        # A human can review and explicitly publish it afterward.
+        legacy.moderation_source = 'staff'
+        legacy.save(update_fields=['moderation_source'])
+        self.assertEqual(self.client.get(detail).status_code, 200)

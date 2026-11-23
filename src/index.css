@@ -81,3 +81,5 @@ html.wp-simple-on .wp-app [class*="text-[28px]"] { font-size: 31.5px; }
   .vault-print .vp-text { white-space: pre-wrap; word-break: break-word; margin: 6pt 0 0; padding: 6pt 8pt; border: 1px solid #999; }
   .vault-print .pp-foot { font-size: 10pt; margin-top: 14pt; }
 }
+.vouch-moderation-note{padding:9px 22px;background:#f5f7f1;border-bottom:1px solid #e7eade;text-align:center;color:#59685a;font-size:12px;line-height:1.5}
+.vouch-moderation-note span{display:block;max-width:950px;margin:auto}

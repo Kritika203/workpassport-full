@@ -164,7 +164,7 @@ export function PassportPrint({ t, lang, user, levels, evidenceMap, confirmedLis
   const earnedTxt = hideMoney ? MASK : `NPR ${fmtMoney(earned)}`;
   return createPortal(
     <div className="passport-print">
-      <div className="pp-brand">Vouch</div>
+      <div className="pp-brand">WorkPassport</div>
       <h1 className="pp-name">{user.name}</h1>
       {user.headline && <p><strong>{user.headline}</strong></p>}
       {user.about && <p>{user.about}</p>}

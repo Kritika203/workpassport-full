@@ -93,7 +93,7 @@ export function SetupFlow({ t, lang = 'en', onBack, onComplete, initialName = ''
     institute: '', safetyRules: { chat: true, calls: true, time: true, photo: true, hours: true }, badge: 'Beginner' });
   return <section className="space-y-5">
     <button type="button" onClick={onBack} className="underline min-h-[44px]">{t('back')}</button>
-    <h2 className="text-2xl font-semibold">{lang === 'ne' ? 'सुरु गरौँ' : 'Start your Vouch'}</h2>
+    <h2 className="text-2xl font-semibold">{lang === 'ne' ? 'सुरु गरौँ' : 'Set up your WorkPassport'}</h2>
     <p className="text-[#6E6963]">{lang === 'ne' ? 'नाम मात्र अनिवार्य छ। बाँकी पछि थप्न सकिन्छ।' : 'Only your name is required. Add skills, experience, and a CV later.'}</p>
     <label className="block font-medium">{t('full_name')}
       <input className="block w-full border rounded-xl p-4 mt-2" maxLength={120} value={name} onChange={e=>setName(e.target.value)} required autoComplete="name" />

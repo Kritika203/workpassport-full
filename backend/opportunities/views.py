@@ -9,6 +9,18 @@ from accounts.permissions import IsClient, IsFreelancer
 from . import proposal_ai
 from .moderation_flow import screen_job
 from .models import Application, ClientInvite, ClientShortlist, Job, SavedJob
+
+
+def visible_jobs():
+    """Published AND reviewed/screened. Old published rows were not backfilled.
+
+    Exclude legacy `moderation_source=pending` listings from every public
+    detail/list/apply/save endpoint; retain them in admin for review.
+    """
+    return Job.objects.filter(status='published').exclude(
+        moderation_source='pending', is_demo=False
+    )
+
 from .serializers import ApplicationSerializer, JobSerializer, SavedJobSerializer
 
 
@@ -17,7 +29,7 @@ class PublicJobs(generics.ListAPIView):
     serializer_class = JobSerializer
 
     def get_queryset(self):
-        qs = Job.objects.filter(status='published')
+        qs = visible_jobs()
         q = self.request.query_params.get('search', '').strip()[:100]
         category = self.request.query_params.get('category', '').strip()[:80]
         if q:
@@ -48,7 +60,7 @@ class PublicJobs(generics.ListAPIView):
 class PublicJobDetail(generics.RetrieveAPIView):
     permission_classes = [permissions.AllowAny]
     serializer_class = JobSerializer
-    queryset = Job.objects.filter(status='published')
+    queryset = visible_jobs()
 
 
 class ClientJobs(generics.ListCreateAPIView):
@@ -84,14 +96,14 @@ class SavedJobs(generics.ListAPIView):
     serializer_class = SavedJobSerializer
 
     def get_queryset(self):
-        return SavedJob.objects.filter(user=self.request.user, job__status='published').select_related('job').order_by('-saved_at', '-id')
+        return SavedJob.objects.filter(user=self.request.user, job__in=visible_jobs()).select_related('job').order_by('-saved_at', '-id')
 
 
 class SaveJob(APIView):
     permission_classes = [IsFreelancer]
 
     def post(self, request, pk):
-        job = get_object_or_404(Job, pk=pk, status='published')
+        job = get_object_or_404(visible_jobs(), pk=pk)
         obj, created = SavedJob.objects.get_or_create(user=request.user, job=job)
         return Response({'saved': True, 'job_id': job.pk}, status=201 if created else 200)
 
@@ -104,7 +116,7 @@ class ApplyToJob(APIView):
     permission_classes = [IsFreelancer]
 
     def post(self, request, pk):
-        job = get_object_or_404(Job, pk=pk, status='published')
+        job = get_object_or_404(visible_jobs(), pk=pk)
         if job.owner_id is None:
             raise ValidationError({'detail': 'This is an external opportunity, not a WorkPassport application. Contact the organisation through its original listing.'})
         data = ApplicationSerializer(data=request.data, context={'request': request})
@@ -324,8 +336,8 @@ class ClientInviteView(APIView):
     def post(self, request):
         freelancer = _freelancer_or_404(request.data.get('freelancer_id'))
         job = get_object_or_404(Job, pk=request.data.get('job_id'), owner=request.user)
-        if job.status != 'published':
-            raise ValidationError({'job_id': 'You can only invite freelancers to a published job.'})
+        if not visible_jobs().filter(pk=job.pk).exists():
+            raise ValidationError({'job_id': 'You can only invite freelancers to a screened or reviewed published job.'})
         invite, created = ClientInvite.objects.get_or_create(client=request.user, freelancer=freelancer, job=job)
         if created:
             from workflows.models import InboxNotification

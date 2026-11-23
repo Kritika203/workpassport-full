@@ -27,3 +27,5 @@ html.vouch-low-data .wp-app{font-size:19px!important;line-height:1.75!important;
 
 .vouch-lowdata-toggle{border:1px solid #b8c6b3;border-radius:999px;background:rgba(255,255,255,.75);color:#263b2b;min-height:37px;padding:7px 11px;cursor:pointer;font-size:11px;font-weight:700;white-space:nowrap}.vouch-lowdata-toggle[aria-pressed=true]{background:#263b2b;color:#fff;border-color:#263b2b}
 @media(max-width:500px){.vouch-lowdata-toggle{font-size:10px;white-space:normal;max-width:90px;text-align:center;line-height:1.1;padding-inline:6px}}
+/* After the community introduction, the gentle reference-inspired continuation takes over. */
+.vouch-public #trust{scroll-margin-top:80px}

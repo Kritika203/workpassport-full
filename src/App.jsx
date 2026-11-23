@@ -6,7 +6,8 @@ import { ChatMissing } from './components/chat/ChatMissing.jsx';
 import { HelpMe } from './components/common/HelpMe.jsx';
 import { Disclaimer } from './components/common/Disclaimer.jsx';
 import { Toast } from './components/common/Feedback.jsx';
-import { LangToggle, NavLink, NotificationBell, PassportShieldIcon, UserDropdown } from './components/layout/Header.jsx';
+import { PassportShieldIcon } from './components/layout/Header.jsx';
+import { ShellHeader } from './components/layout/ShellHeader.jsx';
 import { LockScreen, QuickHideScreen } from './components/privacy/Privacy.jsx';
 import { CLIENT_PROFILE, CLIENT_SEED_JOB, DEMO_APPLICANTS, MAYA_PROFILE } from './data/demo.js';
 import { DUMMY_JOBS } from './data/jobs.js';
@@ -575,30 +576,12 @@ function Experience({ account, backendJobs = [], onOpenAccount, onDemo, onLogout
   if (clientMode) {
     return (
       <div className={`wp-app min-h-screen flex flex-col bg-[#fcfbf8] font-sans text-base text-[#1C1B1A] ${lang === 'ne' ? 'leading-relaxed' : ''}`}>
-        <nav className="bg-[#fcfbf8]/90 backdrop-blur border-b border-[#e5e7dd] sticky top-0 z-40">
-          <div className="max-w-[1200px] mx-auto px-4 h-16 flex items-center justify-between">
-            <button onClick={() => navTo('client')} className="flex items-center gap-2 min-h-[48px]">
-              <span className="vouch-brand">vouch<span>.</span></span>
-            </button>
-            <div className="flex items-center gap-2 sm:gap-4">
-              <button type="button" aria-pressed={settings.lowdata} className="vouch-lowdata-toggle" onClick={() => setSettings({ ...settings, lowdata: !settings.lowdata })}>{settings.lowdata ? 'Standard view' : 'Low data / bigger text'}</button>
-            <LangToggle lang={lang} setLang={setLang} compact />
-              <div className="w-10 h-10 rounded-full bg-[#F0EEE9] border border-[#e5e7dd] flex items-center justify-center font-semibold text-sm" title={activeClientProfile.name}>{clientInitials}</div>
-            </div>
-          </div>
-          <div className="border-t border-[#e5e7dd] overflow-x-auto">
-            <div className="flex gap-6 px-4 w-max min-w-full max-w-[1200px] mx-auto">
-              <NavLink label={t('cm_home')} active={['client', 'client-applicants', 'client-agreement'].includes(currentView)} onClick={() => navTo('client')} />
-              <NavLink label={lang === 'ne' ? 'फ्रीलान्सर खोज्नुहोस्' : 'Explore'} active={currentView === 'client-explore'} onClick={() => navTo('client-explore')} />
-              <NavLink label={lang === 'ne' ? 'भुक्तानी' : 'Payments'} active={currentView === 'payments'} onClick={() => navTo('payments')} />
-              <NavLink label={lang === 'ne' ? 'समुदाय' : 'Community'} active={currentView === 'community'} onClick={() => navTo('community')} />
-              {account && <NavLink label={lang === 'ne' ? 'सन्देश र वर्करुम' : 'Messages and workrooms'} active={['client-inbox', 'client-conversation', 'client-workroom'].includes(currentView)} onClick={() => { fetchClientApplications(); navTo('client-inbox'); }} />}
-              <NavLink label={t('cm_post')} active={false} onClick={() => navTo('client', { scrollTo: 'form', n: Date.now() })} />
-              <NavLink label={account ? t('nav_firstwork') : t('cm_switch_maya')} active={currentView === 'client-firstwork'} onClick={exitClientToMaya} />
-              <NavLink label={t('nav_logout')} active={false} onClick={clientLogout} />
-            </div>
-          </div>
-        </nav>
+        <ShellHeader mode="client" lang={lang} setLang={setLang} currentView={currentView}
+          navTo={navTo} t={t} user={activeClientProfile} connected={!!account}
+          lowData={settings.lowdata} onToggleLowData={() => setSettings({ ...settings, lowdata: !settings.lowdata })}
+          onLogout={clientLogout} onSwitch={exitClientToMaya}
+          onPost={() => navTo('client', { scrollTo: 'form', n: Date.now() })}
+          onMessages={() => { fetchClientApplications(); navTo('client-inbox'); }} />
 
         <main className="flex-1 max-w-[1200px] mx-auto w-full p-4 sm:p-6 pb-28">
           {currentView === 'community' ? (<VouchCommunity lang={lang} viewer="client" name={activeClientProfile.name} onJobBoard={() => navTo('client-firstwork')} />) : currentView === 'job-feedback' ? (<JobFeedback lang={lang} job={clientJobs.find(j => j.id === viewParams.id) || allJobs.find(j => j.id === viewParams.id)} name={activeClientProfile.name} canReview={false} onBack={() => navTo('client')}/>) : currentView === 'client-firstwork' && account?.role === 'client' ? (
@@ -647,51 +630,14 @@ function Experience({ account, backendJobs = [], onOpenAccount, onDemo, onLogout
   return (
     <div className={`wp-app ${simpleOn ? 'wp-simple' : ''} min-h-screen flex flex-col bg-[#fcfbf8] font-sans text-base text-[#1C1B1A] ${lang === 'ne' ? 'leading-relaxed' : ''}`}>
       {/* Navbar */}
-      <nav className="bg-[#fcfbf8]/90 backdrop-blur border-b border-[#e5e7dd] sticky top-0 z-40">
-        <div className="max-w-[1200px] mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-8">
-            <button onClick={() => navTo('firstwork')} className="flex items-center gap-2 min-h-[48px]">
-              <span className="vouch-brand">vouch<span>.</span></span>
-            </button>
-            <div className="hidden md:flex gap-6">
-              <NavLink label={t('nav_firstwork')} active={['firstwork', 'job-detail', 'apply', 'opportunities', 'chat', 'workroom', 'client', 'client-applicants', 'client-agreement', 'bring', 'bring-queue', 'institution-insight'].includes(currentView)} onClick={() => navTo('firstwork')} />
-              <NavLink label={t('nav_passport')} active={currentView === 'passport'} onClick={() => navTo('passport')} />
-              <NavLink label={lang === 'ne' ? 'भुक्तानी' : 'Payments'} active={currentView === 'payments'} onClick={() => navTo('payments')} />
-              <NavLink label={lang === 'ne' ? 'समुदाय' : 'Community'} active={currentView === 'community'} onClick={() => navTo('community')} />
-              <NavLink label={t('nav_shield_safety')} active={currentView === 'shield'} onClick={() => navTo('shield')} />
-              <NavLink label={t('nav_ext')} active={currentView === 'ext'} onClick={() => navTo('ext')} />
-            </div>
-          </div>
-          <div className="flex items-center gap-2 sm:gap-4">
-            <button type="button" aria-pressed={settings.lowdata} className="vouch-lowdata-toggle" onClick={() => setSettings({ ...settings, lowdata: !settings.lowdata })}>{settings.lowdata ? 'Standard view' : 'Low data / bigger text'}</button>
-            <LangToggle lang={lang} setLang={setLang} compact />
-            <NotificationBell t={t} priv={sharedOn} connected={!!account} />
-            {sharedOn && (
-              <button onClick={() => setQuickHidden(true)} aria-label={t('pv_quick_hide')} title={t('pv_quick_hide')} className="min-h-[48px] min-w-[44px] px-2 flex items-center justify-center rounded-full hover:bg-[#F0EEE9]">
-                <EyeOff size={24} className="text-[#4A4744]" />
-              </button>
-            )}
-            <UserDropdown user={userProfile} onLogout={handleLogout} t={t} navTo={navTo} lang={lang} setLang={setLang} showLock={sharedOn} onLock={() => setUnlocked(false)} />
-          </div>
-        </div>
-        <div className="md:hidden border-t border-[#e5e7dd] overflow-x-auto">
-          <div className="flex gap-6 px-4 w-max min-w-full">
-            <NavLink label={t('nav_firstwork')} active={['firstwork', 'job-detail', 'apply', 'opportunities', 'chat', 'workroom', 'client', 'client-applicants', 'client-agreement', 'bring', 'bring-queue', 'institution-insight'].includes(currentView)} onClick={() => navTo('firstwork')} />
-            <NavLink label={t('nav_passport')} active={currentView === 'passport'} onClick={() => navTo('passport')} />
-            <NavLink label={lang === 'ne' ? 'भुक्तानी' : 'Payments'} active={currentView === 'payments'} onClick={() => navTo('payments')} />
-            <NavLink label={t('nav_shield_safety')} active={currentView === 'shield'} onClick={() => navTo('shield')} />
-            <NavLink label={t('nav_ext')} active={currentView === 'ext'} onClick={() => navTo('ext')} />
-              <NavLink label={lang === 'ne' ? 'समुदाय' : 'Community'} active={currentView === 'community'} onClick={() => navTo('community')} />
-          </div>
-        </div>
-      </nav>
+      <ShellHeader lang={lang} setLang={setLang} currentView={currentView} navTo={navTo} t={t}
+        user={userProfile} connected={!!account} sharedOn={sharedOn}
+        lowData={settings.lowdata} onToggleLowData={() => setSettings({ ...settings, lowdata: !settings.lowdata })}
+        onQuickHide={() => setQuickHidden(true)} onLock={() => setUnlocked(false)} onLogout={handleLogout} />
 
       {/* Info Strip */}
       {(currentView === 'firstwork' || currentView === 'opportunities') && (
-        <div className="bg-[#FAF0EE] text-[#AE332A] py-3 px-4 flex justify-center items-center gap-2 text-sm border-b border-[#F3E1DD]">
-          <ShieldCheck size={18} />
-          <span>{t('fw_banner')}</span>
-        </div>
+        <div className="vouch-moderation-note"><span>{t('fw_banner')}</span></div>
       )}
 
       {/* Main Content Area */}

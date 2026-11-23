@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { CreditCard, Star, Trash2, Pencil } from 'lucide-react';
 import { flow } from '../../api/flows.js';
 
-// Payment Settings inside My Vouch. Freelancers save how employers
+// Payment Settings inside My WorkPassport. Freelancers save how employers
 // can pay them directly (eSewa, Khalti or bank). Account mode stores the
 // methods in Django; demo mode keeps them in this browser only. Details are
 // private: they are revealed only to an employer paying for an approved

@@ -1,0 +1,50 @@
+/* Editorial continuation: inspired by moving reference cards, adapted for Vouch. */
+.vouch-marquee-section{padding:37px 0 40px;overflow:hidden;background:#f4f6ef;border-block:1px solid #e1e6d9}
+.vouch-marquee-heading{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:20px}
+.vouch-marquee-heading button{color:#425d45;border:0;border-bottom:1px solid #849785;background:none;font-size:12px;padding:7px 0;cursor:pointer}
+.vouch-marquee{overflow:hidden;mask-image:linear-gradient(to right,transparent,#000 5%,#000 95%,transparent)}
+.vouch-marquee-track{width:max-content;display:flex;animation:vouch-cards-drift 54s linear infinite;will-change:transform}
+.vouch-marquee.is-paused .vouch-marquee-track,.vouch-marquee:focus-within .vouch-marquee-track,.vouch-marquee:hover .vouch-marquee-track{animation-play-state:paused}
+.vouch-marquee-track ul{display:flex;gap:15px;padding:3px 15px 8px 0;list-style:none;margin:0}
+.vouch-marquee-track li{flex:none;width:264px;min-height:155px;background:#fff;border:1px solid #dce3d6;border-radius:17px;padding:18px 21px;box-shadow:0 8px 18px #213c2410}
+.vouch-marquee-number{font-size:11px;font-weight:700;color:#6e826b;letter-spacing:.13em}
+.vouch-marquee-track h3{font-family:'Cormorant Garamond',Georgia,serif;font-size:24px;line-height:1.1;font-weight:600;margin:12px 0 7px}
+.vouch-marquee-track p{font-size:13px;color:#586358;line-height:1.55}
+@keyframes vouch-cards-drift{to{transform:translateX(-50%)}}
+.vouch-cont-section{padding:83px 0;border-bottom:1px solid #e5e7dd;background:#fcfbf8}
+.vouch-cont-section h2,.vouch-cont-ending h2{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;letter-spacing:-.03em;font-size:clamp(36px,4.3vw,55px);line-height:1.03;margin:14px 0 17px;max-width:700px}
+.vouch-cont-lead{max-width:600px;color:#586158;font-size:15px;line-height:1.72}
+.vouch-cont-proofs{margin-top:35px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.vouch-cont-proofs article{padding:23px 24px;border:1px solid #dfe5dc;border-radius:20px;background:white;min-height:190px}
+.vouch-cont-proofs article>span{display:block;font-size:12px;font-weight:700;letter-spacing:.1em;color:#7a8b72}
+.vouch-cont-proofs h3{font-family:'Cormorant Garamond',Georgia,serif;font-size:27px;line-height:1.06;margin:17px 0 7px;font-weight:600}
+.vouch-cont-proofs p{font-size:13px;color:#5e665d;line-height:1.65}
+.vouch-cont-safety{background:#ecf0e8}
+.vouch-cont-safety-grid{display:grid;grid-template-columns:1fr .9fr;gap:clamp(28px,6vw,95px);align-items:center}
+.vouch-cont-checker{background:#fff;border:1px solid #d6e0d3;border-radius:21px;padding:28px;display:grid;gap:12px}
+.vouch-cont-checker label{font-size:13px;font-weight:700;color:#2d4131}
+.vouch-cont-checker textarea{min-height:115px;background:#fafbf9;border:1px solid #dce3d8;border-radius:14px;padding:13px;font-size:14px;line-height:1.55;color:#263628;resize:vertical;width:100%;outline-offset:2px}
+.vouch-cont-checker textarea:focus-visible{outline:2px solid #58765a}
+.vouch-cont-checker-actions{display:flex;justify-content:space-between;gap:13px;align-items:center;flex-wrap:wrap}
+.vouch-cont-checker-actions .vouch-button{min-height:42px;font-size:13px}.vouch-cont-sample{background:none;border:0;border-bottom:1px solid #6a7d68;color:#526950;font-size:12px;cursor:pointer;padding:6px 0}
+.vouch-cont-verdict{padding:12px 14px;background:#f0f4ee;border:1px solid #dae5d7;border-radius:12px;font-size:13px}
+.vouch-cont-verdict[data-verdict='danger']{background:#fdf2ef;border-color:#efd2cd;color:#8b3030}.vouch-cont-verdict[data-verdict='warning']{background:#fff7e9;border-color:#e7d4b6;color:#745923}
+.vouch-cont-verdict p{margin-top:5px;line-height:1.45;color:inherit}
+.vouch-cont-feature-list{margin-top:30px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 36px}
+.vouch-cont-feature-list>div{padding:22px 0;border-top:1px solid #dce2d9;display:grid;gap:4px}
+.vouch-cont-feature-list h3{font-size:15px;font-weight:700;color:#2a4230}.vouch-cont-feature-list p{font-size:13px;color:#687166;line-height:1.55}
+.vouch-cont-ending{padding:clamp(80px,10vw,140px) 0;text-align:center;background:#f5f6f1}
+.vouch-cont-ending .vouch-inner{display:flex;flex-direction:column;align-items:center}.vouch-cont-ending h2{max-width:670px;margin:15px auto 10px}
+.vouch-cont-ending p{max-width:520px;font-size:15px;color:#58645a;line-height:1.7}
+.vouch-cont-ending-actions{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:20px;margin-top:28px}
+.vouch-cont-footer{background:#e4e9df;border-top:1px solid #d1dccc;padding:53px 0}
+.vouch-cont-footer-grid{display:grid;grid-template-columns:1fr 1.25fr;gap:70px}
+.vouch-cont-footer-grid>div>p{font-size:13px;color:#4f604f;max-width:320px;line-height:1.65;margin-top:17px}
+.vouch-cont-footer nav{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.vouch-cont-footer nav>div{display:flex;flex-direction:column;align-items:flex-start;gap:11px}
+.vouch-cont-footer h3{font-size:13px;font-weight:700;color:#263e2a;margin-bottom:8px}
+.vouch-cont-footer a:not(.vouch-brand),.vouch-cont-footer nav button{border:0;background:none;text-align:left;padding:0;text-decoration:none;font-size:13px;color:#4d5d4d;cursor:pointer}
+.vouch-cont-footer a:hover,.vouch-cont-footer nav button:hover{text-decoration:underline}
+@media(max-width:790px){.vouch-cont-proofs{grid-template-columns:1fr}.vouch-cont-proofs article{min-height:0}.vouch-cont-safety-grid{grid-template-columns:1fr}.vouch-cont-footer-grid{grid-template-columns:1fr;gap:32px}}
+@media(max-width:550px){.vouch-cont-section{padding:55px 0}.vouch-cont-feature-list{grid-template-columns:1fr}.vouch-marquee-track li{width:235px}.vouch-cont-footer nav{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:30px}.vouch-cont-footer{padding:39px 0}}
+@media(prefers-reduced-motion:reduce){.vouch-marquee{mask-image:none}.vouch-marquee-track{width:100%;animation:none}.vouch-marquee-track ul{flex-wrap:wrap;gap:12px}.vouch-marquee-track ul[aria-hidden='true']{display:none}.vouch-marquee-track li{width:min(100%,280px)}.vouch-marquee-heading button{display:none}}
