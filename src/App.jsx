@@ -645,7 +645,16 @@ function Experience({ account, backendJobs = [], onOpenAccount, onDemo, onLogout
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-[1200px] mx-auto w-full p-4 sm:p-6 pb-28">
-        {currentView === 'account-setup' && <div className="max-w-[560px] mx-auto bg-white border border-[#E3E6E1] rounded-[20px] p-6"><SetupFlow t={t} lang={lang} initialName={userProfile?.name || ''} onBack={() => { setUserProfile({ ...userProfile, onboarded: true }); navTo('firstwork'); }} onComplete={profile => { setUserProfile({ ...userProfile, ...profile, onboarded: true }); navTo('setup_success'); }} /></div>}
+        {currentView === 'account-setup' && <div className="max-w-[560px] mx-auto bg-white border border-[#E3E6E1] rounded-[20px] p-6"><SetupFlow t={t} lang={lang} initialName={userProfile?.name || ''} initialSkills={userProfile?.skills || []} onBack={() => { setUserProfile({ ...userProfile, onboarded: true }); navTo('firstwork'); }} onComplete={async profile => {
+          const next = { ...userProfile, ...profile, onboarded: true };
+          if (account) {
+            // Persist the selected skills before leaving setup. The backend is
+            // authoritative for WorkPassport, rather than workspace-only state.
+            await api('/api/auth/passport/', { method: 'PUT', body: next }, readApiSession());
+          }
+          setUserProfileStored(next);
+          navTo('setup_success');
+        }} /></div>}
         {currentView === 'firstwork' && <FirstWorkFeed allJobs={allJobs} t={t} navTo={navTo} user={userProfile} savedJobs={savedJobs} setSavedJobs={setSavedJobs} lang={lang} lowdata={settings.lowdata} onSwitchClient={() => { if (account?.role === 'client') enterClientMode(); else if (account) showToast('To post a job, please use a client account.'); else { setUnlocked(false); setIsLoggedIn(false); navTo('welcome'); } }} />}
         {currentView === 'community' && <VouchCommunity lang={lang} name={userProfile?.name || 'Vouch member'} viewer="worker" onJobBoard={() => navTo('firstwork')} />}
         {currentView === 'job-feedback' && <JobFeedback job={allJobs.find(j => j.id === viewParams.id) || clientJobs.find(j => j.id === viewParams.id)} lang={lang} name={userProfile?.name || 'Vouch member'} canReview={confirmedJobs.includes(viewParams.id)} onBack={() => navTo('job-detail', { id: viewParams.id })} />}

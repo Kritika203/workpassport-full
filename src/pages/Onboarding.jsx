@@ -85,16 +85,30 @@ export function LoginFlow({ t, onBack, onLogin }) {
   );
 }
 
-export function SetupFlow({ t, lang = 'en', onBack, onComplete, initialName = '' }) {
+export function SetupFlow({ t, lang = 'en', onBack, onComplete, initialName = '', initialSkills = [] }) {
   const [name, setName] = useState(initialName);
   const [district, setDistrict] = useState('');
   const [workWanted, setWorkWanted] = useState([]);
-  const finish = () => onComplete({ name: name.trim(), district, workWanted, skills: [],
-    institute: '', safetyRules: { chat: true, calls: true, time: true, photo: true, hours: true }, badge: 'Beginner' });
+  const [skills, setSkills] = useState(() => [...initialSkills]);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const finish = async () => {
+    if (saving || !name.trim()) return;
+    setSaving(true);
+    setError('');
+    try {
+      await onComplete({ name: name.trim(), district, workWanted, skills,
+        safetyRules: { chat: true, calls: true, time: true, photo: true, hours: true }, badge: 'Beginner' });
+    } catch (err) {
+      setError(err?.message || 'Could not save your WorkPassport. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  };
   return <section className="space-y-5">
     <button type="button" onClick={onBack} className="underline min-h-[44px]">{t('back')}</button>
     <h2 className="text-2xl font-semibold">{lang === 'ne' ? 'सुरु गरौँ' : 'Set up your WorkPassport'}</h2>
-    <p className="text-[#687169]">{lang === 'ne' ? 'नाम मात्र अनिवार्य छ। बाँकी पछि थप्न सकिन्छ।' : 'Only your name is required. Add skills, experience, and a CV later.'}</p>
+    <p className="text-[#687169]">{lang === 'ne' ? 'नाम मात्र अनिवार्य छ। बाँकी पछि थप्न सकिन्छ।' : 'Only your name is required. Choose your skills now, or add more experience and a CV later.'}</p>
     <label className="block font-medium">{t('full_name')}
       <input className="block w-full border rounded-xl p-4 mt-2" maxLength={120} value={name} onChange={e=>setName(e.target.value)} required autoComplete="name" />
     </label>
@@ -104,6 +118,20 @@ export function SetupFlow({ t, lang = 'en', onBack, onComplete, initialName = ''
     <details className="border rounded-xl p-4"><summary className="cursor-pointer font-medium">{lang === 'ne' ? 'कामका रुचिहरू (ऐच्छिक)' : 'Work interests (optional)'}</summary>
       <div className="flex flex-wrap gap-2 mt-3">{ALL_CATEGORIES.map(c=><button type="button" key={c} onClick={()=>setWorkWanted(old=>old.includes(c)?old.filter(x=>x!==c):[...old,c])} aria-pressed={workWanted.includes(c)} className={'border rounded-full px-3 py-2 '+(workWanted.includes(c)?'bg-[#FAF0EE] border-[#003D14]':'')}>{c}</button>)}</div>
     </details>
-    <button type="button" disabled={!name.trim()} onClick={finish} className="w-full rounded-full bg-[#003D14] text-white font-semibold min-h-[52px] disabled:opacity-40">{lang === 'ne' ? 'अगाडि बढ्नुहोस्' : 'Continue to Vouch'}</button>
+    <fieldset className="border rounded-xl p-4">
+      <legend className="font-medium px-1">{lang === 'ne' ? 'तपाईंका सीपहरू (ऐच्छिक)' : 'Your skills (optional)'}</legend>
+      <p className="text-sm text-[#687169] mb-3">{lang === 'ne' ? 'तपाईंलाई आउने सीप छान्नुहोस्। यी तपाईंको WorkPassport मा देखिन्छन्।' : 'Choose skills you already have. They will appear in My WorkPassport.'}</p>
+      <div className="flex flex-wrap gap-2">
+        {ALL_SKILLS.map(skill => (
+          <button type="button" key={skill} onClick={() => setSkills(previous => previous.includes(skill) ? previous.filter(s => s !== skill) : [...previous, skill])}
+            aria-pressed={skills.includes(skill)}
+            className={'border rounded-full px-3 py-2 text-sm ' + (skills.includes(skill) ? 'bg-[#E7F0E9] border-[#003D14] text-[#003D14]' : 'border-[#E3E6E1]')}>
+            {skill}
+          </button>
+        ))}
+      </div>
+    </fieldset>
+    {error && <p role="alert" className="text-sm text-[#AE332A]">{error}</p>}
+    <button type="button" disabled={!name.trim() || saving} onClick={finish} className="w-full rounded-full bg-[#003D14] text-white font-semibold min-h-[52px] disabled:opacity-40">{saving ? (lang === 'ne' ? 'सेभ हुँदैछ…' : 'Saving…') : (lang === 'ne' ? 'अगाडि बढ्नुहोस्' : 'Continue to Vouch')}</button>
   </section>;
 }
